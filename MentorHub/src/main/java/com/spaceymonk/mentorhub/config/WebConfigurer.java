@@ -22,7 +22,7 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
 
         http
                 .authorizeRequests(a -> a
-                        .antMatchers("/", "/error").permitAll()
+                        .antMatchers("/", "/error", "/assets/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e

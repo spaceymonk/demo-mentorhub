@@ -12,27 +12,42 @@
     <title>MentorHub Login</title>
 
     <style>
-        html, body {
-            height: 100vh;
+
+        section {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
+
+        .bg-image {
+            height: 100vh;
+            width: 100vw;
+            background: sandybrown url("assets/login-bg.jpg") no-repeat fixed center;
+            background-size: cover;
+            filter: blur(4px);
+        }
+
     </style>
 
 </head>
 
-<body class="d-flex align-items-center justify-content-center bg-light">
+<body>
 
-<section>
-    <div class="container">
-        <div class="text-center">
-            <div class="">
+<div class="bg-image"></div>
 
-                <div class="card rounded-3 border px-5">
+<section >
+    <div style="z-index: 2;">
+        <div class="container">
+            <div class="text-center">
+
+                <div class="card rounded-3 border-5 px-5 bg-light">
                     <div class="card-title pt-4">
-                        <h2>Login</h2>
+                        <h1>MentorHub</h1>
                     </div>
                     <hr class="m-2">
                     <div class="card-body text-center">
-                        <a href="/oauth2/authorization/google" class="btn btn-outline-primary">Continue with Google</a>
+                        <a href="/oauth2/authorization/google" class="btn btn-outline-primary"> <i class="fab fa-google me-3"></i>Continue with Google</a>
 
                         <p class="text-muted fst-italic fw-bold my-3">or</p>
 
