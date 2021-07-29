@@ -36,7 +36,7 @@
         window.location.replace("/");
     }
     $.ajaxSetup({
-        beforeSend : function(xhr, settings) {
+        beforeSend: function (xhr, settings) {
             if (settings.type == 'POST' || settings.type == 'PUT'
                 || settings.type == 'DELETE') {
                 if (!(/^http:.*/.test(settings.url) || /^https:.*/
