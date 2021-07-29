@@ -1,0 +1,29 @@
+dn: ou=groups,dc=spaceymonk,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: groups
+
+dn: ou=people,dc=spaceymonk,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: people
+
+dn: uid=bob,ou=groups,dc=spaceymonk,dc=com
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Bob Hamilton
+sn: Hamilton
+uid: bob
+userPassword: bobspassword
+
+dn: uid=joe,ou=people,dc=spaceymonk,dc=com
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Joe Smeth
+sn: Smeth
+uid: joe
+userPassword: joespassword

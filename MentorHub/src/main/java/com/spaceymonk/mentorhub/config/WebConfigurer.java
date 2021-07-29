@@ -3,8 +3,12 @@ package com.spaceymonk.mentorhub.config;
 
 import com.spaceymonk.mentorhub.controller.LoginPageInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -27,7 +31,7 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
                 )
                 .exceptionHandling(e -> e
 //                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                                .accessDeniedPage("/")
+//                                .accessDeniedPage("/")
                 )
                 .csrf(c -> c
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -44,7 +48,25 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
                         })
                 )
                 .formLogin(f -> f
-                        .loginPage("/"));
+                        .successForwardUrl("/dashboard")
+                        .loginPage("/").permitAll());
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .ldapAuthentication()
+                .userSearchBase("ou=people")
+                .userSearchFilter("(uid={0})")
+                .groupSearchBase("ou=groups")
+                .groupSearchFilter("member={0}")
+                .passwordCompare()
+                .passwordEncoder(new BCryptPasswordEncoder())
+                .passwordAttribute("userPassword").and()
+                .contextSource()
+                .root("dc=spaceymonk,dc=com")
+                .port(8389)
+                .ldif("classpath:ldap-data.ldif");
     }
 
     @Override
