@@ -1,6 +1,7 @@
 package com.spaceymonk.mentorhub.config;
 
 
+import com.spaceymonk.mentorhub.controller.LoginPageInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,9 +10,11 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfigurer extends WebSecurityConfigurerAdapter {
+public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
 
     @Override
@@ -41,4 +44,9 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter {
                         })
                 );
     }
+
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            registry.addInterceptor(new LoginPageInterceptor());
+        }
 }
