@@ -28,7 +28,8 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+//                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                        .accessDeniedPage("/")
                 )
                 .csrf(c -> c
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -37,16 +38,19 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
                         .logoutSuccessUrl("/").permitAll()
                 )
                 .oauth2Login(o -> o
+                        .loginPage("/")
                         .successHandler(successHandler)
                         .failureHandler((request, response, exception) -> {
                             request.getSession().setAttribute("error.message", exception.getMessage());
                             failureHandler.onAuthenticationFailure(request, response, exception);
                         })
-                );
+                )
+                .formLogin(f -> f
+                        .loginPage("/"));
     }
 
-        @Override
-        public void addInterceptors(InterceptorRegistry registry) {
-            registry.addInterceptor(new LoginPageInterceptor());
-        }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginPageInterceptor());
+    }
 }
