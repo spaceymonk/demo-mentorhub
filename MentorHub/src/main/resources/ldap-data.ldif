@@ -16,7 +16,7 @@ objectclass: inetOrgPerson
 cn: Bob Hamilton
 sn: Hamilton
 uid: bob
-userPassword: bobspassword
+userPassword: bob
 
 dn: uid=joe,ou=people,dc=spaceymonk,dc=com
 objectclass: top
@@ -26,4 +26,4 @@ objectclass: inetOrgPerson
 cn: Joe Smeth
 sn: Smeth
 uid: joe
-userPassword: joespassword
+userPassword: joe
