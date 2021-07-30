@@ -21,7 +21,7 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler("/");
+        SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler("/error");
         SimpleUrlAuthenticationSuccessHandler successHandler = new SimpleUrlAuthenticationSuccessHandler("/dashboard");
 
         http
@@ -29,15 +29,15 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
                         .antMatchers("/", "/error", "/assets/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(e -> e
+//                .exceptionHandling(e -> e
 //                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-//                                .accessDeniedPage("/")
-                )
+////                                .accessDeniedPage("/error")
+//                )
                 .csrf(c -> c
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
                 .logout(l -> l
-                        .logoutSuccessUrl("/").permitAll()
+                        .logoutSuccessUrl("/")
                 )
                 .oauth2Login(o -> o
                         .loginPage("/")
@@ -48,25 +48,29 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
                         })
                 )
                 .formLogin(f -> f
-                        .successForwardUrl("/dashboard")
-                        .loginPage("/").permitAll());
+                        .failureHandler((request, response, exception) -> {
+                            request.getSession().setAttribute("error.message", exception.getMessage());
+                            System.out.println("Hey you fucked up");
+                            failureHandler.onAuthenticationFailure(request, response, exception);
+                        })
+                        .successHandler(successHandler)
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .loginPage("/"));
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .ldapAuthentication()
-                .userSearchBase("ou=people")
-                .userSearchFilter("(uid={0})")
+                .userDnPatterns("uid={0},ou=people")
                 .groupSearchBase("ou=groups")
-                .groupSearchFilter("member={0}")
+                .contextSource()
+                .url("ldap://localhost:8389/dc=springframework,dc=org")
+                .and()
                 .passwordCompare()
                 .passwordEncoder(new BCryptPasswordEncoder())
-                .passwordAttribute("userPassword").and()
-                .contextSource()
-                .root("dc=spaceymonk,dc=com")
-                .port(8389)
-                .ldif("classpath:ldap-data.ldif");
+                .passwordAttribute("userPassword");
     }
 
     @Override

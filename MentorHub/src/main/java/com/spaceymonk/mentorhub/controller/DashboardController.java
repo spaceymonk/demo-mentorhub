@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class DashboardController {
     @GetMapping("/dashboard")
-    public String dashboardPage(Model model, @AuthenticationPrincipal OAuth2User user) {
-        model.addAllAttributes(user.getAttributes());
+    public String dashboardPage(Model model) {
         return "dashboard";
     }
 }

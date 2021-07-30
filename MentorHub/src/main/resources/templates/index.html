@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -63,12 +63,14 @@
 
                         <p class="text-muted fst-italic fw-bold my-3">or</p>
 
-                        <form action="/" class="w-100" method="post">
+                        <form action="#" th:action="@{/}" class="w-100" method="post">
                             <div class="mb-1 text-start w-100">
-                                <input type="text" class="rounded-pill form-control" placeholder="Username">
+                                <input type="text" name="username" class="rounded-pill form-control"
+                                       placeholder="Username">
                             </div>
                             <div class="mb-3 text-start w-100">
-                                <input type="password" class="rounded-pill form-control" placeholder="******">
+                                <input type="password" name="password" class="rounded-pill form-control"
+                                       placeholder="******">
                             </div>
                             <button type="submit" class="btn btn-primary mt-2">Login</button>
                         </form>
