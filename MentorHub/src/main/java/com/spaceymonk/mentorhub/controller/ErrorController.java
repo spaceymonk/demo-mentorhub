@@ -11,6 +11,7 @@ public class ErrorController {
     @GetMapping("/error")
     public String errorPage(Model model, HttpServletRequest request) {
         String errMsg = (String) request.getSession().getAttribute("error.message");
+        request.getSession().removeAttribute("error.message");
         model.addAttribute("msg", errMsg);
         return "error";
     }

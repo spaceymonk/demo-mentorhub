@@ -72,6 +72,9 @@
                                 <input type="password" name="password" class="rounded-pill form-control"
                                        placeholder="******">
                             </div>
+                            <div th:if="${msg != null}" class="text-start w-100 text-danger">
+                                <small class="fst-italic" th:text="${msg}"></small>
+                            </div>
                             <button type="submit" class="btn btn-primary mt-2">Login</button>
                         </form>
                     </div>
