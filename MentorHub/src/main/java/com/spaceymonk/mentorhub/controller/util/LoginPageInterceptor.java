@@ -1,4 +1,4 @@
-package com.spaceymonk.mentorhub.controller;
+package com.spaceymonk.mentorhub.controller.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
