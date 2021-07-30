@@ -28,6 +28,7 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
                 )
                 .csrf().disable()
                 .logout(l -> l
+                        .logoutUrl("/logout")
                         .invalidateHttpSession(true)
                         .logoutSuccessUrl("/")
                 )
