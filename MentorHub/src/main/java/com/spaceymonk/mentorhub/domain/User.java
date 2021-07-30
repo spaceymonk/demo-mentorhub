@@ -1,18 +1,22 @@
 package com.spaceymonk.mentorhub.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
     @Id
+    @EqualsAndHashCode.Include
     private String id;
     private String name;
     private String role;
+    private Boolean canBecomeMentor;
     private Set<Mentorship> mentorshipSet = new HashSet<>();
 
     public User(String name, String role) {

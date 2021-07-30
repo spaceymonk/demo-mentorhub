@@ -1,12 +1,15 @@
 package com.spaceymonk.mentorhub.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Request {
 
     @Id
+    @EqualsAndHashCode.Include
     private String id;
     private Subject selectedSubject;
     private String text;
