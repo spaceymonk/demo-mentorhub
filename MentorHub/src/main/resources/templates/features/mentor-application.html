@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('MentorHub::Mentorship Application')"></head>
+
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<h2>Mentorship Application Form</h2>
+
+<form action="#" method="post">
+    <label for="categoryselector">PLease select a major subject:</label>
+    <select name="category" id="categoryselector">
+        <!--/*@thymesVar id="categories" type=""*/-->
+        <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
+    </select>
+    <!--/*@thymesVar id="getSubjects" type=""*/-->
+    <label> Please select at least 1 subject:
+    <input type="checkbox" name="subject" th:each="subject : ${category.getSubjects()}" th:text="${subject}"
+           th:value="${subject}"/>
+    </label>
+    <label for="msgInput">Why we should accept your mentorship application?</label>
+    <input id="msgInput"  type="text" name="msg" placeholder="Explain your accomplishments, awards etc."/>
+    <button type="submit">Submit</button>
+</form>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
+
