@@ -19,4 +19,20 @@ public class User {
         this.name = name;
         this.role = role;
     }
+
+    public Set<Mentorship> getMenteeSections() {
+        Set<Mentorship> set = new HashSet<>();
+        for (Mentorship ship : mentorshipSet)
+            if (ship.getMentee().equals(this))
+                set.add(ship);
+        return set;
+    }
+
+    public Set<Mentorship> getMentorSections() {
+        Set<Mentorship> set = new HashSet<>();
+        for (Mentorship ship : mentorshipSet)
+            if (ship.getMentor().equals(this))
+                set.add(ship);
+        return set;
+    }
 }
