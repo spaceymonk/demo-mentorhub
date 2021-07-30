@@ -14,11 +14,11 @@
     </select>
     <!--/*@thymesVar id="getSubjects" type=""*/-->
     <label> Please select at least 1 subject:
-    <input type="checkbox" name="subject" th:each="subject : ${category.getSubjects()}" th:text="${subject}"
-           th:value="${subject}"/>
+        <input type="checkbox" name="subject" th:each="subject : ${category.getSubjects()}" th:text="${subject}"
+               th:value="${subject}"/>
     </label>
     <label for="msgInput">Why we should accept your mentorship application?</label>
-    <input id="msgInput"  type="text" name="msg" placeholder="Explain your accomplishments, awards etc."/>
+    <input id="msgInput" type="text" name="msg" placeholder="Explain your accomplishments, awards etc."/>
     <button type="submit">Submit</button>
 </form>
 
