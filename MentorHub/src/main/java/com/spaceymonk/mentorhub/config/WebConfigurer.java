@@ -1,17 +1,14 @@
 package com.spaceymonk.mentorhub.config;
 
 
-import com.spaceymonk.mentorhub.controller.LoginPageInterceptor;
+import com.spaceymonk.mentorhub.controller.util.LoginPageInterceptor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -21,7 +18,7 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler("/error");
+        SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler("/");
         SimpleUrlAuthenticationSuccessHandler successHandler = new SimpleUrlAuthenticationSuccessHandler("/dashboard");
 
         http
@@ -29,14 +26,9 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
                         .antMatchers("/", "/error", "/assets/**").permitAll()
                         .anyRequest().authenticated()
                 )
-//                .exceptionHandling(e -> e
-//                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-////                                .accessDeniedPage("/error")
-//                )
-                .csrf(c -> c
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                )
+                .csrf().disable()
                 .logout(l -> l
+                        .invalidateHttpSession(true)
                         .logoutSuccessUrl("/")
                 )
                 .oauth2Login(o -> o
@@ -50,7 +42,6 @@ public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMv
                 .formLogin(f -> f
                         .failureHandler((request, response, exception) -> {
                             request.getSession().setAttribute("error.message", exception.getMessage());
-                            System.out.println("Hey you fucked up");
                             failureHandler.onAuthenticationFailure(request, response, exception);
                         })
                         .successHandler(successHandler)
