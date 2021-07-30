@@ -13,8 +13,7 @@ public class User {
     private String id;
     private String name;
     private String role;
-    private Set<String> mentees = new HashSet<>();
-    private Set<String> mentors = new HashSet<>();
+    private Set<Mentorship> mentorshipSet = new HashSet<>();
 
     public User(String name, String role) {
         this.name = name;
