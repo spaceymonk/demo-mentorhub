@@ -6,3 +6,8 @@ spring:
           google:
             clientId: 202364333101-h14l0ahfcok5kf658ddknptji32gicnb.apps.googleusercontent.com
             clientSecret: 0G2uxVRFTA4thxzS1DeBPCV7
+  ldap:
+    embedded:
+      ldif: classpath:ldap-data.ldif
+      base-dn: dc=springframework,dc=org
+      port: 8389
