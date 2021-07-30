@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="navbar">
+    <script>
+        let logout = function () {
+            $.post("/logout");
+            window.location.replace("/");
+        }
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (settings.type == 'POST' || settings.type == 'PUT'
+                    || settings.type == 'DELETE') {
+                    if (!(/^http:.*/.test(settings.url) || /^https:.*/
+                        .test(settings.url))) {
+                        // Only send the token to relative URLs i.e. locally.
+                        xhr.setRequestHeader("X-XSRF-TOKEN",
+                            Cookies.get('XSRF-TOKEN'));
+                    }
+                }
+            }
+        });
+    </script>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="font-size: 2rem" href="/">MentorHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent"
+                 style="justify-content: flex-end; text-align: center">
+                <button class="btn btn-primary" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>
