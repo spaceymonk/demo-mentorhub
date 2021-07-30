@@ -17,4 +17,9 @@ public class Subject {
     private String majorSubject;
     private Set<String> subjects = new HashSet<>();
 
+
+    public Subject(String majorSubject, Set<String> subjects) {
+        this.majorSubject = majorSubject;
+        this.subjects = subjects;
+    }
 }

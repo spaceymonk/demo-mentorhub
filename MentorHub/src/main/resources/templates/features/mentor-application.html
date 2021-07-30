@@ -7,22 +7,32 @@
 <h2>Mentorship Application Form</h2>
 
 <form action="#" method="post">
-    <label for="categoryselector">PLease select a major subject:</label>
+    <label for="categoryselector">Please select a major subject:</label>
     <select name="category" id="categoryselector">
-        <!--/*@thymesVar id="categories" type=""*/-->
-        <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
+        <option value="" selected></option>
+        <option th:each="category : ${categories}" th:value="${category}" th:text="${category.majorSubject}"></option>
     </select>
-    <!--/*@thymesVar id="getSubjects" type=""*/-->
-    <label> Please select at least 1 subject:
-        <input type="checkbox" name="subject" th:each="subject : ${category.getSubjects()}" th:text="${subject}"
-               th:value="${subject}"/>
-    </label>
+    <p> Please select at least 1 subject:</p>
+    <div th:each="category : ${categories}" style="display: none" th:id="${category.majorSubject}" class="categories">
+        <div th:each="subject : ${category.subjects}">
+            <input type="checkbox" th:name="${subject}" th:value="${subject}"/><label th:text="${subject}"></label><br>
+        </div>
+    </div>
     <label for="msgInput">Why we should accept your mentorship application?</label>
     <input id="msgInput" type="text" name="msg" placeholder="Explain your accomplishments, awards etc."/>
     <button type="submit">Submit</button>
 </form>
 
 <div th:replace="fragments/footer :: footer"></div>
+<script th:inline="javascript">
+    $("#categoryselector").change(function () {
+        let selectedCategory = $("#categoryselector option:selected").text();
+        $(".categories").each(function (index) {
+            $(this).hide();
+        })
+        $(`#${selectedCategory}`).show();
+    });
+</script>
 </body>
 </html>
 
