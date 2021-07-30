@@ -1,6 +1,5 @@
 package com.spaceymonk.mentorhub;
 
-import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
