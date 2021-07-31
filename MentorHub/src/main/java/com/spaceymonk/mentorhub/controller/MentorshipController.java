@@ -27,14 +27,18 @@ public class MentorshipController {
     }
 
     @PostMapping("/apply")
-    public String registerApplication(@RequestParam("selectedCategory") String selectedCategory,
+    public String registerApplication(@RequestParam(value = "selectedCategory", required = false) String selectedCategory,
                                       @RequestParam(value = "selectedSubject", required = false) List<String> selectedSubjects,
-                                      @RequestParam("explainMsg") String explainMsg,
+                                      @RequestParam(value = "explainMsg", required = false) String explainMsg,
                                       Model model) {
         List<Subject> categories = subjectRepository.findAll();
         model.addAttribute("categories", categories);
 
         // check for given category
+        if (selectedCategory == null || selectedCategory.isBlank()) {
+            model.addAttribute("errorTxt", "Please select a major!");
+            return "features/mentor-application";
+        }
         Subject s = subjectRepository.findByMajorSubject(selectedCategory);
         if (s == null) {
             model.addAttribute("errorTxt", "No such major found!");
@@ -52,7 +56,7 @@ public class MentorshipController {
         }
 
         // check for explain message
-        if (explainMsg.isBlank()) {
+        if (explainMsg == null || explainMsg.isBlank()) {
             model.addAttribute("errorTxt", "Please write something about yourself.");
             return "features/mentor-application";
         }
