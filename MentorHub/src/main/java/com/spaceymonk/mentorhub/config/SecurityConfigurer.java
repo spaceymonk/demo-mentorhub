@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfigurer extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
+public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
 
     @Override
