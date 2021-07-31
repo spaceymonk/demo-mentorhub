@@ -1,5 +1,6 @@
 package com.spaceymonk.mentorhub.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,5 +15,10 @@ public class ErrorController {
         request.getSession().removeAttribute("error.message");
         model.addAttribute("msg", errMsg);
         return "error";
+    }
+
+    @GetMapping("/403")
+    public String accessDeniedPage(Model model, Authentication authentication) {
+        return "errors/403";
     }
 }
