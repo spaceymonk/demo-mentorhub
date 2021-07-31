@@ -48,6 +48,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
                 .logout(l -> l
                         .logoutUrl("/logout")
                         .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .logoutSuccessUrl("/")
                 )
                 .oauth2Login(o -> o
