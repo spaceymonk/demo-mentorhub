@@ -1,5 +1,7 @@
 package com.spaceymonk.mentorhub;
 
+import com.spaceymonk.mentorhub.domain.Role;
+import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -15,10 +17,18 @@ public class Bootstrap implements CommandLineRunner {
     private final PhaseReviewRepository phaseReviewRepository;
     private final MentorshipRequestRepository mentorshipRequestRepository;
     private final SubjectRepository subjectRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Started in bootstrap...");
+
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        User user = userRepository.findByUsername("ben");
+        user.getRoles().add(userRole);
+        userRepository.save(user);
+
+        System.out.println("Successfully added role to user ben.");
 
     }
 }
