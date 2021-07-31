@@ -4,24 +4,66 @@
 
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
-<h2>Mentorship Application Form</h2>
 
-<form action="#" method="post">
-    <label for="categoryselector">Please select a major subject:</label>
-    <select name="category" id="categoryselector">
-        <option value="" selected></option>
-        <option th:each="category : ${categories}" th:value="${category}" th:text="${category.majorSubject}"></option>
-    </select>
-    <p> Please select at least 1 subject:</p>
-    <div th:each="category : ${categories}" style="display: none" th:id="${category.majorSubject}" class="categories">
-        <div th:each="subject : ${category.subjects}">
-            <input type="checkbox" th:name="${subject}" th:value="${subject}"/><label th:text="${subject}"></label><br>
+<section class="d-flex align-items-center my-5">
+    <div class="container">
+        <div class="card bg-light py-4 border-1 rounded rounded-3">
+            <div class="card-title text-center">
+                <h5 class="display-5">Mentorship Application Form</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/apply}" method="post">
+
+                    <div class="row mt-3">
+                        <div class="col">
+                            <label for="categoryselector">Select a major:</label>
+                            <select name="category" id="categoryselector" class="form-select" required>
+                                <option value="" selected></option>
+                                <option th:each="category : ${categories}" th:value="${category.majorSubject}"
+                                        th:text="${category.majorSubject}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col">
+                            <p class="mb-1">Please select at least 1 subject:</p>
+                            <small class="text-danger" id="errSelectMajorFirst">Please select a major first.</small>
+                            <div class="form-check categories" th:each="category : ${categories}" style="display: none"
+                                 th:id="${category.majorSubject}">
+                                <div th:each="subject : ${category.subjects}">
+                                    <input class="form-check-input" type="checkbox" th:id="${category + subject}"
+                                           th:name="${subject}"
+                                           th:value="${subject}">
+                                    <label class="form-check-label" th:for="${category + subject}"
+                                           th:text="${subject}"> </label><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col">
+                            <div class="form-floating">
+                                    <textarea class="form-control" placeholder="Explain yourself..."
+                                              id="txtArea" style="height: 20vh; resize: none;" disabled
+                                              required></textarea>
+                                <label for="txtArea">Explain yourself...</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col text-center">
+                            <button class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
         </div>
     </div>
-    <label for="msgInput">Why we should accept your mentorship application?</label>
-    <input id="msgInput" type="text" name="msg" placeholder="Explain your accomplishments, awards etc."/>
-    <button type="submit">Submit</button>
-</form>
+</section>
 
 <div th:replace="fragments/footer :: footer"></div>
 <script th:inline="javascript">
@@ -29,7 +71,15 @@
         let selectedCategory = $("#categoryselector option:selected").text();
         $(".categories").each(function (index) {
             $(this).hide();
-        })
+            $(this).find('input:checkbox').prop('checked', false);
+        });
+        if (selectedCategory == "") {
+            $("#errSelectMajorFirst").show();
+            $("#txtArea").prop('disabled', true);
+        } else {
+            $("#errSelectMajorFirst").hide();
+            $("#txtArea").prop('disabled', false);
+        }
         $(`#${selectedCategory}`).show();
     });
 </script>
