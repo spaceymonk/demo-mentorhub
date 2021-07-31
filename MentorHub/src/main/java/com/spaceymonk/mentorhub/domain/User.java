@@ -14,8 +14,9 @@ public class User {
     @Id
     @EqualsAndHashCode.Include
     private String id;
-    private String name;
+    private String username;
     private String password;
+    private String actualName;
     private boolean becomeMentor;
     private boolean enabled;
     private Set<Role> roles;
