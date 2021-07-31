@@ -16,5 +16,21 @@
             integrity="sha512-Meww2sXqNHxI1+5Dyh/9KAtvI9RZSA4c1K2k5iL02oiPO/RH3Q30L3M1albtqMg50u4gRTYdV4EXOQqXEI336A=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <title th:text="${title}">Title</title>
+    <style>
+        body {
+            position: relative;
+        }
+        body::after{
+            background-image: url("assets/bg.jpg");
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            content: "";
+            z-index: -1;
+            opacity: 0.3;
+        }
+    </style>
 </head>
 </html>
