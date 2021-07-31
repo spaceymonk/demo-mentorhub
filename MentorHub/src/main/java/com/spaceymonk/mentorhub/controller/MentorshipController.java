@@ -1,6 +1,7 @@
 package com.spaceymonk.mentorhub.controller;
 
 import com.spaceymonk.mentorhub.domain.Subject;
+import com.spaceymonk.mentorhub.repository.RequestRepository;
 import com.spaceymonk.mentorhub.repository.SubjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import java.util.List;
 public class MentorshipController {
 
     private final SubjectRepository subjectRepository;
+    private final RequestRepository requestRepository;
 
     @GetMapping("/apply")
     public String applyPage(Model model) {
@@ -26,13 +28,40 @@ public class MentorshipController {
 
     @PostMapping("/apply")
     public String registerApplication(@RequestParam("selectedCategory") String selectedCategory,
-                                      @RequestParam("selectedSubject") List<String> selectedSubjects,
-                                      @RequestParam("explainMsg") String explainMsg) {
-        System.out.println(selectedCategory);
-        for (String s : selectedSubjects)
-            System.out.println(s);
-        System.out.println(explainMsg);
-        return "redirect:/";
+                                      @RequestParam(value = "selectedSubject", required = false) List<String> selectedSubjects,
+                                      @RequestParam("explainMsg") String explainMsg,
+                                      Model model) {
+        List<Subject> categories = subjectRepository.findAll();
+        model.addAttribute("categories", categories);
+
+        // check for given category
+        Subject s = subjectRepository.findByMajorSubject(selectedCategory);
+        if (s == null) {
+            model.addAttribute("errorTxt", "No such major found!");
+            return "features/mentor-application";
+        }
+
+        // check for subjects
+        if (selectedSubjects == null || selectedSubjects.isEmpty()) {
+            model.addAttribute("errorTxt", "No subject entered!");
+            return "features/mentor-application";
+        }
+        if (!s.getSubjects().containsAll(selectedSubjects)) {
+            model.addAttribute("errorTxt", "Selected subjects does not belong to the selected major!");
+            return "features/mentor-application";
+        }
+
+        // check for explain message
+        if (explainMsg.isBlank()) {
+            model.addAttribute("errorTxt", "Please write something about yourself.");
+            return "features/mentor-application";
+        }
+
+//        todo: save to database
+//        requestRepository.save(new Request());
+
+        model.addAttribute("successTxt", "Your application successfully sent.");
+        return "features/mentor-application";
     }
 
 }
