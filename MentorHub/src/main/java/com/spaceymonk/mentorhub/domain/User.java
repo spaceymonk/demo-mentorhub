@@ -15,8 +15,9 @@ public class User {
     @EqualsAndHashCode.Include
     private String id;
     private String name;
-    private String role;
     private Boolean canBecomeMentor;
+    private Boolean enabled;
+    private Set<Role> roles;
     private Set<Mentorship> mentorshipSet = new HashSet<>();
 
     public User(String name, String role) {
