@@ -15,15 +15,11 @@ public class User {
     @EqualsAndHashCode.Include
     private String id;
     private String name;
-    private Boolean canBecomeMentor;
-    private Boolean enabled;
+    private String password;
+    private boolean becomeMentor;
+    private boolean enabled;
     private Set<Role> roles;
     private Set<Mentorship> mentorshipSet = new HashSet<>();
-
-    public User(String name, String role) {
-        this.name = name;
-        this.role = role;
-    }
 
     public Set<Mentorship> getMenteeSections() {
         Set<Mentorship> set = new HashSet<>();
