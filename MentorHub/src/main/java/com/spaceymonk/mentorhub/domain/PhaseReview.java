@@ -11,5 +11,5 @@ public class PhaseReview {
     @EqualsAndHashCode.Include
     private String id;
     private String text;
-    private Integer rating;
+    private int rating;
 }
