@@ -24,6 +24,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
         http
                 .authorizeRequests(a -> a
                         .antMatchers("/", "/error", "/assets/**").permitAll()
+//                        .antMatchers("/dashboard").hasAnyRole("ROLE_USER", "ROLE_ADMIN")
+//                        .antMatchers("/apply", "/search", "/details", "/plan").hasAnyRole("ROLE_USER")
+//                        .antMatchers("/subjects").hasAnyRole("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .csrf().disable()
