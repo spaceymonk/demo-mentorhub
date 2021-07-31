@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Request {
+public class MentorshipRequest {
 
     @Id
     @EqualsAndHashCode.Include

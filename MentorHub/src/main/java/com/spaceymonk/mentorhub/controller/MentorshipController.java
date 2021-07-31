@@ -1,7 +1,7 @@
 package com.spaceymonk.mentorhub.controller;
 
 import com.spaceymonk.mentorhub.domain.Subject;
-import com.spaceymonk.mentorhub.repository.RequestRepository;
+import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import com.spaceymonk.mentorhub.repository.SubjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ import java.util.List;
 public class MentorshipController {
 
     private final SubjectRepository subjectRepository;
-    private final RequestRepository requestRepository;
+    private final MentorshipRequestRepository mentorshipRequestRepository;
 
     @GetMapping("/apply")
     public String applyPage(Model model) {

@@ -13,7 +13,7 @@ public class Bootstrap implements CommandLineRunner {
     private final MentorshipRepository mentorshipRepository;
     private final PhaseRepository phaseRepository;
     private final PhaseReviewRepository phaseReviewRepository;
-    private final RequestRepository requestRepository;
+    private final MentorshipRequestRepository mentorshipRequestRepository;
     private final SubjectRepository subjectRepository;
 
     @Override
