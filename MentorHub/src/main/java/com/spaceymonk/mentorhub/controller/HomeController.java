@@ -13,7 +13,7 @@ public class HomeController {
     public String loginPage(Model model, HttpServletRequest request) {
         String errMsg = (String) request.getSession().getAttribute("error.message");
         request.getSession().removeAttribute("error.message");
-        model.addAttribute("msg", errMsg);
+        model.addAttribute("errorTxt", errMsg);
         return "index";
     }
 
