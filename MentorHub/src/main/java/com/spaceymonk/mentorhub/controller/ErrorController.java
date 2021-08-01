@@ -19,6 +19,7 @@ public class ErrorController {
 
     @GetMapping("/403")
     public String accessDeniedPage(Model model, Authentication authentication) {
+        model.addAttribute("auth", authentication);
         return "errors/403";
     }
 }
