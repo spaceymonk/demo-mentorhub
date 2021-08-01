@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -80,6 +81,7 @@ public class MentorshipController {
         request.setStatus("waiting");
         request.setText(explainMsg);
         request.setSelectedSubject(fields);
+        request.setDate(new Date());
         mentorshipRequestRepository.save(request);
 
         model.addAttribute("successTxt", "Your application successfully sent.");
