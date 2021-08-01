@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Controller
@@ -20,6 +21,7 @@ public class MentorshipController {
     private final MentorshipRequestRepository mentorshipRequestRepository;
 
     @GetMapping("/apply")
+    @RolesAllowed({"ROLE_USER"})
     public String applyPage(Model model) {
         List<Subject> categories = subjectRepository.findAll();
         model.addAttribute("categories", categories);
@@ -27,6 +29,7 @@ public class MentorshipController {
     }
 
     @PostMapping("/apply")
+    @RolesAllowed({"ROLE_USER"})
     public String registerApplication(@RequestParam(value = "selectedCategory", required = false) String selectedCategory,
                                       @RequestParam(value = "selectedSubject", required = false) List<String> selectedSubjects,
                                       @RequestParam(value = "explainMsg", required = false) String explainMsg,
