@@ -122,7 +122,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .ldapAuthentication()
-                .userDetailsContextMapper(new MyUserDetailsContextMapper(userRepository))
+                .userDetailsContextMapper(new MyUserDetailsContextMapper(userRepository, roleRepository))
                 .userDnPatterns("uid={0},ou=people")
                 .groupSearchBase("ou=groups")
                 .contextSource()
