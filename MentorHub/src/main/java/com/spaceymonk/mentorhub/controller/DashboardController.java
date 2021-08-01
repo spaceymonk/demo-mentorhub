@@ -1,6 +1,8 @@
 package com.spaceymonk.mentorhub.controller;
 
+import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
+import com.spaceymonk.mentorhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,12 +17,13 @@ import javax.annotation.security.RolesAllowed;
 public class DashboardController {
 
     private final MentorshipRequestRepository mentorshipRequestRepository;
+    private final UserRepository userRepository;
 
     @GetMapping("/dashboard")
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public String dashboardPage(Model model, Authentication authentication) {
-        System.out.println(authentication);
-        model.addAttribute("auth", authentication);
+        User currentUser = userRepository.findByUsernameOrGoogleId(authentication.getName(), authentication.getName());
+        model.addAttribute("currentUser", currentUser);
 
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
             return "features/dashboard_user";

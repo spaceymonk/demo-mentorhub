@@ -5,58 +5,71 @@
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
 
-<section style="min-height: 100vh;">
-    <h2 class="mt-5">Waiting Mentorship Requests</h2>
+<div style="min-height: 100vh;">
     <div class="container my-5">
-        <p th:if="${waitingRequests.isEmpty()}">There are no waiting requests.</p>
-        <div th:if="${!waitingRequests.isEmpty()}" class="accordion">
-            <div th:each="request : ${waitingRequests}" class="accordion-item">
-                <h2 class="accordion-header" th:id="${'heading'+request.id}">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            th:data-bs-target="${'#collapse'+request.id}" aria-expanded="false"
-                            th:aria-controls="${'collapse'+request.id}">
-                        Request <span class="fst-italic ms-1" th:text="${request.id}">$id$</span>
-                    </button>
-                </h2>
-                <div th:id="${'collapse'+request.id}" class="accordion-collapse collapse"
-                     th:aria-labelledby="${'heading'+request.id}">
-                    <div class="accordion-body">
-                        <div class="row">
-                            <div class="col">
-                                <div class="row container mb-3">
-                                    <div class="col small">Requested&nbsp;from:&nbsp;
-                                        <span class="fst-italic"
-                                              th:text="${request.mentor.actualName}">$username$</span></div>
-                                    <div class="col small text-sm-end">Requested&nbsp;date:&nbsp;
-                                        <span class="fst-italic"
-                                              th:text="${#dates.format(request.date, 'yyyy/MM/dd HH:mm:ss')}">$date$</span>
+        <div class="card">
+            <div class="card-header"><h1 class="card-title">Admin Panel</h1>
+                <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}">$actualName$</small>
+            </div>
+            <div class="card-body">
+                <h4 class="my-4">Waiting Mentorship Requests</h4>
+                <div class="container">
+                    <p th:if="${waitingRequests.isEmpty()}">There are no waiting requests.</p>
+                    <div th:if="${!waitingRequests.isEmpty()}" class="accordion">
+                        <div th:each="request : ${waitingRequests}" class="accordion-item">
+                            <h2 class="accordion-header" th:id="${'heading'+request.id}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        th:data-bs-target="${'#collapse'+request.id}" aria-expanded="false"
+                                        th:aria-controls="${'collapse'+request.id}">
+                                    Request <span class="fst-italic ms-1 text-truncate"
+                                                  th:text="${request.id}">$id$</span>
+                                </button>
+                            </h2>
+                            <div th:id="${'collapse'+request.id}" class="accordion-collapse collapse"
+                                 th:aria-labelledby="${'heading'+request.id}">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row container-sm mb-3">
+                                                <div class="col small">Requested&nbsp;from:&nbsp;
+                                                    <span class="fst-italic text-nowrap"
+                                                          th:text="${request.mentor.actualName}">$username$</span></div>
+                                                <div class="col small text-sm-end">Requested&nbsp;date:&nbsp;
+                                                    <span class="fst-italic text-nowrap"
+                                                          th:text="${#dates.format(request.date, 'yyyy/MM/dd HH:mm:ss')}">$date$</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <p style="text-align: justify;" th:text="${request.text}">$text$</p>
+                                                    <strong>Selected subjects under
+                                                        <span class="fst-italic"
+                                                              th:text="${request.selectedSubject.majorSubject}">$major$</span>:
+                                                    </strong>
+                                                    <ul>
+                                                        <li th:each="subject : ${request.selectedSubject.subjects}"
+                                                            th:text="${subject}"></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-auto text-end mt-3 ps-5">
+                                            <a href="#" class="btn btn-outline-success btn-sm">Accept</a>
+                                            <a href="#" class="btn btn-danger btn-sm">Reject</a>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <p style="text-align: justify;" th:text="${request.text}">$text$</p>
-                                        <strong>Selected subjects under
-                                            <span class="fst-italic"
-                                                  th:text="${request.selectedSubject.majorSubject}">$major$</span>:
-                                        </strong>
-                                        <ul>
-                                            <li th:each="subject : ${request.selectedSubject.subjects}"
-                                                th:text="${subject}"></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-auto text-end mt-3 ps-5">
-                                <a href="#" class="btn btn-outline-success btn-sm">Accept</a>
-                                <a href="#" class="btn btn-danger btn-sm">Reject</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="card-footer">
+                <a href="/subjects" class="btn btn-secondary">Edit Subjects</a>
+            </div>
         </div>
     </div>
-</section>
+</div>
 
 
 <div th:replace="fragments/footer :: footer"></div>
