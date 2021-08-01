@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Access Denied</title>
 </head>
 <body>
-
+    <h1>Whoops! You are not the one...</h1>
+    <p th:text="${auth.getName()}"></p>
+    <p th:each="role : ${auth.getAuthorities()}" th:text="${role}"></p>
 </body>
 </html>
