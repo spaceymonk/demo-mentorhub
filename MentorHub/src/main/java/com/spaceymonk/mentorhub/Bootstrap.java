@@ -23,12 +23,5 @@ public class Bootstrap implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Started in bootstrap...");
 
-        Role userRole = roleRepository.findByName("ROLE_USER");
-        User user = userRepository.findByUsername("ben");
-        user.getRoles().add(userRole);
-        userRepository.save(user);
-
-        System.out.println("Successfully added role to user ben.");
-
     }
 }
