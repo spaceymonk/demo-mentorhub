@@ -14,6 +14,7 @@ public class User {
     @Id
     @EqualsAndHashCode.Include
     private String id;
+    private String googleId;
     private String username;
     private String password;
     private String actualName;
