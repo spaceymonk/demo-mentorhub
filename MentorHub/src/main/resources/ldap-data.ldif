@@ -44,6 +44,16 @@ sn: Alex
 uid: ben
 userPassword: $2a$10$c6bSeWPhg06xB1lvmaWNNe4NROmZiSpYhlocU/98HNr2MhIOiSt36
 
+dn: uid=jack,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Jack Nick
+sn: Jack
+uid: jack
+userPassword: $2y$10$mH5zUdws3R7usJZBOPP6leeTVej9h8ShDR.w7d0S.DYh0KmRNKcB6
+
 dn: uid=bob,ou=people,dc=springframework,dc=org
 objectclass: top
 objectclass: person
