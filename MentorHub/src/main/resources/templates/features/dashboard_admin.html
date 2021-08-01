@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('MentorHub::Dashboard')"></head>
+
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<h1>Dashboard</h1>
+<h2>Welcome ADMIN <span th:text="${auth.getName()}"></span></h2>
+<p>Your roles:</p>
+<ul>
+    <li th:each="role : ${auth.getAuthorities()}" th:text="${role.getAuthority()}"></li>
+</ul>
+<a href="/apply">Application</a>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
+
