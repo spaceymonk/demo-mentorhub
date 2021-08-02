@@ -8,9 +8,15 @@
 <div style="min-height: 100vh;">
     <div class="container my-5">
         <div class="card">
-            <div class="card-header"><h1 class="card-title">Admin Panel</h1>
-                <small class="card-subtitle text-muted fst-italic"
-                       th:text="${currentUser.actualName}">$actualName$</small>
+            <div class="card-header row">
+                <div class="col">
+                    <h1 class="card-title">Admin Panel</h1>
+                    <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
+                </div>
+                <div class="col-auto nav nav-tabs flex-row">
+                    <a href="/dashboard" class="nav-link active">Requests</a>
+                    <a href="/subjects" class="nav-link">Subjects</a>
+                </div>
             </div>
             <div class="card-body">
                 <h4 class="my-4">Waiting Mentorship Requests</h4>
@@ -64,9 +70,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-footer">
-                <a class="btn btn-secondary" href="/subjects">Edit Subjects</a>
             </div>
         </div>
     </div>
