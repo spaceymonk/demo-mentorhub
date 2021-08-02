@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
@@ -34,29 +35,42 @@ public class SubjectController {
         return "features/subject-editor";
     }
 
-    @GetMapping(value = "/subjects/{majorName}", produces = "application/json")
+    @GetMapping(value = "/subjects/{id}", produces = "application/json")
     @RolesAllowed({"ROLE_ADMIN"})
     @ResponseBody
-    public ResponseEntity<Subject> getSubjectDetails(@PathVariable("majorName") String majorName) throws JsonProcessingException {
-        Subject subject = subjectRepository.findByMajorSubject(majorName);
-        if (subject == null) {
+    public ResponseEntity<Subject> getSubjectDetails(@PathVariable("id") String id) {
+        Optional<Subject> subjectQuery = subjectRepository.findById(id);
+        if (subjectQuery.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok(subject);
+            return ResponseEntity.ok(subjectQuery.get());
         }
     }
 
-    @PostMapping(value = "/subjects/save", consumes = "application/json")
+    @PostMapping(value = "/subjects", consumes = "application/json")
     @RolesAllowed({"ROLE_ADMIN"})
     @ResponseBody
     public ResponseEntity<String> saveSubjectDetails(@RequestBody Subject requestSubject) {
-        Subject subject = subjectRepository.findByMajorSubject(requestSubject.getMajorSubject());
-        if (subject == null)
-            subject = new Subject();
+        Subject subject = new Subject();
+        if (requestSubject.getId() != null) {
+            Optional<Subject> subjectQuery = subjectRepository.findById(requestSubject.getId());
+            if (subjectQuery.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            subject = subjectQuery.get();
+        }
         subject.setMajorSubject(requestSubject.getMajorSubject());
         subject.getSubjects().clear();
         subject.getSubjects().addAll(requestSubject.getSubjects());
         subjectRepository.save(subject);
+        return ResponseEntity.ok("nice");
+    }
+
+    @DeleteMapping(value = "/subjects/{id}", produces = "application/json")
+    @RolesAllowed({"ROLE_ADMIN"})
+    @ResponseBody
+    public ResponseEntity<String> deleteSubject(@PathVariable("id") String id) {
+        subjectRepository.deleteById(id);
         return ResponseEntity.ok("nice");
     }
 
