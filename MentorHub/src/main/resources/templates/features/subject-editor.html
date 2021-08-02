@@ -42,6 +42,7 @@
                 <div class="container">
                     <ul class="list-group">
 
+                        <p th:if="${subjectList.isEmpty()}">There is no subject, yet.</p>
                         <li class="list-group-item" th:each="subjectItem : ${subjectList}">
                             <div class="row">
                                 <div class="col lead" th:text="${subjectItem.majorSubject}">$MAJORNAME$</div>
@@ -118,7 +119,7 @@
         $.ajax({
             type: 'POST',
             url: 'http://localhost:8080/subjects',
-            contentType : 'application/json',
+            contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (text) {
                 console.log(text);
