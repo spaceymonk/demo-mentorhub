@@ -45,9 +45,14 @@
                         <p th:if="${subjectList.isEmpty()}">There is no subject, yet.</p>
                         <li class="list-group-item" th:each="subjectItem : ${subjectList}">
                             <div class="row">
-                                <div class="col lead" th:text="${subjectItem.majorSubject}">$MAJORNAME$</div>
-                                <div class="col-auto btn-group">
-                                    <button type="button" class="btn btn-primary"
+                                <div class="col">
+                                    <p class="lead mb-1" th:text="${subjectItem.majorSubject}">$MAJORNAME$</p>
+                                    <ul class="text-muted">
+                                        <li th:each="subject : ${subjectItem.subjects}" th:text="${subject}"></li>
+                                    </ul>
+                                </div>
+                                <div class="col-auto btn-group mt-3 d-flex align-items-center">
+                                    <button type="button" class="btn btn-primary me-2"
                                             th:onclick="editMajor([[${subjectItem.id}]]);">Edit
                                     </button>
                                     <button type="button" class="btn btn-danger"
@@ -70,6 +75,7 @@
 </div>
 
 <script>
+<!--    todo: AJAX popups!-->
     let currentId = null;
     let index = 0;
 
@@ -82,9 +88,9 @@
     let addSubjectToForm = function (subjectName = "") {
         index += 1;
         $("#subjectList").append(
-            `<li class="list-group-item d-flex" id="${'item'+index}">
+            `<li class="list-group-item d-flex" id="${'item' + index}">
                     <input class="flex-fill form-control-sm border-0" type="text" value="${subjectName}" placeholder="Enter subject name" />
-                    <button type="button" class="btn rounded-circle" onclick="removeSubjectFromForm('${'item'+index}')"><i class="fas fa-minus"></i></button>
+                    <button type="button" class="btn rounded-circle" onclick="removeSubjectFromForm('${'item' + index}')"><i class="fas fa-minus"></i></button>
              </li>`
         );
     }

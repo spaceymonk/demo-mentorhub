@@ -51,6 +51,8 @@ public class SubjectController {
     @RolesAllowed({"ROLE_ADMIN"})
     @ResponseBody
     public ResponseEntity<String> saveSubjectDetails(@RequestBody Subject requestSubject) {
+        // TODO: DATA VALIDATION
+
         Subject subject = new Subject();
         if (requestSubject.getId() != null) {
             Optional<Subject> subjectQuery = subjectRepository.findById(requestSubject.getId());
