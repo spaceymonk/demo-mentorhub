@@ -1,7 +1,6 @@
 package com.spaceymonk.mentorhub.config;
 
 
-import com.spaceymonk.mentorhub.controller.util.LoginPageInterceptor;
 import com.spaceymonk.mentorhub.domain.Role;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.RoleRepository;
@@ -83,11 +82,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
 
         http
                 .authorizeRequests(a -> a
-                                .antMatchers("/", "/error", "/assets/**", "/logout", "/oauth/**").permitAll()
-//                                .antMatchers("/dashboard").hasAnyRole("ROLE_USER", "ROLE_ADMIN")
-//                        .antMatchers("/apply", "/search", "/details", "/plan").hasAnyRole("ROLE_USER")
-//                        .antMatchers("/subjects").hasAnyRole("ROLE_ADMIN")
-                                .anyRequest().authenticated()
+                        .antMatchers("/", "/error", "/assets/**", "/logout", "/oauth/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling().accessDeniedPage("/403").and()
                 .csrf().disable()

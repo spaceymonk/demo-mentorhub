@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface MentorshipRequestRepository extends MongoRepository<MentorshipRequest, String> {
     List<MentorshipRequest> findByStatus(String status);
+
     List<MentorshipRequest> findByMentor(User mentor);
 }

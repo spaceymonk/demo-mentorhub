@@ -9,24 +9,25 @@
     <div class="container my-5">
         <div class="card">
             <div class="card-header"><h1 class="card-title">Admin Panel</h1>
-                <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}">$actualName$</small>
+                <small class="card-subtitle text-muted fst-italic"
+                       th:text="${currentUser.actualName}">$actualName$</small>
             </div>
             <div class="card-body">
                 <h4 class="my-4">Waiting Mentorship Requests</h4>
                 <div class="container">
                     <p th:if="${waitingRequests.isEmpty()}">There are no waiting requests.</p>
-                    <div th:if="${!waitingRequests.isEmpty()}" class="accordion">
-                        <div th:each="request : ${waitingRequests}" class="accordion-item">
+                    <div class="accordion" th:if="${!waitingRequests.isEmpty()}">
+                        <div class="accordion-item" th:each="request : ${waitingRequests}">
                             <h2 class="accordion-header" th:id="${'heading'+request.id}">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        th:data-bs-target="${'#collapse'+request.id}" aria-expanded="false"
-                                        th:aria-controls="${'collapse'+request.id}">
+                                <button aria-expanded="false" class="accordion-button collapsed" data-bs-toggle="collapse"
+                                        th:aria-controls="${'collapse'+request.id}" th:data-bs-target="${'#collapse'+request.id}"
+                                        type="button">
                                     Request <span class="fst-italic ms-1 text-truncate"
                                                   th:text="${request.id}">$id$</span>
                                 </button>
                             </h2>
-                            <div th:id="${'collapse'+request.id}" class="accordion-collapse collapse"
-                                 th:aria-labelledby="${'heading'+request.id}">
+                            <div class="accordion-collapse collapse" th:aria-labelledby="${'heading'+request.id}"
+                                 th:id="${'collapse'+request.id}">
                                 <div class="accordion-body">
                                     <div class="row">
                                         <div class="col">
@@ -54,8 +55,8 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-auto text-end mt-3 ps-5">
-                                            <a href="#" class="btn btn-outline-success btn-sm">Accept</a>
-                                            <a href="#" class="btn btn-danger btn-sm">Reject</a>
+                                            <a class="btn btn-outline-success btn-sm" href="#">Accept</a>
+                                            <a class="btn btn-danger btn-sm" href="#">Reject</a>
                                         </div>
                                     </div>
                                 </div>
@@ -65,7 +66,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <a href="/subjects" class="btn btn-secondary">Edit Subjects</a>
+                <a class="btn btn-secondary" href="/subjects">Edit Subjects</a>
             </div>
         </div>
     </div>

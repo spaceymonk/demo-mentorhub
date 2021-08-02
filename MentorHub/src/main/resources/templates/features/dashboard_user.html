@@ -27,7 +27,7 @@
                                     Mentee: <span th:text="${section.mentee.actualName}"></span> <br>
                                     Phase: <span th:text="${section.status}"></span>
                                 </div>
-                                <a href="#" class="btn btn-info btn-sm rounded-pill">Details</a>
+                                <a class="btn btn-info btn-sm rounded-pill" href="#">Details</a>
                             </li>
                         </ol>
                     </div>
@@ -45,15 +45,15 @@
                                     Mentor: <span th:text="${section.mentor.actualName}"></span> <br>
                                     Phase: <span th:text="${section.status}"></span>
                                 </div>
-                                <a href="#" class="btn btn-info btn-sm rounded-pill">Details</a>
+                                <a class="btn btn-info btn-sm rounded-pill" href="#">Details</a>
                             </li>
                         </ol>
                     </div>
                 </div>
             </div>
             <div class="card-footer">
-                <a href="@{/search}" class="btn btn-secondary">Search</a>
-                <a th:href="@{/apply}" class="btn btn-secondary">Apply</a>
+                <a class="btn btn-secondary" href="@{/search}">Search</a>
+                <a class="btn btn-secondary" th:href="@{/apply}">Apply</a>
             </div>
         </div>
     </div>
