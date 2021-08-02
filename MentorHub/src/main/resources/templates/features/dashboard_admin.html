@@ -61,8 +61,8 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-auto text-end mt-3 ps-5">
-                                            <a class="btn btn-outline-success btn-sm" href="#">Accept</a>
-                                            <a class="btn btn-danger btn-sm" href="#">Reject</a>
+                                            <button class="btn btn-outline-success btn-sm" th:onclick="doRequest([[${request.id}]], true)">Accept</button>
+                                            <button class="btn btn-danger btn-sm" th:onclick="doRequest([[${request.id}]], false)">Reject</button>
                                         </div>
                                     </div>
                                 </div>
@@ -74,6 +74,27 @@
         </div>
     </div>
 </div>
+
+<script>
+    let doRequest = function (id, answer) {
+        let data = {
+            id : id,
+            answer : answer
+        };
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:8080/dashboard',
+            // contentType: 'application/json',
+            data: data,
+            success: function (text) {
+                location.reload();
+            },
+            error: function (jqXHR) {
+                location.reload();
+            }
+        });
+    }
+</script>
 
 
 <div th:replace="fragments/footer :: footer"></div>
