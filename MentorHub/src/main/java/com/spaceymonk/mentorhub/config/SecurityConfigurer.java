@@ -57,7 +57,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
             Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
 
             User user = userRepository.findByGoogleId(oidcUser.getName());
-            Role role_user = roleRepository.findByName("ROLE_USER");
             if (user == null) {
                 // register user to db
                 user = new User();
@@ -65,10 +64,13 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
                 user.setGoogleId(oidcUser.getName());
                 user.setBecomeMentor(false);
                 user.setEnabled(true);
+                Role role_user = roleRepository.findByName("ROLE_USER");
                 user.setRoles(Set.of(role_user));
                 userRepository.save(user);
             }
-            mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+            user.getRoles().forEach(role -> {
+                mappedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+            });
 
             oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
             return oidcUser;
