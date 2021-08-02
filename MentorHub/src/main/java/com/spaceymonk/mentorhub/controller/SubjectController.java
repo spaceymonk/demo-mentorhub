@@ -46,17 +46,16 @@ public class SubjectController {
         }
     }
 
-    @PostMapping(value = "/subjects/save")
+    @PostMapping(value = "/subjects/save", consumes = "application/json")
     @RolesAllowed({"ROLE_ADMIN"})
     @ResponseBody
-    public ResponseEntity<String> saveSubjectDetails(@RequestParam("majorSubject") String majorSubject,
-                                                     @RequestParam("subjects") List<String> subjects) {
-        Subject subject = subjectRepository.findByMajorSubject(majorSubject);
+    public ResponseEntity<String> saveSubjectDetails(@RequestBody Subject requestSubject) {
+        Subject subject = subjectRepository.findByMajorSubject(requestSubject.getMajorSubject());
         if (subject == null)
             subject = new Subject();
-        subject.setMajorSubject(majorSubject);
+        subject.setMajorSubject(requestSubject.getMajorSubject());
         subject.getSubjects().clear();
-        subject.getSubjects().addAll(subjects);
+        subject.getSubjects().addAll(requestSubject.getSubjects());
         subjectRepository.save(subject);
         return ResponseEntity.ok("nice");
     }

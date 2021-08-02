@@ -113,7 +113,8 @@
         };
         $.ajax({
             type: 'POST',
-            url: '/subjects/save',
+            url: 'http://localhost:8080/subjects/save',
+            contentType : 'application/json',
             data: JSON.stringify(data),
             success: function (text) {
                 console.log(text);
