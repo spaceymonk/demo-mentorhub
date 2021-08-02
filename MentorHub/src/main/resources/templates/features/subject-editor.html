@@ -43,15 +43,15 @@
                 <div class="container">
                     <ul class="list-group">
 
-                        <li class="list-group-item">
+                        <li class="list-group-item" th:each="subjectItem : ${subjectList}">
                             <div class="row">
-                                <div class="col lead">$MAJORNAME$</div>
+                                <div class="col lead" th:text="${subjectItem.majorSubject}">$MAJORNAME$</div>
                                 <div class="col-auto btn-group">
                                     <button type="button" class="btn btn-primary"
-                                            onclick="editMajor('$MAJORNAME$')">Edit
+                                            th:onclick="editMajor([[${subjectItem.majorSubject}]]);">Edit
                                     </button>
                                     <button type="button" class="btn btn-danger"
-                                            onclick="removeMajor('$MAJORNAME$')">Remove
+                                            th:onclick="removeMajor([[${subjectItem.majorSubject}]]);">Remove
                                     </button>
                                 </div>
                             </div>
@@ -83,10 +83,12 @@
     let editMajor = function (majorName = "") {
         $.getJSON(`/subjects/${majorName}`)
             .done(function (category) {
-                $("#formMajorNameFld").val(category.majorName);
+                $("#formMajorNameFld").val(category.majorSubject);
                 $("#subjectList").empty();
-                for (subject in category.subjects)
+                for (let i = 0; i < category.subjects.length; ++i) {
+                    let subject = category.subjects[i];
                     addSubjectToForm(subject);
+                }
                 myModal.show();
             })
             .fail(function (jqxhr, textStatus, error) {
@@ -105,16 +107,22 @@
         let subjects = $("#subjectList li input").map(function () {
             return $(this).val();
         }).get() || [];
-        $.post(`/subjects/save`, {
+        data = {
             "majorSubject": categoryName,
             "subjects": subjects
-        })
-            .done(function (data) {
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/subjects/save',
+            data: JSON.stringify(data),
+            success: function (text) {
+                console.log(text);
                 window.location.replace("/subjects");
-            })
-            .fail(function (jqxhr, textStatus, error) {
-                alert(jqxhr, textStatus, error);
-            })
+            },
+            error: function (jqXHR) {
+                console.log(jqXHR.status);
+            }
+        });
     }
 
     let removeMajor = function (majorName = "") {
@@ -123,7 +131,8 @@
                 window.location.replace("/subjects");
             })
             .fail(function (jqxhr, textStatus, error) {
-                alert(jqxhr, textStatus, error);
+                console.log(textStatus);
+                console.log(error);
             })
     }
 </script>
