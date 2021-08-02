@@ -71,14 +71,21 @@
 
 <script>
     let currentId = null;
+    let index = 0;
 
     let myModal = new bootstrap.Modal($("#exampleModal"))
 
+    let removeSubjectFromForm = function (id) {
+        $('#' + id).remove();
+    }
+
     let addSubjectToForm = function (subjectName = "") {
+        index += 1;
         $("#subjectList").append(
-            `<li class="list-group-item">
-                    <input class="form-control-sm border-0 w-100" type="text" value="${subjectName}" placeholder="Enter subject name" />
-                </li>`
+            `<li class="list-group-item d-flex" id="${'item'+index}">
+                    <input class="flex-fill form-control-sm border-0" type="text" value="${subjectName}" placeholder="Enter subject name" />
+                    <button type="button" class="btn rounded-circle" onclick="removeSubjectFromForm('${'item'+index}')"><i class="fas fa-minus"></i></button>
+             </li>`
         );
     }
 
