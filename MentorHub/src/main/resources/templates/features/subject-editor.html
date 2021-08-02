@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('MentorHub::Dashboard')"></head>
+
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Subject</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <p><input class="form-control border-0 fs-3" type="text" value=""
+                          placeholder="Enter Major Subject name" id="formMajorNameFld"></p>
+                <ul class="list-group list-group-flush" id="subjectList"></ul>
+                <div class="text-center">
+                    <a class="btn rounded-circle" onclick="addSubjectToForm()"><i class="fas fa-plus"></i></a>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="min-height: 100vh;">
+    <div class="container my-5">
+        <div class="card">
+            <div class="card-header"><h1 class="card-title">Admin Panel</h1>
+                <small class="card-subtitle text-muted fst-italic"
+                       th:text="${currentUser.actualName}">$actualName$</small>
+            </div>
+            <div class="card-body">
+                <h4 class="my-4">Subjects</h4>
+                <div class="container">
+                    <ul class="list-group">
+
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col lead">$MAJORNAME$</div>
+                                <div class="col-auto btn-group">
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="editMajor('$MAJORNAME$')">Edit
+                                    </button>
+                                    <button type="button" class="btn btn-danger"
+                                            onclick="removeMajor('$MAJORNAME$')">Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-secondary" onclick="createMajor()">Add
+                    Subject
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let myModal = new bootstrap.Modal($("#exampleModal"))
+
+    let addSubjectToForm = function (subjectName = "") {
+        $("#subjectList").append(
+            `<li class="list-group-item">
+                    <input class="form-control-sm border-0 w-100" type="text" value="${subjectName}" placeholder="Enter subject name" />
+                </li>`
+        );
+    }
+
+    let editMajor = function (majorName = "") {
+        $.getJSON(`/subjects/${majorName}`)
+            .done(function (category) {
+                $("#formMajorNameFld").val(category.majorName);
+                $("#subjectList").empty();
+                for (subject in category.subjects)
+                    addSubjectToForm(subject);
+                myModal.show();
+            })
+            .fail(function (jqxhr, textStatus, error) {
+                alert(jqxhr, textStatus, error);
+            })
+    }
+
+    let createMajor = function () {
+        $("#formMajorNameFld").val("");
+        $("#subjectList").empty();
+        myModal.show();
+    }
+
+    let saveChanges = function () {
+        let categoryName = $("#formMajorNameFld").val() || "";
+        let subjects = $("#subjectList li input").map(function () {
+            return $(this).val();
+        }).get() || [];
+        $.post(`/subjects/save`, {
+            "majorSubject": categoryName,
+            "subjects": subjects
+        })
+            .done(function (data) {
+                window.location.replace("/subjects");
+            })
+            .fail(function (jqxhr, textStatus, error) {
+                alert(jqxhr, textStatus, error);
+            })
+    }
+
+    let removeMajor = function (majorName = "") {
+        $.get(`/subjects/remove/${majorName}`)
+            .done(function (_) {
+                window.location.replace("/subjects");
+            })
+            .fail(function (jqxhr, textStatus, error) {
+                alert(jqxhr, textStatus, error);
+            })
+    }
+</script>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
+
