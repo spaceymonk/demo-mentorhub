@@ -4,6 +4,7 @@
 
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="fragments/popup.html :: popup"></div>
 
 <div style="min-height: 100vh;">
     <div class="container my-5">
@@ -97,7 +98,9 @@
                 showToast("bg-danger", errorMessage);
             },
             complete: function (jqXhr, textStatus) {
-                setTimeout(location.reload, 1000);
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
             }
         });
     }
