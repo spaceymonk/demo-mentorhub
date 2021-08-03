@@ -1,5 +1,6 @@
 package com.spaceymonk.mentorhub.controller;
 
+import com.spaceymonk.mentorhub.controller.wrapper.RegisterApplicationWrapper;
 import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.domain.Subject;
 import com.spaceymonk.mentorhub.domain.User;
@@ -7,12 +8,14 @@ import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import com.spaceymonk.mentorhub.repository.SubjectRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Date;
@@ -34,58 +37,48 @@ public class MentorshipRequestController {
         return "features/mentor-application";
     }
 
-    @PostMapping("/apply")
+    @PostMapping(value = "/apply", consumes = "application/json")
     @RolesAllowed({"ROLE_USER"})
-    public String registerApplication(@RequestParam(value = "selectedCategory", required = false) String selectedCategory,
-                                      @RequestParam(value = "selectedSubject", required = false) List<String> selectedSubjects,
-                                      @RequestParam(value = "explainMsg", required = false) String explainMsg,
-                                      Model model, Authentication auth) {
-        List<Subject> categories = subjectRepository.findAll();
-        model.addAttribute("categories", categories);
+    @ResponseBody
+    public ResponseEntity<String> registerApplication(@RequestBody RegisterApplicationWrapper registerApplicationWrapper,
+                                                      Authentication auth) {
 
         // check for given category
-        if (selectedCategory == null || selectedCategory.isBlank()) {
-            model.addAttribute("errorTxt", "Please select a major!");
-            return "features/mentor-application";
+        if (registerApplicationWrapper.getSelectedCategory().isBlank()) {
+            return ResponseEntity.badRequest().body("Please select a major!");
         }
-        Subject s = subjectRepository.findByMajorSubject(selectedCategory);
+        Subject s = subjectRepository.findByMajorSubject(registerApplicationWrapper.getSelectedCategory());
         if (s == null) {
-            model.addAttribute("errorTxt", "No such major found!");
-            return "features/mentor-application";
+            return ResponseEntity.badRequest().body("No such major found!");
         }
 
         // check for subjects
-        if (selectedSubjects == null || selectedSubjects.isEmpty()) {
-            model.addAttribute("errorTxt", "No subject entered!");
-            return "features/mentor-application";
+        if (registerApplicationWrapper.getSelectedSubjects().isEmpty()) {
+            return ResponseEntity.badRequest().body("No subject entered!");
         }
-        if (!s.getSubjects().containsAll(selectedSubjects)) {
-            model.addAttribute("errorTxt", "Selected subjects does not belong to the selected major!");
-            return "features/mentor-application";
+        if (!s.getSubjects().containsAll(registerApplicationWrapper.getSelectedSubjects())) {
+            return ResponseEntity.badRequest().body("Selected subjects does not belong to the selected major!");
         }
 
         // check for explain message
-        if (explainMsg == null || explainMsg.isBlank()) {
-            model.addAttribute("errorTxt", "Please write something about yourself.");
-            return "features/mentor-application";
+        if (registerApplicationWrapper.getExplainMsg().isBlank()) {
+            return ResponseEntity.badRequest().body("Please write something about yourself.");
         }
 
-
         Subject fields = new Subject();
-        fields.setMajorSubject(selectedCategory);
-        fields.getSubjects().addAll(selectedSubjects);
+        fields.setMajorSubject(registerApplicationWrapper.getSelectedCategory());
+        fields.getSubjects().addAll(registerApplicationWrapper.getSelectedSubjects());
 
         MentorshipRequest request = new MentorshipRequest();
         User currentUser = userRepository.findByUsernameOrGoogleId(auth.getName(), auth.getName());
         request.setMentor(currentUser);
         request.setStatus("waiting");
-        request.setText(explainMsg);
+        request.setText(registerApplicationWrapper.getExplainMsg());
         request.setSelectedSubject(fields);
         request.setDate(new Date());
         mentorshipRequestRepository.save(request);
 
-        model.addAttribute("successTxt", "Your application successfully sent.");
-        return "features/mentor-application";
+        return ResponseEntity.ok().build();
     }
 
 }

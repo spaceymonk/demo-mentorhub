@@ -5,10 +5,9 @@
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
 
-<div th:if="${errorTxt != null}" th:insert="fragments/popup :: popup ('bg-danger', ${errorTxt})"></div>
-<div th:if="${successTxt != null}" th:insert="fragments/popup :: popup ('bg-success', ${successTxt})"></div>
+<div th:replace="fragments/popup.html :: popup"></div>
 
-<div style="min-height: 100vh;">
+<div style="min-height: 100vh; position: relative">
     <div class="container my-5">
         <div class="card border-1 rounded rounded-3">
             <div class="card-header">
@@ -18,7 +17,7 @@
                 <h5 class="display-5">Mentorship Application Form</h5>
             </div>
             <div class="card-body container">
-                <form method="post" th:action="@{/apply}">
+                <div>
 
                     <div class="row mt-3">
                         <div class="col">
@@ -63,11 +62,11 @@
 
                     <div class="row mt-3">
                         <div class="col text-center">
-                            <button class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
                         </div>
                     </div>
 
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -75,21 +74,57 @@
 
 <div th:replace="fragments/footer :: footer"></div>
 <script th:inline="javascript">
-    $("#categoryselector").change(function () {
-        let selectedCategory = $("#categoryselector option:selected").text();
+
+    let resetFunction = function () {
+        let selectedCategory = $("#categoryselector option:selected").val();
         $(".categories").each(function (index) {
             $(this).hide();
             $(this).find('input:checkbox').prop('checked', false);
         });
-        if (selectedCategory == "") {
+        if (!selectedCategory) {
             $("#errSelectMajorFirst").show();
             $("#txtArea").prop('disabled', true);
+            $("#txtArea").val("");
         } else {
             $("#errSelectMajorFirst").hide();
             $("#txtArea").prop('disabled', false);
+            $(`#${selectedCategory}`).show();
         }
-        $(`#${selectedCategory}`).show();
-    });
+    };
+
+    $("#categoryselector").change(resetFunction);
+
+    let submitForm = function () {
+        let selectedCategory = $("#categoryselector option:selected").val() || "";
+        let selectedSubjects = $(".categories input:checkbox:checked").map(function () {
+            return $(this).val();
+        }).get() || [];
+        let explainMsg = $("#txtArea").val();
+
+        data = {
+            "selectedCategory": selectedCategory,
+            "selectedSubjects": selectedSubjects,
+            "explainMsg": explainMsg
+        };
+
+        $.ajax("http://localhost:8080/apply", {
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (data, status, xhr) {
+                showToast("bg-success", "Done!");
+                $("#categoryselector option[value='']").prop("selected", true);
+                resetFunction();
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
+            }
+        });
+    }
 </script>
 </body>
 </html>
