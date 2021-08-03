@@ -4,6 +4,7 @@
 
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="fragments/popup.html :: popup"></div>
 
 <!-- Modal -->
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
@@ -81,7 +82,6 @@
 </div>
 
 <script>
-    <!--    todo: AJAX popups!-->
     let currentId = null;
     let index = 0;
 
@@ -114,7 +114,11 @@
                 myModal.show();
             })
             .fail(function (jqxhr, textStatus, error) {
-                alert(jqxhr, textStatus, error);
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
             })
     }
 
@@ -140,13 +144,18 @@
             url: 'http://localhost:8080/api/subjects',
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function (text) {
-                console.log(text);
-                window.location.replace("/subjects");
+            success: function  (data, status, xhr) {
+                showToast("bg-success", "Changes saved!");
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
             },
-            error: function (jqXHR) {
-                window.location.replace("/subjects");
-                console.log(jqXHR.status);
+            error: function (jqXhr, textStatus, errorMessage){
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
             }
         });
     }
@@ -156,13 +165,18 @@
             type: 'DELETE',
             url: `http://localhost:8080/api/subjects/${id}`,
             dataType: 'json',
-            success: function (text) {
-                console.log(text);
-                window.location.replace("/subjects");
+            success: function  (data, status, xhr) {
+                showToast("bg-success", "Sucessfully removed!");
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
             },
-            error: function (jqXHR) {
-                window.location.replace("/subjects");
-                console.log(jqXHR.status);
+            error: function (jqXhr, textStatus, errorMessage){
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
             }
         });
     }
