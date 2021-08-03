@@ -83,14 +83,9 @@
 
 <script>
     let doRequest = function (id, answer) {
-        let data = {
-            id: id,
-            answer: answer
-        };
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:8080/dashboard',
-            // contentType: 'application/json',
+            url: `http://localhost:8080/api/${id}/${answer}`,
             data: data,
             success: function (text) {
                 location.reload();
