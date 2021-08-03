@@ -141,7 +141,7 @@
         };
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:8080/api/subjects',
+            url: 'http://localhost:8080/api/subjects/',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function  (data, status, xhr) {
@@ -164,7 +164,6 @@
         $.ajax({
             type: 'DELETE',
             url: `http://localhost:8080/api/subjects/${id}`,
-            dataType: 'json',
             success: function  (data, status, xhr) {
                 showToast("bg-success", "Sucessfully removed!");
                 setTimeout(function () {

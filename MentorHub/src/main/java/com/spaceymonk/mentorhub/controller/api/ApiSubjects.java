@@ -24,7 +24,6 @@ public class ApiSubjects {
 
     @RequestMapping(value = "/{id}", produces = "application/json", method = RequestMethod.GET)
     @RolesAllowed({"ROLE_ADMIN"})
-    @ResponseBody
     public ResponseEntity<Subject> getSubjectDetails(@PathVariable("id") String id) {
         Optional<Subject> subjectQuery = subjectRepository.findById(id);
         if (subjectQuery.isEmpty()) {
@@ -36,7 +35,6 @@ public class ApiSubjects {
 
     @RequestMapping(value = "/", consumes = "application/json", method = RequestMethod.POST)
     @RolesAllowed({"ROLE_ADMIN"})
-    @ResponseBody
     public ResponseEntity<String> saveSubjectDetails(@RequestBody Subject requestSubject) {
 
         // Data Control
