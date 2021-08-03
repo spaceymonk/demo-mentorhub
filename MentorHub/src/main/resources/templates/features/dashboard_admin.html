@@ -86,9 +86,12 @@
     let doRequest = function (id, answer) {
         $.ajax({
             type: 'POST',
-            url: `http://localhost:8080/api/request/${id}/${answer}`,
+            url: `http://localhost:8080/api/requests/${id}/${answer}`,
             success: function (data, status, xhr) {
                 showToast("bg-success", "Done!");
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
@@ -96,11 +99,6 @@
                 else
                     errorMessage = jqXhr.responseText;
                 showToast("bg-danger", errorMessage);
-            },
-            complete: function (jqXhr, textStatus) {
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
             }
         });
     }
