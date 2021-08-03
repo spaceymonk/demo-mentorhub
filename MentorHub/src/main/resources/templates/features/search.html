@@ -1,11 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>MentorHub::Search</title>
-</head>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('MentorHub::Dashboard')"></head>
+
 <body>
+<div th:replace="fragments/navbar :: navbar"></div>
 
 
+<div style="min-height: 100vh;">
+    <div class="container pt-5">
+        <div class="card ">
+            <div class="card-header">
+                <h1 class="card-title">Dashboard</h1>
+                <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
+            </div>
+            <div class="card-body">
+                <div>
+                    <h4 class="my-4">Search</h4>
+                    <div class="container">
+                        <ol class="list-group list-group-numbered ">
+                            <li class="list-group-item d-flex justify-content-between align-items-start"
+                                th:each="mentorshipRequest : ${mentorshipRequestList}">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold" th:text="${mentorshipRequest.selectedSubject.majorSubject}">
+                                        $major$
+                                    </div>
+                                    Mentor: <span th:text="${mentorshipRequest.mentor.actualName}"></span> <br>
+                                </div>
+                                <button class="btn btn-primary btn-sm rounded-pill"
+                                        th:onclick="selectMentor([[${mentorshipRequest.selectedSubject.majorSubject}]], [[${mentorshipRequest.mentor.id}]]);">
+                                    Select
+                                </button>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a class="btn btn-secondary rounded-circle" href="/dashboard"><i class="fas fa-arrow-left"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectMentor = function (majorSubject, mentorId) {
+        console.log(majorSubject, mentorId);
+    }
+</script>
+
+
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
+
