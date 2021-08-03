@@ -17,9 +17,8 @@
                 <div>
                     <h4 class="my-4">Mentor Sections</h4>
                     <div class="container">
-                        <p th:if="${currentUser.getMenteeSections().isEmpty()}">You are not a mentor in any section.</p>
-                        <ol class="list-group list-group-numbered "
-                            th:if="${!currentUser.getMenteeSections().isEmpty()}">
+                        <p th:if="${currentUser.getMentorSections().isEmpty()}">You are not a mentor in any section.</p>
+                        <ol class="list-group list-group-numbered ">
                             <li class="list-group-item d-flex justify-content-between align-items-start"
                                 th:each="section : ${currentUser.getMentorSections()}">
                                 <div class="ms-2 me-auto">
@@ -36,8 +35,7 @@
                     <h4 class="my-4">Mentee Sections</h4>
                     <div class="container">
                         <p th:if="${currentUser.getMenteeSections().isEmpty()}">You are not a mentee in any section.</p>
-                        <ol class="list-group list-group-numbered"
-                            th:if="${!currentUser.getMenteeSections().isEmpty()}">
+                        <ol class="list-group list-group-numbered">
                             <li class="list-group-item d-flex justify-content-between align-items-start"
                                 th:each="section : ${currentUser.getMenteeSections()}">
                                 <div class="ms-2 me-auto">
