@@ -53,9 +53,9 @@ public class DashboardController {
         }
 
         MentorshipRequest mentorshipRequest = mentorshipRequestOptional.get();
-        mentorshipRequest.setStatus((answer) ? "accept" : "reject");
+        mentorshipRequest.setStatus((answer) ? "accepted" : "rejected");
         mentorshipRequestRepository.save(mentorshipRequest);
 
-        return ResponseEntity.ok("nice");
+        return ResponseEntity.ok().build();
     }
 }
