@@ -1,6 +1,5 @@
 package com.spaceymonk.mentorhub.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.spaceymonk.mentorhub.domain.Subject;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.SubjectRepository;
@@ -51,8 +50,18 @@ public class SubjectController {
     @RolesAllowed({"ROLE_ADMIN"})
     @ResponseBody
     public ResponseEntity<String> saveSubjectDetails(@RequestBody Subject requestSubject) {
-        // TODO: DATA VALIDATION
 
+        // Data Control
+        if (requestSubject.getMajorSubject() == null || requestSubject.getMajorSubject().isBlank()
+                || requestSubject.getSubjects() == null) {
+            return ResponseEntity.noContent().build();
+        }
+        requestSubject.getSubjects().removeIf(String::isBlank);
+        if (requestSubject.getSubjects().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        // Data creation
         Subject subject = new Subject();
         if (requestSubject.getId() != null) {
             Optional<Subject> subjectQuery = subjectRepository.findById(requestSubject.getId());
@@ -65,7 +74,7 @@ public class SubjectController {
         subject.getSubjects().clear();
         subject.getSubjects().addAll(requestSubject.getSubjects());
         subjectRepository.save(subject);
-        return ResponseEntity.ok("nice");
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(value = "/subjects/{id}", produces = "application/json")
