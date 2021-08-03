@@ -14,8 +14,8 @@
                     <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
                 </div>
                 <div class="col-auto nav nav-tabs flex-row">
-                    <a href="/dashboard" class="nav-link active">Requests</a>
-                    <a href="/subjects" class="nav-link">Subjects</a>
+                    <a class="nav-link active" href="/dashboard">Requests</a>
+                    <a class="nav-link" href="/subjects">Subjects</a>
                 </div>
             </div>
             <div class="card-body">
@@ -25,8 +25,10 @@
                     <div class="accordion" th:if="${!waitingRequests.isEmpty()}">
                         <div class="accordion-item" th:each="request : ${waitingRequests}">
                             <h2 class="accordion-header" th:id="${'heading'+request.id}">
-                                <button aria-expanded="false" class="accordion-button collapsed" data-bs-toggle="collapse"
-                                        th:aria-controls="${'collapse'+request.id}" th:data-bs-target="${'#collapse'+request.id}"
+                                <button aria-expanded="false" class="accordion-button collapsed"
+                                        data-bs-toggle="collapse"
+                                        th:aria-controls="${'collapse'+request.id}"
+                                        th:data-bs-target="${'#collapse'+request.id}"
                                         type="button">
                                     Request <span class="fst-italic ms-1 text-truncate"
                                                   th:text="${request.id}">$id$</span>
@@ -61,8 +63,12 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-auto text-end mt-3 ps-5">
-                                            <button class="btn btn-outline-success btn-sm" th:onclick="doRequest([[${request.id}]], true)">Accept</button>
-                                            <button class="btn btn-danger btn-sm" th:onclick="doRequest([[${request.id}]], false)">Reject</button>
+                                            <button class="btn btn-outline-success btn-sm"
+                                                    th:onclick="doRequest([[${request.id}]], true)">Accept
+                                            </button>
+                                            <button class="btn btn-danger btn-sm"
+                                                    th:onclick="doRequest([[${request.id}]], false)">Reject
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -78,8 +84,8 @@
 <script>
     let doRequest = function (id, answer) {
         let data = {
-            id : id,
-            answer : answer
+            id: id,
+            answer: answer
         };
         $.ajax({
             type: 'POST',

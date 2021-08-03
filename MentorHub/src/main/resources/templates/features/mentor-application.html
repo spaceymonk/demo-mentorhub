@@ -38,7 +38,8 @@
                             <div class="form-check categories" style="display: none" th:each="category : ${categories}"
                                  th:id="${category.majorSubject}">
                                 <div th:each="subject : ${category.subjects}">
-                                    <input class="form-check-input" th:id="${category + subject}" th:name="selectedSubject"
+                                    <input class="form-check-input" th:id="${category + subject}"
+                                           th:name="selectedSubject"
                                            th:value="${subject}" type="checkbox">
                                     <label class="form-check-label" th:for="${category + subject}"
                                            th:text="${subject}"> </label><br>
@@ -52,7 +53,8 @@
                             <div class="form-floating">
                                     <textarea class="form-control" disabled
                                               id="txtArea"
-                                              placeholder="Explain yourself..." required style="height: 20vh; resize: none;"
+                                              placeholder="Explain yourself..." required
+                                              style="height: 20vh; resize: none;"
                                               th:name="explainMsg"></textarea>
                                 <label for="txtArea">Explain yourself...</label>
                             </div>

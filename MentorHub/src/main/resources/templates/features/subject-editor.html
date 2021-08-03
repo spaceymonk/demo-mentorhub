@@ -6,16 +6,16 @@
 <div th:replace="fragments/navbar :: navbar"></div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Edit Subject</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body">
-                <p><input class="form-control border-0 fs-3" type="text" value=""
-                          placeholder="Enter Major Subject name" id="formMajorNameFld"></p>
+                <p><input class="form-control border-0 fs-3" id="formMajorNameFld" placeholder="Enter Major Subject name"
+                          type="text" value=""></p>
                 <ul class="list-group list-group-flush" id="subjectList"></ul>
                 <div class="text-center">
                     <a class="btn rounded-circle" onclick="addSubjectToForm()"><i class="fas fa-plus"></i></a>
@@ -23,8 +23,8 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" onclick="saveChanges()" type="button">Save changes</button>
             </div>
         </div>
     </div>
@@ -39,8 +39,8 @@
                     <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
                 </div>
                 <div class="col-auto nav nav-tabs flex-row">
-                    <a href="/dashboard" class="nav-link ">Requests</a>
-                    <a href="/subjects" class="nav-link active">Subjects</a>
+                    <a class="nav-link " href="/dashboard">Requests</a>
+                    <a class="nav-link active" href="/subjects">Subjects</a>
                 </div>
             </div>
             <div class="card-body">
@@ -58,11 +58,11 @@
                                     </ul>
                                 </div>
                                 <div class="col-auto btn-group mt-3 d-flex align-items-center">
-                                    <button type="button" class="btn btn-primary me-2"
-                                            th:onclick="editMajor([[${subjectItem.id}]]);">Edit
+                                    <button class="btn btn-primary me-2" th:onclick="editMajor([[${subjectItem.id}]]);"
+                                            type="button">Edit
                                     </button>
-                                    <button type="button" class="btn btn-danger"
-                                            th:onclick="removeMajor([[${subjectItem.id}]]);">Remove
+                                    <button class="btn btn-danger" th:onclick="removeMajor([[${subjectItem.id}]]);"
+                                            type="button">Remove
                                     </button>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button type="button" class="btn btn-secondary" onclick="createMajor()">Add
+                <button class="btn btn-secondary" onclick="createMajor()" type="button">Add
                     Subject
                 </button>
             </div>
