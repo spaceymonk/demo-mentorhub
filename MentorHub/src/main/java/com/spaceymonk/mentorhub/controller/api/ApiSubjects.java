@@ -16,8 +16,6 @@ public class ApiSubjects {
 
     private final UserRepository userRepository;
     private final MentorshipRepository mentorshipRepository;
-    private final PhaseRepository phaseRepository;
-    private final PhaseReviewRepository phaseReviewRepository;
     private final MentorshipRequestRepository mentorshipRequestRepository;
     private final SubjectRepository subjectRepository;
     private final RoleRepository roleRepository;
