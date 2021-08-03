@@ -85,13 +85,19 @@
     let doRequest = function (id, answer) {
         $.ajax({
             type: 'POST',
-            url: `http://localhost:8080/api/${id}/${answer}`,
-            data: data,
-            success: function (text) {
-                location.reload();
+            url: `http://localhost:8080/api/request/${id}/${answer}`,
+            success: function (data, status, xhr) {
+                showToast("bg-success", "Done!");
             },
-            error: function (jqXHR) {
-                location.reload();
+            error: function (jqXhr, textStatus, errorMessage) {
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
+            },
+            complete: function (jqXhr, textStatus) {
+                setTimeout(location.reload, 1000);
             }
         });
     }
