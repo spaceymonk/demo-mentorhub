@@ -107,8 +107,8 @@
             "explainMsg": explainMsg
         };
 
-        $.ajax("http://localhost:8080/apply", {
-            type: "POST",
+        $.ajax("http://localhost:8080/api/apply", {
+            type: "PUT",
             contentType: "application/json",
             data: JSON.stringify(data),
             success: function (data, status, xhr) {
