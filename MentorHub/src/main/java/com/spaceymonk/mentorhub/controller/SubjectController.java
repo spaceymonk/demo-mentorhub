@@ -82,7 +82,7 @@ public class SubjectController {
     @ResponseBody
     public ResponseEntity<String> deleteSubject(@PathVariable("id") String id) {
         subjectRepository.deleteById(id);
-        return ResponseEntity.ok("nice");
+        return ResponseEntity.ok().build();
     }
 
 }
