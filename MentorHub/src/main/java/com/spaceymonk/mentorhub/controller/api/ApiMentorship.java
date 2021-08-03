@@ -28,7 +28,8 @@ public class ApiMentorship {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
-    public ResponseEntity<String> createMentorship(@PathVariable("id") String mentorshipRequestId, Authentication authentication) {
+    public ResponseEntity<String> createMentorship(@PathVariable("id") String mentorshipRequestId,
+                                                   Authentication authentication) {
 
         User currentUser = userRepository.findByUsernameOrGoogleId(authentication.getName(), authentication.getName());
 
@@ -38,9 +39,10 @@ public class ApiMentorship {
             return ResponseEntity.badRequest().body("There is no such mentorship!");
         }
         MentorshipRequest mentorshipRequest = mentorshipRequestOptional.get();
+        User requestOwner = mentorshipRequest.getMentor();
 
         // check business logic
-        if (mentorshipRequest.getMentor().equals(currentUser)) {
+        if (requestOwner.equals(currentUser)) {
             return ResponseEntity.badRequest().body("You cannot be mentor of yourself!");
         }
         for (Mentorship mentorship : currentUser.getMenteeSections()) {
@@ -56,16 +58,16 @@ public class ApiMentorship {
         }
 
         Mentorship mentorship = new Mentorship();
-        mentorship.setMentor(mentorshipRequest.getMentor());
+        mentorship.setMentor(requestOwner);
         mentorship.setMentee(currentUser);
         mentorship.setStatus("unbegun");
         mentorship.setMajorSubject(mentorshipRequest.getSelectedSubject().getMajorSubject());
 
         mentorshipRepository.save(mentorship);
         currentUser.getMentorshipSet().add(mentorship);
-        mentorshipRequest.getMentor().getMentorshipSet().add(mentorship);
+        requestOwner.getMentorshipSet().add(mentorship);
         userRepository.save(currentUser);
-        userRepository.save(mentorshipRequest.getMentor());
+        userRepository.save(requestOwner);
 
         return ResponseEntity.ok().build();
     }
