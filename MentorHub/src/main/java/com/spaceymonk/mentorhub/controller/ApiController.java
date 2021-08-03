@@ -93,4 +93,56 @@ public class ApiController {
     }
 
 
+    @RequestMapping(value = "/subjects/{id}", produces = "application/json", method = RequestMethod.GET)
+    @RolesAllowed({"ROLE_ADMIN"})
+    @ResponseBody
+    public ResponseEntity<Subject> getSubjectDetails(@PathVariable("id") String id) {
+        Optional<Subject> subjectQuery = subjectRepository.findById(id);
+        if (subjectQuery.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(subjectQuery.get());
+        }
+    }
+
+    @RequestMapping(value = "/subjects", consumes = "application/json", method = RequestMethod.POST)
+    @RolesAllowed({"ROLE_ADMIN"})
+    @ResponseBody
+    public ResponseEntity<String> saveSubjectDetails(@RequestBody Subject requestSubject) {
+
+        // Data Control
+        if (requestSubject.getMajorSubject() == null || requestSubject.getMajorSubject().isBlank()
+                || requestSubject.getSubjects() == null) {
+            return ResponseEntity.noContent().build();
+        }
+        requestSubject.getSubjects().removeIf(String::isBlank);
+        if (requestSubject.getSubjects().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        // Data creation
+        Subject subject = new Subject();
+        if (requestSubject.getId() != null) {
+            Optional<Subject> subjectQuery = subjectRepository.findById(requestSubject.getId());
+            if (subjectQuery.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            subject = subjectQuery.get();
+        }
+        subject.setMajorSubject(requestSubject.getMajorSubject());
+        subject.getSubjects().clear();
+        subject.getSubjects().addAll(requestSubject.getSubjects());
+        subjectRepository.save(subject);
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/subjects/{id}", produces = "application/json", method = RequestMethod.DELETE)
+    @RolesAllowed({"ROLE_ADMIN"})
+    @ResponseBody
+    public ResponseEntity<String> deleteSubject(@PathVariable("id") String id) {
+        subjectRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

@@ -102,7 +102,7 @@
     }
 
     let editMajor = function (id = "") {
-        $.getJSON(`/subjects/${id}`)
+        $.getJSON(`http://localhost:8080/api/subjects/${id}`)
             .done(function (category) {
                 $("#formMajorNameFld").val(category.majorSubject);
                 $("#subjectList").empty();
@@ -137,7 +137,7 @@
         };
         $.ajax({
             type: 'POST',
-            url: 'http://localhost:8080/subjects',
+            url: 'http://localhost:8080/api/subjects',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (text) {
@@ -154,7 +154,7 @@
     let removeMajor = function (id = "") {
         $.ajax({
             type: 'DELETE',
-            url: `http://localhost:8080/subjects/${id}`,
+            url: `http://localhost:8080/api/subjects/${id}`,
             dataType: 'json',
             success: function (text) {
                 console.log(text);
