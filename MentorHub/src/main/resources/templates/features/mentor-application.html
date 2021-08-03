@@ -5,7 +5,7 @@
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
 
-<div th:replace="fragments/popup.html :: popup"></div>
+<div th:replace="fragments/popup :: popup"></div>
 
 <div style="min-height: 100vh; position: relative">
     <div class="container my-5">
@@ -25,7 +25,7 @@
                             <select class="form-select" id="categoryselector" required th:name="selectedCategory">
                                 <option selected value=""></option>
                                 <option th:each="category : ${categories}" th:text="${category.majorSubject}"
-                                        th:value="${category.majorSubject}"></option>
+                                        th:value="${category.id}"></option>
                             </select>
                         </div>
                     </div>
@@ -35,12 +35,12 @@
                             <p class="mb-1">Please select at least 1 subject:</p>
                             <small class="text-danger" id="errSelectMajorFirst">Please select a major first.</small>
                             <div class="form-check categories" style="display: none" th:each="category : ${categories}"
-                                 th:id="${category.majorSubject}">
-                                <div th:each="subject : ${category.subjects}">
-                                    <input class="form-check-input" th:id="${category + subject}"
+                                 th:id="${category.id}">
+                                <div th:each="subject : ${category.subjects}" th:with="randomId=${#strings.randomAlphanumeric(10)}">
+                                    <input class="form-check-input" th:id="${randomId}"
                                            th:name="selectedSubject"
                                            th:value="${subject}" type="checkbox">
-                                    <label class="form-check-label" th:for="${category + subject}"
+                                    <label class="form-check-label" th:for="${randomId}"
                                            th:text="${subject}"> </label><br>
                                 </div>
                             </div>
@@ -73,7 +73,9 @@
 </div>
 
 <div th:replace="fragments/footer :: footer"></div>
-<script th:inline="javascript">
+
+
+<script>
 
     let resetFunction = function () {
         let selectedCategory = $("#categoryselector option:selected").val();
@@ -95,7 +97,7 @@
     $("#categoryselector").change(resetFunction);
 
     let submitForm = function () {
-        let selectedCategory = $("#categoryselector option:selected").val() || "";
+        let selectedCategory = $("#categoryselector option:selected").text() || "";
         let selectedSubjects = $(".categories input:checkbox:checked").map(function () {
             return $(this).val();
         }).get() || [];
