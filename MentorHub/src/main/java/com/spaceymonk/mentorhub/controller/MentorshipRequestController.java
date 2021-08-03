@@ -20,7 +20,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-public class MentorshipController {
+public class MentorshipRequestController {
 
     private final SubjectRepository subjectRepository;
     private final MentorshipRequestRepository mentorshipRequestRepository;
