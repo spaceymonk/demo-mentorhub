@@ -26,9 +26,9 @@ public class ApiMentorship {
     private final SubjectRepository subjectRepository;
     private final RoleRepository roleRepository;
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
-    public ResponseEntity<String> createMentorship(@PathVariable("id") String mentorshipRequestId,
+    public ResponseEntity<String> createMentorship(String mentorshipRequestId,
                                                    Authentication authentication) {
 
         User currentUser = userRepository.findByUsernameOrGoogleId(authentication.getName(), authentication.getName());
