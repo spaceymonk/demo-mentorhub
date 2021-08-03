@@ -54,6 +54,16 @@ sn: Jack
 uid: jack
 userPassword: $2y$10$mH5zUdws3R7usJZBOPP6leeTVej9h8ShDR.w7d0S.DYh0KmRNKcB6
 
+dn: uid=yoyo,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Yospe Benthon
+sn: Yospe
+uid: yoyo
+userPassword: $2y$10$4wQY6zdvFvZ3ia9KgejJgOAAcGmuIik6SiKcioLlDLrDkEbMvai76
+
 dn: uid=bob,ou=people,dc=springframework,dc=org
 objectclass: top
 objectclass: person
