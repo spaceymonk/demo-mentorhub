@@ -3,6 +3,7 @@ package com.spaceymonk.mentorhub.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class User {
     private boolean becomeMentor;
     private boolean enabled;
     private Set<Role> roles;
+    @DBRef
     private Set<Mentorship> mentorshipSet = new HashSet<>();
 
     public Set<Mentorship> getMenteeSections() {

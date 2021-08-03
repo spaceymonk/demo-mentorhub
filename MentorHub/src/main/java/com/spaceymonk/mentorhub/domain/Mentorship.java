@@ -3,6 +3,7 @@ package com.spaceymonk.mentorhub.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -15,7 +16,9 @@ public class Mentorship {
     @Id
     @EqualsAndHashCode.Include
     private String id;
+    @DBRef
     private User mentor;
+    @DBRef
     private User mentee;
     private Date beginDate;
     private List<Phase> phases = new LinkedList<>();
