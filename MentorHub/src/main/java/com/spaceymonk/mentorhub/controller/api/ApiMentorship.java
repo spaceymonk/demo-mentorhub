@@ -80,6 +80,14 @@ public class ApiMentorship {
             requestPhase.setId(new ObjectId().toHexString());
         }
 
+        if (requestPhase.getEndDate() == null) {
+            return ResponseEntity.badRequest().body("You should set an end date!");
+        }
+
+        if (requestPhase.getName() == null) {
+            return ResponseEntity.badRequest().body("No name entered!");
+        }
+
         Optional<Mentorship> mentorshipOptional = mentorshipRepository.findById(mentorshipId);
         if (mentorshipOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("No mentorship found");
@@ -107,6 +115,14 @@ public class ApiMentorship {
             return ResponseEntity.badRequest().body("No mentorship found");
         }
         Mentorship mentorship = mentorshipOptional.get();
+
+        if (mentorship.getPhases().isEmpty()) {
+            return ResponseEntity.badRequest().body("You need to add phases first!");
+        }
+
+        if (mentorship.isCompleted()) {
+            return ResponseEntity.badRequest().body("Already completed!");
+        }
 
         mentorship.setCurrentPhaseIndex(mentorship.getCurrentPhaseIndex() + 1);
 
