@@ -24,4 +24,18 @@ public class Mentorship {
     private List<Phase> phases = new LinkedList<>();
     private int currentPhaseIndex;
     private String majorSubject;
+
+    public boolean isCompleted() {
+        return phases.size() == currentPhaseIndex;
+    }
+
+    public boolean isNotStarted() {
+        return currentPhaseIndex < 0;
+    }
+
+    public String getStatus() {
+        if (isCompleted()) return "completed";
+        if (isNotStarted()) return "unbegun";
+        return phases.get(currentPhaseIndex).getName();
+    }
 }
