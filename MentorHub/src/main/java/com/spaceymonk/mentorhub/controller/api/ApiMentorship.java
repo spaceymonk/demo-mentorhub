@@ -71,7 +71,7 @@ public class ApiMentorship {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/{mentorshipId}/phases", consumes = "application/json", method = RequestMethod.POST)
+    @RequestMapping(value = "/{mentorshipId}/phases", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> savePhase(@PathVariable("mentorshipId") String mentorshipId,
                                             @RequestBody Phase requestPhase) {
@@ -88,8 +88,7 @@ public class ApiMentorship {
 
         int repoIndex = mentorship.getPhases().indexOf(requestPhase);
         if (repoIndex != -1) {
-            mentorship.getPhases().get(repoIndex).setEndDate(requestPhase.getEndDate());
-            mentorship.getPhases().get(repoIndex).setName(requestPhase.getName());
+            mentorship.getPhases().set(repoIndex, requestPhase);
         } else {
             mentorship.getPhases().add(requestPhase);
         }
