@@ -22,6 +22,6 @@ public class Mentorship {
     private User mentee;
     private Date beginDate;
     private List<Phase> phases = new LinkedList<>();
-    private String status;
+    private int currentPhaseIndex;
     private String majorSubject;
 }
