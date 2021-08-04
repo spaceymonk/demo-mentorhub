@@ -47,7 +47,7 @@
                                     <td class="ps-1" th:text="${mentorship.status}"></td>
                                 </tr>
                             </table>
-                            <button th:if="${mentorship.status.equals('unbegun')}"
+                            <button th:if="${mentorship.isNotStarted()}"
                                     type="button" onclick="startSection()" class="btn btn-secondary mt-3">
                                 Start
                             </button>
@@ -60,10 +60,10 @@
                         <p th:if="${mentorship.phases.isEmpty()}">No phases created, yet. </p>
 
 
-                        <ul class="list-group" th:with="index=0">
+                        <ul class="list-group">
                             <li class="list-group-item"
                                 th:each="phase,iter : ${mentorship.phases}"
-                                th:style="${phase.status.equals('completed')} ? 'background-color: #eef' : (${phase.status.equals('active')} ? 'background-color : #efe'  : 'background-color : #fff')">
+                                th:style="${iter.index < mentorship.currentPhaseIndex} ? 'background-color: #eef' : (${iter.index == mentorship.currentPhaseIndex} ? 'background-color : #efe'  : 'background-color : #fff')">
                                 <div class="row">
                                     <div class="col">
                                         <strong th:text="${iter.count+'.'}"></strong>
@@ -75,20 +75,20 @@
                                         </small>
                                     </div>
                                     <div class="col-auto mt-3"
-                                         th:with="review=${ currentUser.equals(mentorship.mentor)} ?  phase.mentorReview : phase.menteeReview">
+                                         th:with="review=${currentUser.equals(mentorship.mentor)} ?  phase.mentorReview : phase.menteeReview">
 
                                         <p class="lead"
-                                           th:if="${phase.status.equals('completed') && review != null}">
+                                           th:if="${iter.index < mentorship.currentPhaseIndex && review != null}">
                                             Done
                                         </p>
 
                                         <button type="button" class="btn btn-warning rounded-pills"
-                                                th:if="${phase.status.equals('completed') && review == null}">
+                                                th:if="${iter.index < mentorship.currentPhaseIndex && review == null}">
                                             Review
                                         </button>
 
                                         <button type="button" class="btn btn-primary rounded-pills"
-                                                th:if="${phase.status.equals('active')}">
+                                                th:if="${iter.index == mentorship.currentPhaseIndex}">
                                             Complete
                                         </button>
 
@@ -97,7 +97,7 @@
                             </li>
                         </ul>
 
-                        <a th:if="${mentorship.status.equals('unbegun')}"
+                        <a th:if="${mentorship.isNotStarted()}"
                            th:href="@{/plan/{id}(id=${mentorship.id})}" class="btn btn-primary mt-4">Plan</a>
 
                     </div>
@@ -108,9 +108,24 @@
 </div>
 
 <script th:inline="javascript">
-    let mentorshipId = /*[[${mentorship.id}]]*/ null;
+    let mentorshipId = /*[[${mentorship.id}]]*/ "";
     let startSection = function () {
-        //todo
+        $.ajax({
+            type: 'POST',
+            url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases`,
+            success: function (data, status, xhr) {
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
+            }
+        });
     }
 </script>
 
