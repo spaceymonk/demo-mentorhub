@@ -27,7 +27,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" th:onclick="saveChanges([[${mentorship.id}]])">Save
+                <button type="button" class="btn btn-primary" th:onclick="saveChanges()">Save
                     changes
                 </button>
             </div>
@@ -65,7 +65,7 @@
                                         Edit
                                     </button>
                                     <button type="button" class="btn btn-danger"
-                                            th:onclick="removePhase([[${mentorship.id}]], [[${phase.id}]])">
+                                            th:onclick="removePhase([[${phase.id}]])">
                                         Remove
                                     </button>
                                 </div>
@@ -82,8 +82,9 @@
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
     let myModal = new bootstrap.Modal($("#exampleModal"))
+    let mentorshipId = /*[[${mentorship.id}]]*/ "";
     let selectedPhaseId = null;
 
     let editPhase = function (phaseName, phaseDate, phaseId) {
@@ -100,7 +101,7 @@
         myModal.show();
     }
 
-    let removePhase = function (mentorshipId, phaseId) {
+    let removePhase = function (phaseId) {
         $.ajax({
             type: 'DELETE',
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases/${phaseId}`,
@@ -120,7 +121,7 @@
         });
     }
 
-    let saveChanges = function (mentorshipId) {
+    let saveChanges = function () {
         data = {
             "id": selectedPhaseId,
             "name": $('#phasename').val(),
@@ -128,7 +129,7 @@
             "status": "unbegun"
         };
         $.ajax({
-            type: 'POST',
+            type: 'PUT',
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases`,
             contentType: 'application/json',
             data: JSON.stringify(data),
