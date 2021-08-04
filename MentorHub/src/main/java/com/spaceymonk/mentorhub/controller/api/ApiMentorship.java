@@ -2,15 +2,13 @@ package com.spaceymonk.mentorhub.controller.api;
 
 import com.spaceymonk.mentorhub.domain.Mentorship;
 import com.spaceymonk.mentorhub.domain.MentorshipRequest;
+import com.spaceymonk.mentorhub.domain.Phase;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Optional;
@@ -68,6 +66,21 @@ public class ApiMentorship {
         requestOwner.getMentorshipSet().add(mentorship);
         userRepository.save(currentUser);
         userRepository.save(requestOwner);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/{mentorshipId}/phases", consumes = "application/json", method = RequestMethod.POST)
+    @RolesAllowed({"ROLE_USER"})
+    public ResponseEntity<String> savePhase(@PathVariable("mentorshipId") String mentorshipId,
+                                            @RequestBody Phase requestPhase) {
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/{mentorshipId}/phases/{phaseId}", method = RequestMethod.DELETE)
+    @RolesAllowed({"ROLE_USER"})
+    public ResponseEntity<String> deletePhase(@PathVariable("mentorshipId") String mentorshipId,
+                                              @PathVariable("phaseId") String phaseId) {
 
         return ResponseEntity.ok().build();
     }
