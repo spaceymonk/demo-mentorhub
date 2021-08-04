@@ -61,9 +61,8 @@ public class ApiSubjects {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/{id}", produces = "application/json", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({"ROLE_ADMIN"})
-    @ResponseBody
     public ResponseEntity<String> deleteSubject(@PathVariable("id") String id) {
         subjectRepository.deleteById(id);
         return ResponseEntity.ok().build();
