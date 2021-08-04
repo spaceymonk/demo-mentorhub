@@ -36,7 +36,7 @@ public class MentorshipController {
     @RolesAllowed({"ROLE_USER"})
     public String mentorshipPage(@PathVariable("id") String mentorshipId,
                                  Model model, Authentication authentication) {
-        if (getMentorshipData(mentorshipId, model, authentication)) return "redirect:error";
+        if (getMentorshipData(mentorshipId, model, authentication)) return "error";
 
         return "features/mentorship-details";
     }
@@ -45,7 +45,7 @@ public class MentorshipController {
     @RolesAllowed({"ROLE_USER"})
     public String planPage(@PathVariable("id") String mentorshipId,
                            Model model, Authentication authentication) {
-        if (getMentorshipData(mentorshipId, model, authentication)) return "redirect:error";
+        if (getMentorshipData(mentorshipId, model, authentication)) return "error";
 
         return "features/phase-planning";
     }
