@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head :: head('MentorHub :: Planning')"></div>
+
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="fragments/popup.html :: popup"></div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Phase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <label class="w-100 mb-3" for="phasename">Phase name: <br>
+                    <input id="phasename" class="form-control mt-1" type="text" placeholder="Enter a name">
+                </label>
+                <br>
+                <label class="w-100" for="phasedate">End date: <br>
+                    <input id="phasedate" class="form-control mt-1" type="date" placeholder="Enter a date">
+                </label>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pt-5">
+    <div class="card">
+        <div class="card-header">
+            <a class="btn btn-secondary rounded-circle" th:href="@{/details/{id}(id=${mentorship.id})}"><i
+                    class="fas fa-arrow-left"></i></a>
+        </div>
+        <div class="card-body">
+            <h4 class="my-4">Phase planning</h4>
+            <div class="container">
+                <p th:if="${mentorship.phases.isEmpty()}">No phase added.</p>
+                <ul class="list-group" th:with="index=0">
+
+                    <li class="list-group-item" th:each="phase : ${mentorship.phases}" th:with="index++">
+                        <div class="row">
+                            <div class="col" th:inline="text"><strong th:text="${index}"></strong>
+                                [[${phase.name}}]]
+                            </div>
+                            <div class="col-auto btn-group">
+                                <button type="button" class="btn btn-primary"
+                                        th:onclick="editPhase([[${mentorship.id}]], [[${phase.id}]])">
+                                    Edit
+                                </button>
+                                <button type="button" class="btn btn-danger"
+                                        th:onclick="removePhase([[${mentorship.id}]], [[${phase.id}]])">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="button" class="btn btn-secondary" onclick="addPhase()">Add</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let myModal = new bootstrap.Modal($("#exampleModal"))
+    let currentId = null;
+    let index = 0;
+
+    let editPhase = function () {
+        myModal.show();
+    }
+
+    let addPhase = function () {
+        myModal.show();
+    }
+
+    let removePhase = function () {
+        $.ajax({
+            type: 'DELETE',
+            url: `http://localhost:8080/api/subjects/${id}`,
+            success: function (data, status, xhr) {
+                showToast("bg-success", "Sucessfully removed!");
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
+            }
+        });
+    }
+
+</script>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
+
