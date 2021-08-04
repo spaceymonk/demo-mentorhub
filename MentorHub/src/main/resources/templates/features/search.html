@@ -52,7 +52,7 @@
     let selectMentor = function (id) {
         $.ajax({
             type: 'PUT',
-            url: `http://localhost:8080/api/mentorship/?mentorshipRequestId=${id}`,
+            url: `http://localhost:8080/api/mentorships/?mentorshipRequestId=${id}`,
             success: function (data, status, xhr) {
                 showToast("bg-success", "Successfully registered!");
             },

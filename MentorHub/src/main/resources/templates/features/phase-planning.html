@@ -27,7 +27,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="saveChanges()">Save changes</button>
+                <button type="button" class="btn btn-primary" th:onclick="saveChanges([[${mentorship.id}]])">Save
+                    changes
+                </button>
             </div>
         </div>
     </div>
@@ -44,16 +46,22 @@
                 <h4 class="my-4">Phase planning</h4>
                 <div class="container">
                     <p th:if="${mentorship.phases.isEmpty()}">No phase added.</p>
-                    <ul class="list-group" th:with="index=0">
+                    <ul class="list-group">
 
-                        <li class="list-group-item" th:each="phase : ${mentorship.phases}" th:with="index++">
+                        <li class="list-group-item" th:each="phase, iter : ${mentorship.phases}">
                             <div class="row">
-                                <div class="col" th:inline="text"><strong th:text="${index}"></strong>
-                                    [[${phase.name}}]]
+                                <div class="col">
+                                    <strong th:text="${iter.count+'.'}"></strong>
+                                    <span th:text="${phase.name}"></span>
+                                    <br>
+                                    <small class="text-muted">
+                                        End date: <span
+                                            th:text="${#dates.format(mentorship.beginDate, 'yyyy/MM/dd')}"></span>
+                                    </small>
                                 </div>
                                 <div class="col-auto btn-group">
                                     <button type="button" class="btn btn-primary"
-                                            th:onclick="editPhase([[${mentorship.id}]], [[${phase.id}]])">
+                                            th:onclick="editPhase([[${phase.name}]], [[${phase.endDate}]], [[${phase.id}]])">
                                         Edit
                                     </button>
                                     <button type="button" class="btn btn-danger"
@@ -76,26 +84,60 @@
 
 <script>
     let myModal = new bootstrap.Modal($("#exampleModal"))
-    let currentId = null;
-    let index = 0;
+    let selectedPhaseId = null;
 
-    let editPhase = function () {
+    let editPhase = function (phaseName, phaseDate, phaseId) {
+        selectedPhaseId = phaseId;
+        $("#phasename").val(phaseName);
+        $("#phasedate").val(phaseDate);
         myModal.show();
     }
 
     let addPhase = function () {
+        selectedPhaseId = null;
+        $("#phasename").val("");
+        $("#phasedate").val("");
         myModal.show();
     }
 
-    let removePhase = function () {
+    let removePhase = function (mentorshipId, phaseId) {
         $.ajax({
             type: 'DELETE',
-            url: `http://localhost:8080/api/subjects/${id}`,
+            url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases/${phaseId}`,
             success: function (data, status, xhr) {
                 showToast("bg-success", "Sucessfully removed!");
                 setTimeout(function () {
                     location.reload();
                 }, 1000);
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
+            }
+        });
+    }
+
+    let saveChanges = function (mentorshipId) {
+        data = {
+            "id": selectedPhaseId,
+            "name": $('#phasename').val(),
+            "endDate": $('#phasedate').val(),
+            "status": "unbegun"
+        };
+        $.ajax({
+            type: 'POST',
+            url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases`,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (data, status, xhr) {
+                showToast("bg-success", "Changes saved!");
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+                myModal.hide();
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
