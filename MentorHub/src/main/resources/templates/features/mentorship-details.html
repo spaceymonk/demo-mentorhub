@@ -48,7 +48,7 @@
                                 </tr>
                             </table>
                             <button th:if="${mentorship.isNotStarted()}"
-                                    type="button" onclick="startSection()" class="btn btn-secondary mt-3">
+                                    type="button" onclick="nextPhase()" class="btn btn-secondary mt-3">
                                 Start
                             </button>
 
@@ -71,7 +71,7 @@
                                         <br>
                                         <small class="text-muted">
                                             End date: <span
-                                                th:text="${#dates.format(mentorship.beginDate, 'yyyy/MM/dd')}"></span>
+                                                th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd')}"></span>
                                         </small>
                                     </div>
                                     <div class="col-auto mt-3"
@@ -88,6 +88,7 @@
                                         </button>
 
                                         <button type="button" class="btn btn-primary rounded-pills"
+                                                onclick="nextPhase()"
                                                 th:if="${iter.index == mentorship.currentPhaseIndex}">
                                             Complete
                                         </button>
@@ -109,14 +110,12 @@
 
 <script th:inline="javascript">
     let mentorshipId = /*[[${mentorship.id}]]*/ "";
-    let startSection = function () {
+    let nextPhase = function () {
         $.ajax({
             type: 'POST',
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases`,
             success: function (data, status, xhr) {
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
+                location.reload();
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
