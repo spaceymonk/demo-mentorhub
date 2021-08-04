@@ -45,7 +45,7 @@ public class ApiMentorship {
             return ResponseEntity.badRequest().body("You cannot be mentor of yourself!");
         }
         for (Mentorship mentorship : currentUser.getMenteeSections()) {
-            if (!mentorship.getStatus().equals("finished") &&
+            if (!mentorship.isCompleted() &&
                     mentorship.getMajorSubject().equals(mentorshipRequest.getSelectedSubject().getMajorSubject())) {
                 return ResponseEntity.badRequest().body("You can only study with only ONE mentor under the same major!");
             }
@@ -59,8 +59,8 @@ public class ApiMentorship {
         Mentorship mentorship = new Mentorship();
         mentorship.setMentor(requestOwner);
         mentorship.setMentee(currentUser);
-        mentorship.setStatus("unbegun");
         mentorship.setMajorSubject(mentorshipRequest.getSelectedSubject().getMajorSubject());
+        mentorship.setCurrentPhaseIndex(-1);
 
         mentorshipRepository.save(mentorship);
         currentUser.getMentorshipSet().add(mentorship);
@@ -92,6 +92,23 @@ public class ApiMentorship {
         } else {
             mentorship.getPhases().add(requestPhase);
         }
+
+        mentorshipRepository.save(mentorship);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/{mentorshipId}/phases", method = RequestMethod.POST)
+    @RolesAllowed({"ROLE_USER"})
+    public ResponseEntity<String> nextPhase(@PathVariable("mentorshipId") String mentorshipId) {
+
+        Optional<Mentorship> mentorshipOptional = mentorshipRepository.findById(mentorshipId);
+        if (mentorshipOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("No mentorship found");
+        }
+        Mentorship mentorship = mentorshipOptional.get();
+
+        mentorship.setCurrentPhaseIndex(mentorship.getCurrentPhaseIndex() + 1);
 
         mentorshipRepository.save(mentorship);
 
