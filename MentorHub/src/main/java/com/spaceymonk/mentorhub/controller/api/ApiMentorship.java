@@ -6,6 +6,7 @@ import com.spaceymonk.mentorhub.domain.Phase;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.*;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.util.Optional;
 
-@RequestMapping("/api/mentorship")
+@RequestMapping("/api/mentorships")
 @RestController
 @AllArgsConstructor
 public class ApiMentorship {
@@ -74,6 +75,27 @@ public class ApiMentorship {
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> savePhase(@PathVariable("mentorshipId") String mentorshipId,
                                             @RequestBody Phase requestPhase) {
+
+        if (requestPhase.getId() == null) {
+            requestPhase.setId(new ObjectId().toHexString());
+        }
+
+        Optional<Mentorship> mentorshipOptional = mentorshipRepository.findById(mentorshipId);
+        if (mentorshipOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("No mentorship found");
+        }
+        Mentorship mentorship = mentorshipOptional.get();
+
+        int repoIndex = mentorship.getPhases().indexOf(requestPhase);
+        if (repoIndex != -1) {
+            mentorship.getPhases().get(repoIndex).setEndDate(requestPhase.getEndDate());
+            mentorship.getPhases().get(repoIndex).setName(requestPhase.getName());
+        } else {
+            mentorship.getPhases().add(requestPhase);
+        }
+
+        mentorshipRepository.save(mentorship);
+
         return ResponseEntity.ok().build();
     }
 
@@ -81,6 +103,16 @@ public class ApiMentorship {
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> deletePhase(@PathVariable("mentorshipId") String mentorshipId,
                                               @PathVariable("phaseId") String phaseId) {
+
+        Optional<Mentorship> mentorshipOptional = mentorshipRepository.findById(mentorshipId);
+        if (mentorshipOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("No mentorship found");
+        }
+        Mentorship mentorship = mentorshipOptional.get();
+
+        mentorship.getPhases().removeIf(phase -> phaseId.equals(phase.getId()));
+
+        mentorshipRepository.save(mentorship);
 
         return ResponseEntity.ok().build();
     }
