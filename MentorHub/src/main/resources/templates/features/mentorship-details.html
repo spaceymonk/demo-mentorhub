@@ -75,7 +75,7 @@
                                         </small>
                                     </div>
                                     <div class="col-auto mt-3"
-                                         th:with="review=${currentUser.equals(mentorship.mentor)} ?  phase.mentorReview : phase.menteeReview">
+                                         th:with="review=${currentUser.equals(mentorship.mentor)} ?  ${phase.mentorReview} : ${phase.menteeReview}">
 
                                         <p class="lead"
                                            th:if="${iter.index < mentorship.currentPhaseIndex && review != null}">
