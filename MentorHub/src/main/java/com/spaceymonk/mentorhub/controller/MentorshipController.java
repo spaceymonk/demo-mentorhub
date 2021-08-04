@@ -20,18 +20,34 @@ public class MentorshipController {
     private final MentorshipRepository mentorshipRepository;
     private final UserRepository userRepository;
 
-    @GetMapping(value = "/details/{id}")
-    @RolesAllowed({"ROLE_USER"})
-    public String displayMentorshipDetails(@PathVariable("id") String mentorshipId,
-                                           Model model, Authentication authentication) {
+
+    private boolean getMentorshipData(String mentorshipId, Model model, Authentication authentication) {
         Optional<Mentorship> mentorshipOptional = mentorshipRepository.findById(mentorshipId);
         if (mentorshipOptional.isEmpty()) {
             model.addAttribute("msg", "no such mentorship!");
-            return "redirect:error";
+            return true;
         }
         model.addAttribute("mentorship", mentorshipOptional.get());
         model.addAttribute("currentUser", userRepository.findByUsernameOrGoogleId(authentication.getName(), authentication.getName()));
+        return false;
+    }
+
+    @GetMapping(value = "/details/{id}")
+    @RolesAllowed({"ROLE_USER"})
+    public String mentorshipPage(@PathVariable("id") String mentorshipId,
+                                 Model model, Authentication authentication) {
+        if (getMentorshipData(mentorshipId, model, authentication)) return "redirect:error";
 
         return "features/mentorship-details";
     }
+
+    @GetMapping(value = "/plan/{id}")
+    @RolesAllowed({"ROLE_USER"})
+    public String planPage(@PathVariable("id") String mentorshipId,
+                           Model model, Authentication authentication) {
+        if (getMentorshipData(mentorshipId, model, authentication)) return "redirect:error";
+
+        return "features/phase-planning";
+    }
+
 }
