@@ -12,6 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Optional;
 
 @RequestMapping("/api/mentorships")
@@ -80,12 +83,12 @@ public class ApiMentorship {
             requestPhase.setId(new ObjectId().toHexString());
         }
 
-        if (requestPhase.getEndDate() == null) {
-            return ResponseEntity.badRequest().body("You should set an end date!");
+        if (requestPhase.getName().isBlank()) {
+            return ResponseEntity.badRequest().body("No name entered!");
         }
 
-        if (requestPhase.getName() == null) {
-            return ResponseEntity.badRequest().body("No name entered!");
+        if (requestPhase.getEndDate() == null) {
+            return ResponseEntity.badRequest().body("You should set an end date!");
         }
 
         Optional<Mentorship> mentorshipOptional = mentorshipRepository.findById(mentorshipId);
@@ -100,6 +103,8 @@ public class ApiMentorship {
         } else {
             mentorship.getPhases().add(requestPhase);
         }
+
+        mentorship.getPhases().sort(Comparator.comparing(Phase::getEndDate));
 
         mentorshipRepository.save(mentorship);
 
@@ -122,6 +127,10 @@ public class ApiMentorship {
 
         if (mentorship.isCompleted()) {
             return ResponseEntity.badRequest().body("Already completed!");
+        }
+
+        if (mentorship.isNotStarted()) {
+            mentorship.setBeginDate(new Date());
         }
 
         mentorship.setCurrentPhaseIndex(mentorship.getCurrentPhaseIndex() + 1);
