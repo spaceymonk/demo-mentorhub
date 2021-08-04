@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('MentorHub :: Mentorship Details')"></head>
+
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="fragments/popup.html :: popup"></div>
+
+<div style="min-height: 100vh;">
+
+    <div style="min-height: 100vh;">
+        <div class="container pt-5">
+            <div class="card ">
+                <div class="card-header">
+                    <a class="btn btn-secondary rounded-circle" href="#"><i class="fas fa-arrow-left"></i></a>
+                </div>
+                <div class="card-body">
+                    <h4 class="my-4">Section Details</h4>
+                    <div class="row">
+
+                        <div class="col-auto">
+                            <div class="card bg-light p-3 mb-4">
+                                <table>
+                                    <tr>
+                                        <td class="fw-bold">Mentor:</td>
+                                        <td class="ps-1" th:text="${mentorship.mentor.actualName}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Mentee:</td>
+                                        <td class="ps-1" th:text="${mentorship.mentee.actualName}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Subject:</td>
+                                        <td class="ps-1" th:text="${mentorship.majorSubject}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Begin Date:</td>
+                                        <td class="ps-1"
+                                            th:if="${mentorship.beginDate == null}">
+                                            &mdash;
+                                        </td>
+                                        <td class="ps-1"
+                                            th:if="${mentorship.beginDate != null}"
+                                            th:text="${#dates.format(mentorship.beginDate, 'yyyy/MM/dd')}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Status:</td>
+                                        <td class="ps-1" th:text="${mentorship.status}"></td>
+                                    </tr>
+                                </table>
+                                <button th:if="${mentorship.status.equals('unbegun')}"
+                                        type="button" onclick="startSection()" class="btn btn-secondary mt-3">
+                                    Start
+                                </button>
+
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <h5 class="mb-3">Phases:</h5>
+                            <p th:if="${mentorship.phases.isEmpty()}">No phases created, yet. <br>
+                                <a th:href="@{/plan/{id}(id=${mentorship.id})}" class="btn btn-primary mt-4">Plan</a>
+                            </p>
+                            <ul class="list-group" th:with="index=0">
+
+                                <li class="list-group-item"
+                                    th:each="phase : ${mentorship.phases}"
+                                    th:with="index++"
+                                    th:style="${phase.status.equals('completed')} ? 'background-color: #eef' : 'background-color : #fff')"
+                                    th:styleappend="${phase.status.equals('active')} ? 'background-color : #efe'  : 'background-color : #fff'">
+                                    <div class="row">
+                                        <div class="col">
+                                            <strong th:text="${index+'.'}"></strong>
+                                            <span th:text="${phase.name}"></span>
+                                            <br>
+                                            <small class="text-muted">
+                                                End date: <span
+                                                    th:text="${#dates.format(mentorship.beginDate, 'yyyy/MM/dd')}"></span>
+                                            </small>
+                                        </div>
+                                        <div class="col-auto mt-3"
+                                             th:with="review=${ currentUser.equals(mentorship.mentor)} ?  phase.mentorReview : phase.menteeReview">
+
+                                            <p class="lead"
+                                               th:if="${phase.status.equals('completed') && review != null}">
+                                                Done
+                                            </p>
+
+                                            <button type="button" class="btn btn-warning rounded-pills"
+                                                    th:if="${phase.status.equals('completed') && review == null}">
+                                                Review
+                                            </button>
+
+                                            <button type="button" class="btn btn-primary rounded-pills"
+                                                    th:if="${phase.status.equals('active')}">
+                                                Complete
+                                            </button>
+
+                                        </div>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let startSection = function () {
+
+    }
+</script>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
+
