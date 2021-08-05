@@ -8,42 +8,40 @@
 
 <body>
 
-<div style="min-height: 100vh;">
-    <div class="container h-100 d-flex align-items-center justify-content-center">
-        <div class="card bg-light"
-             style="box-shadow: 0 0 20px 20px rgba(0,0,0,0.5);">
+<div class="container d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div class="card bg-light"
+         style="box-shadow: 0 0 20px 20px rgba(0,0,0,0.5);">
 
-            <div class="card-title pt-4 px-3 text-center">
-                <h1 class="display-3">MentorHub</h1>
-            </div>
-
-            <hr class="w-75 mt-3 mb-4 mx-auto">
-
-            <div class="card-body text-center">
-                <a class="btn btn-outline-primary rounded-pill" th:href="@{/oauth2/authorization/google}"> <i
-                        class="fab fa-google me-3"></i>&nbsp;Continue with&nbsp;Google</a>
-
-                <p class="text-muted fst-italic fw-bold my-3">or</p>
-
-                <form class="w-100" method="post" th:action="@{/}">
-                    <div class="mb-1 text-start w-100">
-                        <input class="rounded-pill form-control" name="username" placeholder="Username"
-                               type="text">
-                    </div>
-                    <div class="mb-3 text-start w-100">
-                        <input class="rounded-pill form-control" name="password" placeholder="******"
-                               type="password">
-                    </div>
-                    <div class="text-start w-100 text-danger small fst-italic" th:text="${errorTxt}"></div>
-                    <button class="btn btn-primary rounded-pill mt-2" type="submit">Login</button>
-                </form>
-            </div>
-
+        <div class="card-title pt-4 px-3 text-center">
+            <h1 class="display-3">MentorHub</h1>
         </div>
+
+        <hr class="w-75 mt-3 mb-4 mx-auto">
+
+        <div class="card-body text-center">
+            <a class="btn btn-outline-primary rounded-pill" th:href="@{/oauth2/authorization/google}"> <i
+                    class="fab fa-google me-3"></i>&nbsp;Continue with&nbsp;Google</a>
+
+            <p class="text-muted fst-italic fw-bold my-3">or</p>
+
+            <form class="w-100" method="post" th:action="@{/}">
+                <div class="mb-1 text-start w-100">
+                    <input class="rounded-pill form-control" name="username" placeholder="Username"
+                           type="text">
+                </div>
+                <div class="mb-3 text-start w-100">
+                    <input class="rounded-pill form-control" name="password" placeholder="******"
+                           type="password">
+                </div>
+                <div class="text-start w-100 text-danger small fst-italic" th:text="${errorTxt}"></div>
+                <button class="btn btn-primary rounded-pill mt-2" type="submit">Login</button>
+            </form>
+        </div>
+
     </div>
 </div>
 
-<div th:insert="fragments/footer"></div>
+<th:block th:replace="fragments/footer"></th:block>
 
 </body>
 </html>
