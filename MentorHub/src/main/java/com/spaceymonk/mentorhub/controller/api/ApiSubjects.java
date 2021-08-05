@@ -33,23 +33,19 @@ public class ApiSubjects {
 
         // Data Control
         if (subject.getMajorSubject() == null || subject.getMajorSubject().isBlank()
-                || subject.getSubjects() == null) {
-            return ResponseEntity.badRequest().body("No subjects entered!");
-        }
-        subject.getSubjects().removeIf(String::isBlank);
-        if (subject.getSubjects().isEmpty()) {
+                || subject.getSubjects() == null || subject.getSubjects().removeIf(String::isBlank)) {
             return ResponseEntity.badRequest().body("No subjects entered!");
         }
 
         // Data creation
         subjectRepository.save(subject);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(subject.getId());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<String> deleteSubject(@PathVariable("id") String id) {
         subjectRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(id);
     }
 }

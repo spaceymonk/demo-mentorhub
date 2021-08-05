@@ -63,7 +63,7 @@
                                         <li th:each="subject : ${subjectItem.subjects}" th:text="${subject}"></li>
                                     </ul>
                                 </div>
-                                <div class="col-auto btn-group mt-3 d-flex align-items-center">
+                                <div class="col-auto mt-3 d-flex align-items-center">
                                     <button class="btn btn-primary me-2" th:onclick="editMajor([[${subjectItem.id}]]);"
                                             type="button">Edit
                                     </button>
@@ -160,6 +160,7 @@
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (returnedData, status, xhr) {
+                data.id = returnedData;
                 $(`#${data.id}`).remove();
                 listElement = "";
                 data.subjects.forEach(function (value) {
@@ -174,7 +175,7 @@
                                     ${listElement}
                                 </ul>
                             </div>
-                            <div class="col-auto btn-group mt-3 d-flex align-items-center">
+                            <div class="col-auto mt-3 d-flex align-items-center">
                                 <button class="btn btn-primary me-2" onclick="editMajor('${data.id}');"
                                         type="button">Edit
                                 </button>
