@@ -8,5 +8,5 @@ import org.springframework.data.annotation.Id;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class PhaseReview {
     private String text;
-    private int rating;
+    private Integer rating;
 }

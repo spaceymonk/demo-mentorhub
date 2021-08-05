@@ -170,12 +170,21 @@ public class ApiMentorship {
         Mentorship mentorship = mentorshipOptional.get();
 
         int phaseIndex = -1;
-        for (int i=0; i<mentorship.getPhases().size(); ++i)
+        for (int i = 0; i < mentorship.getPhases().size(); ++i)
             if (mentorship.getPhases().get(i).getId().equals(phaseId))
                 phaseIndex = i;
 
         if (phaseIndex < 0) {
             return ResponseEntity.badRequest().body("No phase found");
+        }
+
+        if (requestPhaseReview.getRating() == null
+                || !(requestPhaseReview.getRating() >= 1 && requestPhaseReview.getRating() <= 5)) {
+            return ResponseEntity.badRequest().body("Enter a valid rating!");
+        }
+
+        if (requestPhaseReview.getText() == null || requestPhaseReview.getText().isBlank()) {
+            return ResponseEntity.badRequest().body("Enter a valid text!");
         }
 
         if (mentorship.getMentor().equals(currentUser))
