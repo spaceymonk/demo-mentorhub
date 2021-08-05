@@ -1,10 +1,12 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head('MentorHub::Dashboard')"></div>
+<head>
+    <th:block th:replace="fragments/head"></th:block>
+    <title>MentorHub :: Dashboard</title>
+</head>
 
 <body>
-<div th:replace="fragments/header :: navbar"></div>
-<div th:replace="fragments/popup.html :: popup"></div>
+<th:block th:replace="fragments/header"></th:block>
 
 <!-- Modal -->
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
@@ -15,9 +17,10 @@
                 <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body">
-                <p><input class="form-control border-0 fs-3" id="formMajorNameFld" placeholder="Enter Major Subject name"
+                <p><input class="form-control border-0 fs-3" id="formMajorNameFld"
+                          placeholder="Enter Major Subject name"
                           type="text" value=""></p>
-                <ul class="list-group list-group-flush" id="subjectList"></ul>
+                <ul class="list-group list-group-flush" id="formSubjectList"></ul>
                 <div class="text-center">
                     <a class="btn rounded-circle" onclick="addSubjectToForm()"><i class="fas fa-plus"></i></a>
                 </div>
@@ -34,23 +37,25 @@
 <div style="min-height: 100vh;">
     <div class="container my-5">
         <div class="card">
+
             <div class="card-header row">
                 <div class="col">
                     <h1 class="card-title">Admin Panel</h1>
                     <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
                 </div>
                 <div class="col-auto nav nav-tabs flex-row">
-                    <a class="nav-link " href="/dashboard">Requests</a>
-                    <a class="nav-link active" href="/subjects">Subjects</a>
+                    <a class="nav-link" th:href="@{/dashboard}">Requests</a>
+                    <a class="nav-link active" th:href="@{/subjects}">Subjects</a>
                 </div>
             </div>
+
             <div class="card-body">
                 <h4 class="my-4">Subjects</h4>
                 <div class="container">
-                    <ul class="list-group">
+                    <p th:if="${subjectList.isEmpty()}">There is no subject, yet.</p>
+                    <ul class="list-group" id="subjectList">
 
-                        <p th:if="${subjectList.isEmpty()}">There is no subject, yet.</p>
-                        <li class="list-group-item" th:each="subjectItem : ${subjectList}">
+                        <li class="list-group-item" th:each="subjectItem : ${subjectList}" th:id="${subjectItem.id}">
                             <div class="row">
                                 <div class="col">
                                     <p class="lead mb-1" th:text="${subjectItem.majorSubject}">$MAJORNAME$</p>
@@ -72,14 +77,17 @@
                     </ul>
                 </div>
             </div>
+
             <div class="card-footer">
-                <button class="btn btn-secondary" onclick="createMajor()" type="button">Add
-                    Subject
-                </button>
+                <button class="btn btn-secondary" onclick="createMajor()" type="button">Add Subject</button>
             </div>
+
         </div>
     </div>
 </div>
+
+
+<th:block th:replace="fragments/footer"></th:block>
 
 <script>
     let currentId = null;
@@ -93,19 +101,22 @@
 
     let addSubjectToForm = function (subjectName = "") {
         index += 1;
-        $("#subjectList").append(
-            `<li class="list-group-item d-flex" id="${'item' + index}">
-                    <input class="flex-fill form-control-sm border-0" type="text" value="${subjectName}" placeholder="Enter subject name" />
-                    <button type="button" class="btn rounded-circle" onclick="removeSubjectFromForm('${'item' + index}')"><i class="fas fa-minus"></i></button>
-             </li>`
-        );
+        element = `
+            <li class="list-group-item d-flex" id="${'item' + index}">
+                <input class="flex-fill form-control-sm border-0" type="text"
+                       value="${subjectName}" placeholder="Enter subject name" />
+                <button type="button" class="btn rounded-circle" onclick="removeSubjectFromForm('${'item' + index}')">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </li>`;
+        $("#formSubjectList").append(element);
     }
 
     let editMajor = function (id = "") {
         $.getJSON(`http://localhost:8080/api/subjects/${id}`)
             .done(function (category) {
                 $("#formMajorNameFld").val(category.majorSubject);
-                $("#subjectList").empty();
+                $("#formSubjectList").empty();
                 for (let i = 0; i < category.subjects.length; ++i) {
                     let subject = category.subjects[i];
                     addSubjectToForm(subject);
@@ -124,14 +135,14 @@
 
     let createMajor = function () {
         $("#formMajorNameFld").val("");
-        $("#subjectList").empty();
+        $("#formSubjectList").empty();
         currentId = null;
         myModal.show();
     }
 
     let saveChanges = function () {
         let categoryName = $("#formMajorNameFld").val() || "";
-        let subjects = $("#subjectList li input").map(function () {
+        let subjects = $("#formSubjectList li input").map(function () {
             return $(this).val();
         }).get() || [];
         data = {
@@ -144,13 +155,34 @@
             url: 'http://localhost:8080/api/subjects/',
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function  (data, status, xhr) {
+            success: function (data, status, xhr) {
+                listElement = "";
+                subjects.forEach(function (value) {
+                    listElement += `<li>${value}</li>`;
+                });
+                element = `
+                    <li class="list-group-item" id="${currentId}">
+                        <div class="row">
+                            <div class="col">
+                                <p class="lead mb-1">${categoryName}</p>
+                                <ul class="text-muted">
+                                    ${listElement}
+                                </ul>
+                            </div>
+                            <div class="col-auto btn-group mt-3 d-flex align-items-center">
+                                <button class="btn btn-primary me-2" th:onclick="editMajor(${currentId});"
+                                        type="button">Edit
+                                </button>
+                                <button class="btn btn-danger" th:onclick="removeMajor(${currentId});"
+                                        type="button">Remove
+                                </button>
+                            </div>
+                        </div>
+                    </li>`;
+                $('#subjectList').append(element);
                 showToast("bg-success", "Changes saved!");
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
             },
-            error: function (jqXhr, textStatus, errorMessage){
+            error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
                     errorMessage = "Something went wrong!";
                 else
@@ -164,13 +196,11 @@
         $.ajax({
             type: 'DELETE',
             url: `http://localhost:8080/api/subjects/${id}`,
-            success: function  (data, status, xhr) {
+            success: function (data, status, xhr) {
+                $(`#${id}`).remove();
                 showToast("bg-success", "Sucessfully removed!");
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
             },
-            error: function (jqXhr, textStatus, errorMessage){
+            error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
                     errorMessage = "Something went wrong!";
                 else
@@ -181,7 +211,6 @@
     }
 </script>
 
-<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
 
