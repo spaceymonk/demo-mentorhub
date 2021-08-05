@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="head (title)">
+<div th:fragment="head">
     <meta charset="UTF-8">
     <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
           name="viewport">
@@ -16,23 +14,5 @@
             integrity="sha512-Meww2sXqNHxI1+5Dyh/9KAtvI9RZSA4c1K2k5iL02oiPO/RH3Q30L3M1albtqMg50u4gRTYdV4EXOQqXEI336A=="
             referrerpolicy="no-referrer"
             src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
-    <title th:text="${title}">Title</title>
-    <style th:inline="text">
-        body {
-            position: relative;
-        }
-
-        body::after {
-            background-image: url([[@{/assets/bg.jpg}]]);
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            content: "";
-            z-index: -1;
-            opacity: 0.3;
-        }
-    </style>
-</head>
-</html>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/generic_style.css}">
+</div>
