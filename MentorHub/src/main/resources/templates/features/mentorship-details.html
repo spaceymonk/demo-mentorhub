@@ -6,6 +6,41 @@
 <div th:replace="fragments/navbar :: navbar"></div>
 <div th:replace="fragments/popup.html :: popup"></div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Phase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="text-center">
+                    <span class="star-rating">
+                      <input type="radio" name="rating" value="1"><i></i>
+                      <input type="radio" name="rating" value="2"><i></i>
+                      <input type="radio" name="rating" value="3"><i></i>
+                      <input type="radio" name="rating" value="4"><i></i>
+                      <input type="radio" name="rating" value="5"><i></i>
+                    </span>
+                </div>
+                <br>
+                <div class="form-floating">
+                    <textarea class="form-control" id="txtArea" placeholder="Write an opinion..." required
+                              style="height: 20vh; resize: none;"></textarea>
+                    <label for="txtArea">Write an opinion...</label>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" th:onclick="sendReview()">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div style="min-height: 100vh;">
     <div class="container pt-5">
         <div class="card ">
@@ -66,13 +101,17 @@
                                 th:style="${iter.index < mentorship.currentPhaseIndex} ? 'background-color: #eef' : (${iter.index == mentorship.currentPhaseIndex} ? 'background-color : #efe'  : 'background-color : #fff')">
                                 <div class="row">
                                     <div class="col">
-                                        <strong th:text="${iter.count+'.'}"></strong>
-                                        <span th:text="${phase.name}"></span>
+                                        <div>
+                                            <strong th:text="${iter.count+'.'}"></strong>
+                                            <span th:text="${phase.name}"></span>
+                                        </div>
                                         <br>
-                                        <small class="text-muted">
-                                            End date: <span
-                                                th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd')}"></span>
-                                        </small>
+                                        <div>
+                                            <small class="text-muted">
+                                                End date: <span
+                                                    th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd')}"></span>
+                                            </small>
+                                        </div>
                                     </div>
                                     <div class="col-auto mt-3"
                                          th:with="review=${currentUser.equals(mentorship.mentor)} ?  ${phase.mentorReview} : ${phase.menteeReview}">
@@ -83,6 +122,7 @@
                                         </p>
 
                                         <button type="button" class="btn btn-warning rounded-pills"
+                                                th:onclick="reviewPhase([[${phase.id}]])"
                                                 th:if="${iter.index < mentorship.currentPhaseIndex && review == null}">
                                             Review
                                         </button>
@@ -110,6 +150,45 @@
 
 <script th:inline="javascript">
     let mentorshipId = /*[[${mentorship.id}]]*/ "";
+    let myModal = new bootstrap.Modal($("#exampleModal"))
+    let selectedPhaseId = null;
+
+    let reviewPhase = function (phaseId) {
+        selectedPhaseId = phaseId;
+        $("#txtArea").val("");
+        $(".star-rating input:radio").each(function () {
+            $(this).prop('checked', false);
+        });
+        myModal.show();
+    }
+
+    let sendReview = function () {
+        data = {
+            "text": $("#txtArea").val(),
+            "rating": $('input[name="rating"]:checked').val()
+        };
+        $.ajax({
+            type: 'PUT',
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases/${selectedPhaseId}/reviews`,
+            success: function (data, status, xhr) {
+                myModal.hide();
+                showToast("bg-success", "Done!");
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
+            }
+        });
+    }
+
     let nextPhase = function () {
         $.ajax({
             type: 'POST',

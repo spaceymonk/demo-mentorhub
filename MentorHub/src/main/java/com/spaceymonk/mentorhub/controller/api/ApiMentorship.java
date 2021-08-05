@@ -1,9 +1,6 @@
 package com.spaceymonk.mentorhub.controller.api;
 
-import com.spaceymonk.mentorhub.domain.Mentorship;
-import com.spaceymonk.mentorhub.domain.MentorshipRequest;
-import com.spaceymonk.mentorhub.domain.Phase;
-import com.spaceymonk.mentorhub.domain.User;
+import com.spaceymonk.mentorhub.domain.*;
 import com.spaceymonk.mentorhub.repository.*;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
@@ -12,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
@@ -152,6 +148,42 @@ public class ApiMentorship {
         Mentorship mentorship = mentorshipOptional.get();
 
         mentorship.getPhases().removeIf(phase -> phaseId.equals(phase.getId()));
+
+        mentorshipRepository.save(mentorship);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(value = "/{mentorshipId}/phases/{phaseId}/reviews", consumes = "application/json", method = RequestMethod.PUT)
+    @RolesAllowed({"ROLE_USER"})
+    public ResponseEntity<String> deletePhase(@PathVariable("mentorshipId") String mentorshipId,
+                                              @PathVariable("phaseId") String phaseId,
+                                              @RequestBody PhaseReview requestPhaseReview,
+                                              Authentication authentication) {
+
+        User currentUser = userRepository.findByUsernameOrGoogleId(authentication.getName(), authentication.getName());
+
+        Optional<Mentorship> mentorshipOptional = mentorshipRepository.findById(mentorshipId);
+        if (mentorshipOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("No mentorship found");
+        }
+        Mentorship mentorship = mentorshipOptional.get();
+
+        int phaseIndex = -1;
+        for (int i=0; i<mentorship.getPhases().size(); ++i)
+            if (mentorship.getPhases().get(i).getId().equals(phaseId))
+                phaseIndex = i;
+
+        if (phaseIndex < 0) {
+            return ResponseEntity.badRequest().body("No phase found");
+        }
+
+        if (mentorship.getMentor().equals(currentUser))
+            mentorship.getPhases().get(phaseIndex).setMentorReview(requestPhaseReview);
+        else if (mentorship.getMentee().equals(currentUser))
+            mentorship.getPhases().get(phaseIndex).setMenteeReview(requestPhaseReview);
+        else
+            return ResponseEntity.badRequest().body("You are not authorized!");
 
         mentorshipRepository.save(mentorship);
 
