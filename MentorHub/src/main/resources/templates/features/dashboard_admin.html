@@ -1,22 +1,25 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head('MentorHub::Dashboard')"></head>
+<head>
+    <th:block th:replace="fragments/head"></th:block>
+    <title>MentorHub :: Dashboard</title>
+</head>
 
 <body>
-<div th:replace="fragments/header :: navbar"></div>
-<div th:replace="fragments/popup.html :: popup"></div>
+<th:block th:replace="fragments/header"></th:block>
 
 <div style="min-height: 100vh;">
     <div class="container my-5">
         <div class="card">
+
             <div class="card-header row">
                 <div class="col">
                     <h1 class="card-title">Admin Panel</h1>
                     <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
                 </div>
                 <div class="col-auto nav nav-tabs flex-row">
-                    <a class="nav-link active" href="/dashboard">Requests</a>
-                    <a class="nav-link" href="/subjects">Subjects</a>
+                    <a class="nav-link active" th:href="@{/dashboard}">Requests</a>
+                    <a class="nav-link" th:href="@{/subjects}">Subjects</a>
                 </div>
             </div>
             <div class="card-body">
@@ -24,15 +27,15 @@
                 <div class="container">
                     <p th:if="${waitingRequests.isEmpty()}">There are no waiting requests.</p>
                     <div class="accordion" th:if="${!waitingRequests.isEmpty()}">
-                        <div class="accordion-item" th:each="request : ${waitingRequests}">
+                        <div class="accordion-item" th:each="request : ${waitingRequests}" th:id="${request.id}">
                             <h2 class="accordion-header" th:id="${'heading'+request.id}">
                                 <button aria-expanded="false" class="accordion-button collapsed"
                                         data-bs-toggle="collapse"
                                         th:aria-controls="${'collapse'+request.id}"
                                         th:data-bs-target="${'#collapse'+request.id}"
                                         type="button">
-                                    Request <span class="fst-italic ms-1 text-truncate"
-                                                  th:text="${request.id}">$id$</span>
+                                    Request Id <span class="fst-italic ms-1 text-truncate"
+                                                     th:text="${request.id}">$id$</span>
                                 </button>
                             </h2>
                             <div class="accordion-collapse collapse" th:aria-labelledby="${'heading'+request.id}"
@@ -89,9 +92,12 @@
             url: `http://localhost:8080/api/requests/${id}/${answer}`,
             success: function (data, status, xhr) {
                 showToast("bg-success", "Done!");
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
+                $(`#${id}`).remove();
+                if( $('.accordion-item').length == 0 ) {
+                    $('.card-body .container').append(
+                        `<p>There are no waiting requests.</p>`
+                    );
+                }
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
@@ -105,7 +111,7 @@
 </script>
 
 
-<div th:replace="fragments/footer :: footer"></div>
+<th:block th:replace="fragments/footer"></th:block>
 </body>
 </html>
 

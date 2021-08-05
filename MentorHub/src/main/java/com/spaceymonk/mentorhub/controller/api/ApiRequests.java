@@ -36,6 +36,11 @@ public class ApiRequests {
         }
 
         MentorshipRequest mentorshipRequest = mentorshipRequestOptional.get();
+
+        if (!mentorshipRequest.getStatus().equals("waiting")){
+            return ResponseEntity.badRequest().body("Already " + mentorshipRequest.getStatus() + "!");
+        }
+
         mentorshipRequest.setStatus((answer) ? "accepted" : "rejected");
         mentorshipRequestRepository.save(mentorshipRequest);
 
