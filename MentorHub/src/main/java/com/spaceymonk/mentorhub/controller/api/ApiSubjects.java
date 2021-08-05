@@ -27,7 +27,7 @@ public class ApiSubjects {
         }
     }
 
-    @RequestMapping(value = "/", consumes = "application/json", method = RequestMethod.POST)
+    @RequestMapping(value = "/", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<String> saveSubjectDetails(@RequestBody Subject requestSubject) {
 
