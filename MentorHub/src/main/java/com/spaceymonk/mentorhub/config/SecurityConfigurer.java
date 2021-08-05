@@ -96,7 +96,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
 
         http
                 .authorizeRequests(a -> a
-                        .antMatchers("/", "/error", "/assets/**", "/logout", "/oauth/**").permitAll()
+                        .antMatchers("/", "/error", "/assets/**", "/logout", "/oauth/**", "/css/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling().accessDeniedPage("/403").and()
