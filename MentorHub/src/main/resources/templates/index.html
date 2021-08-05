@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:insert="fragments/head"></th:block>
+    <th:block th:replace="fragments/head"></th:block>
     <link rel="stylesheet" type="text/css" th:href="@{/css/index-page.css}">
     <title>MentorHub :: Login</title>
 </head>
 
 <body>
 
-<div style="height: 100vh;">
+<div style="min-height: 100vh;">
     <div class="container h-100 d-flex align-items-center justify-content-center">
         <div class="card bg-light"
              style="box-shadow: 0 0 20px 20px rgba(0,0,0,0.5);">
