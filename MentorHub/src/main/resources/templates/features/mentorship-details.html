@@ -1,10 +1,13 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="fragments/head :: head('MentorHub :: Mentorship Details')"></div>
+<head>
+    <th:block th:replace="fragments/head"></th:block>
+    <title>MentorHub :: Mentorship Details</title>
+</head>
 
 <body>
-<div th:replace="fragments/header :: navbar"></div>
-<div th:replace="fragments/popup.html :: popup"></div>
+<th:block th:replace="fragments/header"></th:block>
+
 
 <!-- Modal -->
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
@@ -161,6 +164,9 @@
     </div>
 </div>
 
+<th:block th:replace="fragments/footer"></th:block>
+
+
 <script th:inline="javascript">
     let mentorshipId = /*[[${mentorship.id}]]*/ "";
     let myModal = new bootstrap.Modal($("#exampleModal"))
@@ -220,7 +226,6 @@
     }
 </script>
 
-<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
 
