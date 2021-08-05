@@ -101,16 +101,27 @@
                                 th:style="${iter.index < mentorship.currentPhaseIndex} ? 'background-color: #eef' : (${iter.index == mentorship.currentPhaseIndex} ? 'background-color : #efe'  : 'background-color : #fff')">
                                 <div class="row">
                                     <div class="col">
-                                        <div>
-                                            <strong th:text="${iter.count+'.'}"></strong>
-                                            <span th:text="${phase.name}"></span>
-                                        </div>
+                                        <strong th:text="${iter.count+'.'}"></strong>
+                                        <span th:text="${phase.name}"></span>
                                         <br>
-                                        <div>
-                                            <small class="text-muted">
-                                                End date: <span
-                                                    th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd')}"></span>
-                                            </small>
+                                        <small class="text-muted">
+                                            End date: <span
+                                                th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd')}"></span>
+                                        </small>
+                                        <br>
+                                        <div class="card mt-2 p-2 bg-light" th:inline="text" th:if="${phase.mentorReview != null}">
+                                            <span class="fst-italic">Mentor's Review: </span>
+                                            [[${phase.mentorReview.text}]]
+                                            <br>
+                                            <small class="text-muted fst-italic"
+                                                   th:text="${phase.mentorReview.rating + '/5 stars'}"></small>
+                                        </div>
+                                        <div class="card p-2 bg-light" th:inline="text" th:if="${phase.menteeReview != null}">
+                                            <span class="fst-italic">Mentee's Review: </span>
+                                            [[${phase.menteeReview.text}]]
+                                            <br>
+                                            <small class="text-muted fst-italic"
+                                                   th:text="${phase.menteeReview.rating + '/5 stars'}"></small>
                                         </div>
                                     </div>
                                     <div class="col-auto mt-3"
