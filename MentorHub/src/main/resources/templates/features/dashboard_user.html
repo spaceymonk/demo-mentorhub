@@ -6,17 +6,20 @@
 </head>
 
 <body>
-<div th:replace="fragments/navbar :: navbar"></div>
+<th:block th:replace="fragments/navbar"></th:block>
 
 
 <div style="min-height: 100vh;">
     <div class="container pt-5">
         <div class="card ">
+
             <div class="card-header">
                 <h1 class="card-title">Dashboard</h1>
                 <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
             </div>
+
             <div class="card-body">
+
                 <div>
                     <h4 class="my-4">Mentor Sections</h4>
                     <div class="container">
@@ -26,8 +29,8 @@
                                 th:each="section : ${currentUser.getMentorSections()}">
                                 <div class="ms-2 me-auto">
                                     <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
-                                    Mentee: <span th:text="${section.mentee.actualName}"></span> <br>
-                                    Phase: <span th:text="${section.status}"></span>
+                                    Mentee: <th:block th:text="${section.mentee.actualName}"></th:block> <br>
+                                    Phase: <th:block th:text="${section.status}"></th:block>
                                 </div>
                                 <a class="btn btn-info btn-sm rounded-pill"
                                    th:href="@{/details/{id}(id=${section.id})}">Details</a>
@@ -35,6 +38,7 @@
                         </ol>
                     </div>
                 </div>
+
                 <div>
                     <h4 class="my-4">Mentee Sections</h4>
                     <div class="container">
@@ -44,8 +48,8 @@
                                 th:each="section : ${currentUser.getMenteeSections()}">
                                 <div class="ms-2 me-auto">
                                     <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
-                                    Mentor: <span th:text="${section.mentor.actualName}"></span> <br>
-                                    Phase: <span th:text="${section.status}"></span>
+                                    Mentor: <th:block th:text="${section.mentor.actualName}"></th:block> <br>
+                                    Phase: <th:block th:text="${section.status}"></th:block>
                                 </div>
                                 <a class="btn btn-info btn-sm rounded-pill"
                                    th:href="@{/details/{id}(id=${section.id})}">Details</a>
@@ -53,17 +57,20 @@
                         </ol>
                     </div>
                 </div>
+
             </div>
+
             <div class="card-footer">
                 <a class="btn btn-secondary" th:href="@{/search}">Search</a>
                 <a class="btn btn-secondary" th:href="@{/apply}">Apply</a>
             </div>
+
         </div>
     </div>
 </div>
 
 
-<div th:replace="fragments/footer :: footer"></div>
+<th:block th:replace="fragments/footer"></th:block>
 </body>
 </html>
 
