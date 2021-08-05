@@ -1,7 +1,9 @@
 package com.spaceymonk.mentorhub.controller.api;
 
 import com.spaceymonk.mentorhub.domain.*;
-import com.spaceymonk.mentorhub.repository.*;
+import com.spaceymonk.mentorhub.repository.MentorshipRepository;
+import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
+import com.spaceymonk.mentorhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;

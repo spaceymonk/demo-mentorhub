@@ -13,7 +13,8 @@
         <div class="card">
 
             <div class="card-header">
-                <a class="btn btn-secondary rounded-circle" th:href="@{/dashboard}"><i class="fas fa-arrow-left"></i></a>
+                <a class="btn btn-secondary rounded-circle" th:href="@{/dashboard}"><i
+                        class="fas fa-arrow-left"></i></a>
             </div>
 
             <div class="card-body">
@@ -28,7 +29,7 @@
                         <div class="col">
                             <label for="categoryselector">Select a major:</label>
                             <select class="form-select" id="categoryselector" required th:name="selectedCategory">
-                                <option selected value="" class="fst-italic">Choose...</option>
+                                <option class="fst-italic" selected value="">Choose...</option>
                                 <option th:each="category : ${categories}" th:text="${category.majorSubject}"
                                         th:value="${category.id}"></option>
                             </select>
@@ -68,7 +69,7 @@
 
                     <div class="row mt-3">
                         <div class="col text-center">
-                            <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
+                            <button class="btn btn-primary" onclick="submitForm()" type="button">Submit</button>
                         </div>
                     </div>
 

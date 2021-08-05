@@ -7,27 +7,27 @@
 <div th:replace="fragments/popup.html :: popup"></div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Edit Phase</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body">
 
                 <label class="w-100 mb-3" for="phasename">Phase name: <br>
-                    <input id="phasename" class="form-control mt-1" type="text" placeholder="Enter a name">
+                    <input class="form-control mt-1" id="phasename" placeholder="Enter a name" type="text">
                 </label>
                 <br>
                 <label class="w-100" for="phasedate">End date: <br>
-                    <input id="phasedate" class="form-control mt-1" type="date" placeholder="Enter a date">
+                    <input class="form-control mt-1" id="phasedate" placeholder="Enter a date" type="date">
                 </label>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" th:onclick="saveChanges()">Save
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" th:onclick="saveChanges()" type="button">Save
                     changes
                 </button>
             </div>
@@ -60,12 +60,12 @@
                                     </small>
                                 </div>
                                 <div class="col-auto btn-group">
-                                    <button type="button" class="btn btn-primary"
-                                            th:onclick="editPhase([[${phase.name}]], [[${phase.endDate}]], [[${phase.id}]])">
+                                    <button class="btn btn-primary" th:onclick="editPhase([[${phase.name}]], [[${phase.endDate}]], [[${phase.id}]])"
+                                            type="button">
                                         Edit
                                     </button>
-                                    <button type="button" class="btn btn-danger"
-                                            th:onclick="removePhase([[${phase.id}]])">
+                                    <button class="btn btn-danger" th:onclick="removePhase([[${phase.id}]])"
+                                            type="button">
                                         Remove
                                     </button>
                                 </div>
@@ -76,7 +76,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button type="button" class="btn btn-secondary" onclick="addPhase()">Add</button>
+                <button class="btn btn-secondary" onclick="addPhase()" type="button">Add</button>
             </div>
         </div>
     </div>

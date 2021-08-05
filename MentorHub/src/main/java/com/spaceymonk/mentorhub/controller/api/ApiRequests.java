@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @RequestMapping("/api/requests")
@@ -37,7 +36,7 @@ public class ApiRequests {
 
         MentorshipRequest mentorshipRequest = mentorshipRequestOptional.get();
 
-        if (!mentorshipRequest.getStatus().equals("waiting")){
+        if (!mentorshipRequest.getStatus().equals("waiting")) {
             return ResponseEntity.badRequest().body("Already " + mentorshipRequest.getStatus() + "!");
         }
 
@@ -47,7 +46,7 @@ public class ApiRequests {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/", consumes = "application/json",method = RequestMethod.PUT)
+    @RequestMapping(value = "/", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> createMentorshipRequest(@RequestBody MentorshipRequest mentorshipRequest,
                                                           Authentication authentication) {

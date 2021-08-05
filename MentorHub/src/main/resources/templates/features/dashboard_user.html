@@ -29,8 +29,11 @@
                                 th:each="section : ${currentUser.getMentorSections()}">
                                 <div class="ms-2 me-auto">
                                     <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
-                                    Mentee: <th:block th:text="${section.mentee.actualName}"></th:block> <br>
-                                    Phase: <th:block th:text="${section.status}"></th:block>
+                                    Mentee:
+                                    <th:block th:text="${section.mentee.actualName}"></th:block>
+                                    <br>
+                                    Phase:
+                                    <th:block th:text="${section.status}"></th:block>
                                 </div>
                                 <a class="btn btn-info btn-sm rounded-pill"
                                    th:href="@{/details/{id}(id=${section.id})}">Details</a>
@@ -48,8 +51,11 @@
                                 th:each="section : ${currentUser.getMenteeSections()}">
                                 <div class="ms-2 me-auto">
                                     <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
-                                    Mentor: <th:block th:text="${section.mentor.actualName}"></th:block> <br>
-                                    Phase: <th:block th:text="${section.status}"></th:block>
+                                    Mentor:
+                                    <th:block th:text="${section.mentor.actualName}"></th:block>
+                                    <br>
+                                    Phase:
+                                    <th:block th:text="${section.status}"></th:block>
                                 </div>
                                 <a class="btn btn-info btn-sm rounded-pill"
                                    th:href="@{/details/{id}(id=${section.id})}">Details</a>

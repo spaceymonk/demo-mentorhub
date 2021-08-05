@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -15,6 +15,6 @@ public class Subject {
     @EqualsAndHashCode.Include
     private String id;
     private String majorSubject;
-    private Set<String> subjects = new HashSet<>();
+    private List<String> subjects = new ArrayList<>();
 
 }

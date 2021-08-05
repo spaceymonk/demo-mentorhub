@@ -1,7 +1,7 @@
 package com.spaceymonk.mentorhub.controller.api;
 
 import com.spaceymonk.mentorhub.domain.Subject;
-import com.spaceymonk.mentorhub.repository.*;
+import com.spaceymonk.mentorhub.repository.SubjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,30 +29,19 @@ public class ApiSubjects {
 
     @RequestMapping(value = "/", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_ADMIN"})
-    public ResponseEntity<String> saveSubjectDetails(@RequestBody Subject requestSubject) {
+    public ResponseEntity<String> saveSubjectDetails(@RequestBody Subject subject) {
 
         // Data Control
-        if (requestSubject.getMajorSubject() == null || requestSubject.getMajorSubject().isBlank()
-                || requestSubject.getSubjects() == null) {
+        if (subject.getMajorSubject() == null || subject.getMajorSubject().isBlank()
+                || subject.getSubjects() == null) {
             return ResponseEntity.badRequest().body("No subjects entered!");
         }
-        requestSubject.getSubjects().removeIf(String::isBlank);
-        if (requestSubject.getSubjects().isEmpty()) {
+        subject.getSubjects().removeIf(String::isBlank);
+        if (subject.getSubjects().isEmpty()) {
             return ResponseEntity.badRequest().body("No subjects entered!");
         }
 
         // Data creation
-        Subject subject = new Subject();
-        if (requestSubject.getId() != null) {
-            Optional<Subject> subjectQuery = subjectRepository.findById(requestSubject.getId());
-            if (subjectQuery.isEmpty()) {
-                return ResponseEntity.badRequest().body("Edit failed due to id invalid!");
-            }
-            subject = subjectQuery.get();
-        }
-        subject.setMajorSubject(requestSubject.getMajorSubject());
-        subject.getSubjects().clear();
-        subject.getSubjects().addAll(requestSubject.getSubjects());
         subjectRepository.save(subject);
         return ResponseEntity.ok().build();
     }

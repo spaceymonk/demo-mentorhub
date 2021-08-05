@@ -19,7 +19,6 @@ public class User {
     private String username;
     private String password;
     private String actualName;
-    private boolean becomeMentor;
     private boolean enabled;
     private Set<Role> roles;
     @DBRef

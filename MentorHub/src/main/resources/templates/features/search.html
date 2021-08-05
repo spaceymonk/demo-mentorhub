@@ -25,7 +25,8 @@
                                         <div>
                                         <span class="lead"
                                               th:text="${mentorshipRequest.selectedSubject.majorSubject}"></span>
-                                            <small class="fst-italic text-muted" th:text="${mentorshipRequest.mentor.actualName}"></small>
+                                            <small class="fst-italic text-muted"
+                                                   th:text="${mentorshipRequest.mentor.actualName}"></small>
                                         </div>
                                         <ul>
                                             <li th:each="subject : ${mentorshipRequest.selectedSubject.subjects}"

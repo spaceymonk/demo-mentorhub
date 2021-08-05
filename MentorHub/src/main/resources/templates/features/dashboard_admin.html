@@ -95,7 +95,7 @@
             success: function (data, status, xhr) {
                 showToast("bg-success", "Done!");
                 $(`#${id}`).remove();
-                if( $('.accordion-item').length == 0 ) {
+                if ($('.accordion-item').length == 0) {
                     $('.card-body .container').append(
                         `<p>There are no waiting requests.</p>`
                     );
