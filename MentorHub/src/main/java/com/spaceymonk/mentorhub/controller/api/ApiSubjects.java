@@ -34,11 +34,11 @@ public class ApiSubjects {
         // Data Control
         if (requestSubject.getMajorSubject() == null || requestSubject.getMajorSubject().isBlank()
                 || requestSubject.getSubjects() == null) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.badRequest().body("No subjects entered!");
         }
         requestSubject.getSubjects().removeIf(String::isBlank);
         if (requestSubject.getSubjects().isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.badRequest().body("No subjects entered!");
         }
 
         // Data creation
@@ -46,7 +46,7 @@ public class ApiSubjects {
         if (requestSubject.getId() != null) {
             Optional<Subject> subjectQuery = subjectRepository.findById(requestSubject.getId());
             if (subjectQuery.isEmpty()) {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.badRequest().body("Edit failed due to id invalid!");
             }
             subject = subjectQuery.get();
         }

@@ -141,45 +141,52 @@
     }
 
     let saveChanges = function () {
+
+        // get input
         let categoryName = $("#formMajorNameFld").val() || "";
         let subjects = $("#formSubjectList li input").map(function () {
             return $(this).val();
         }).get() || [];
+
+        // ajax
         data = {
-            "id": currentId,
-            "majorSubject": categoryName,
-            "subjects": subjects
+            id: currentId,
+            majorSubject: categoryName,
+            subjects: subjects
         };
         $.ajax({
             type: 'PUT',
             url: 'http://localhost:8080/api/subjects/',
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function (data, status, xhr) {
+            success: function (returnedData, status, xhr) {
+                $(`#${data.id}`).remove();
                 listElement = "";
-                subjects.forEach(function (value) {
+                console.log(data.subjects);
+                data.subjects.forEach(function (value) {
                     listElement += `<li>${value}</li>`;
                 });
                 element = `
-                    <li class="list-group-item" id="${currentId}">
+                    <li class="list-group-item" id="${data.id}">
                         <div class="row">
                             <div class="col">
-                                <p class="lead mb-1">${categoryName}</p>
+                                <p class="lead mb-1">${data.majorSubject}</p>
                                 <ul class="text-muted">
                                     ${listElement}
                                 </ul>
                             </div>
                             <div class="col-auto btn-group mt-3 d-flex align-items-center">
-                                <button class="btn btn-primary me-2" th:onclick="editMajor(${currentId});"
+                                <button class="btn btn-primary me-2" onclick="editMajor('${data.id}');"
                                         type="button">Edit
                                 </button>
-                                <button class="btn btn-danger" th:onclick="removeMajor(${currentId});"
+                                <button class="btn btn-danger" onclick="removeMajor('${data.id}');"
                                         type="button">Remove
                                 </button>
                             </div>
                         </div>
                     </li>`;
                 $('#subjectList').append(element);
+                myModal.hide();
                 showToast("bg-success", "Changes saved!");
             },
             error: function (jqXhr, textStatus, errorMessage) {
