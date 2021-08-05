@@ -21,10 +21,8 @@ import java.util.Optional;
 public class ApiRequests {
 
     private final UserRepository userRepository;
-    private final MentorshipRepository mentorshipRepository;
     private final MentorshipRequestRepository mentorshipRequestRepository;
     private final SubjectRepository subjectRepository;
-    private final RoleRepository roleRepository;
 
     @RequestMapping(value = "/{id}/{answer}", method = RequestMethod.POST)
     @RolesAllowed({"ROLE_ADMIN"})

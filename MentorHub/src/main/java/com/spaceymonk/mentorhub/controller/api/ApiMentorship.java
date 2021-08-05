@@ -21,8 +21,6 @@ public class ApiMentorship {
     private final UserRepository userRepository;
     private final MentorshipRepository mentorshipRepository;
     private final MentorshipRequestRepository mentorshipRequestRepository;
-    private final SubjectRepository subjectRepository;
-    private final RoleRepository roleRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
