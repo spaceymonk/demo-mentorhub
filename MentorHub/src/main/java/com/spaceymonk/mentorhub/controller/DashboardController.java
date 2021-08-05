@@ -1,5 +1,6 @@
 package com.spaceymonk.mentorhub.controller;
 
+import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
@@ -11,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Comparator;
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -28,7 +31,9 @@ public class DashboardController {
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
             return "features/dashboard_user";
         } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            model.addAttribute("waitingRequests", mentorshipRequestRepository.findByStatus("waiting"));
+            List<MentorshipRequest> waitingRequests = mentorshipRequestRepository.findByStatus("waiting");
+            waitingRequests.sort(Comparator.comparing(MentorshipRequest::getDate).reversed());
+            model.addAttribute("waitingRequests", waitingRequests);
             return "features/dashboard_admin";
         }
 
