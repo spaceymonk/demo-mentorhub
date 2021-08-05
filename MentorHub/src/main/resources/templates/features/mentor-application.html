@@ -36,7 +36,8 @@
                             <small class="text-danger" id="errSelectMajorFirst">Please select a major first.</small>
                             <div class="form-check categories" style="display: none" th:each="category : ${categories}"
                                  th:id="${category.id}">
-                                <div th:each="subject : ${category.subjects}" th:with="randomId=${#strings.randomAlphanumeric(10)}">
+                                <div th:each="subject : ${category.subjects}"
+                                     th:with="randomId=${#strings.randomAlphanumeric(10)}">
                                     <input class="form-check-input" th:id="${randomId}"
                                            th:name="selectedSubject"
                                            th:value="${subject}" type="checkbox">
@@ -104,9 +105,11 @@
         let explainMsg = $("#txtArea").val();
 
         data = {
-            "selectedCategory": selectedCategory,
-            "selectedSubjects": selectedSubjects,
-            "explainMsg": explainMsg
+            "selectedSubject": {
+                "majorSubject": selectedCategory,
+                "subjects": selectedSubjects
+            },
+            "text": explainMsg
         };
 
         $.ajax("http://localhost:8080/api/requests/", {

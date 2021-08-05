@@ -1,18 +1,19 @@
 package com.spaceymonk.mentorhub.controller.api;
 
-import com.spaceymonk.mentorhub.controller.wrapper.RegisterApplicationWrapper;
 import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.domain.Subject;
 import com.spaceymonk.mentorhub.domain.User;
-import com.spaceymonk.mentorhub.repository.*;
+import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
+import com.spaceymonk.mentorhub.repository.SubjectRepository;
+import com.spaceymonk.mentorhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RequestMapping("/api/requests")
@@ -41,45 +42,38 @@ public class ApiRequests {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/", consumes = "application/json", method = RequestMethod.PUT)
+    @RequestMapping(value = "/", consumes = "application/json",method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
-    public ResponseEntity<String> createMentorshipRequest(@RequestBody RegisterApplicationWrapper registerApplicationWrapper,
-                                                          Authentication auth) {
+    public ResponseEntity<String> createMentorshipRequest(@RequestBody MentorshipRequest mentorshipRequest,
+                                                          Authentication authentication) {
 
         // check for given category
-        if (registerApplicationWrapper.getSelectedCategory().isBlank()) {
+        if (mentorshipRequest.getSelectedSubject().getMajorSubject().isBlank()) {
             return ResponseEntity.badRequest().body("Please select a major!");
         }
-        Subject s = subjectRepository.findByMajorSubject(registerApplicationWrapper.getSelectedCategory());
+        Subject s = subjectRepository.findByMajorSubject(mentorshipRequest.getSelectedSubject().getMajorSubject());
         if (s == null) {
             return ResponseEntity.badRequest().body("No such major found!");
         }
 
         // check for subjects
-        if (registerApplicationWrapper.getSelectedSubjects().isEmpty()) {
+        if (mentorshipRequest.getSelectedSubject().getSubjects().isEmpty()) {
             return ResponseEntity.badRequest().body("No subject entered!");
         }
-        if (!s.getSubjects().containsAll(registerApplicationWrapper.getSelectedSubjects())) {
+        if (!s.getSubjects().containsAll(mentorshipRequest.getSelectedSubject().getSubjects())) {
             return ResponseEntity.badRequest().body("Selected subjects does not belong to the selected major!");
         }
 
         // check for explain message
-        if (registerApplicationWrapper.getExplainMsg().isBlank()) {
+        if (mentorshipRequest.getText().isBlank()) {
             return ResponseEntity.badRequest().body("Please write something about yourself.");
         }
 
-        Subject fields = new Subject();
-        fields.setMajorSubject(registerApplicationWrapper.getSelectedCategory());
-        fields.getSubjects().addAll(registerApplicationWrapper.getSelectedSubjects());
-
-        MentorshipRequest request = new MentorshipRequest();
-        User currentUser = userRepository.findByUsernameOrGoogleId(auth.getName(), auth.getName());
-        request.setMentor(currentUser);
-        request.setStatus("waiting");
-        request.setText(registerApplicationWrapper.getExplainMsg());
-        request.setSelectedSubject(fields);
-        request.setDate(new Date());
-        mentorshipRequestRepository.save(request);
+        User currentUser = userRepository.findByUsernameOrGoogleId(authentication.getName(), authentication.getName());
+        mentorshipRequest.setMentor(currentUser);
+        mentorshipRequest.setStatus("waiting");
+        mentorshipRequest.setDate(new Date());
+        mentorshipRequestRepository.save(mentorshipRequest);
 
         return ResponseEntity.ok().build();
     }
