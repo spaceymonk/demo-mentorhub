@@ -26,8 +26,8 @@ public class ApiMentorship {
 
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
-    public ResponseEntity<String> createMentorship(String mentorshipRequestId,
-                                                   Authentication authentication) {
+    public ResponseEntity<String> saveMentorship(String mentorshipRequestId,
+                                                 Authentication authentication) {
 
         User currentUser = userRepository.findByUsernameOrGoogleId(authentication.getName(), authentication.getName());
 
@@ -67,7 +67,7 @@ public class ApiMentorship {
         userRepository.save(currentUser);
         userRepository.save(requestOwner);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(mentorship.getId());
     }
 
     @RequestMapping(value = "/{mentorshipId}/phases", consumes = "application/json", method = RequestMethod.PUT)
@@ -97,6 +97,7 @@ public class ApiMentorship {
         if (repoIndex != -1) {
             mentorship.getPhases().set(repoIndex, requestPhase);
         } else {
+            requestPhase.setId(new ObjectId().toHexString());
             mentorship.getPhases().add(requestPhase);
         }
 
@@ -104,10 +105,10 @@ public class ApiMentorship {
 
         mentorshipRepository.save(mentorship);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(requestPhase.getId());
     }
 
-    @RequestMapping(value = "/{mentorshipId}/phases", method = RequestMethod.POST)
+    @RequestMapping(value = "/{mentorshipId}/nextPhase", method = RequestMethod.POST)
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> nextPhase(@PathVariable("mentorshipId") String mentorshipId) {
 
@@ -133,7 +134,7 @@ public class ApiMentorship {
 
         mentorshipRepository.save(mentorship);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(mentorship.getPhases().get(mentorship.getCurrentPhaseIndex()).getId());
     }
 
     @RequestMapping(value = "/{mentorshipId}/phases/{phaseId}", method = RequestMethod.DELETE)
@@ -151,15 +152,15 @@ public class ApiMentorship {
 
         mentorshipRepository.save(mentorship);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(phaseId);
     }
 
     @RequestMapping(value = "/{mentorshipId}/phases/{phaseId}/reviews", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
-    public ResponseEntity<String> deletePhase(@PathVariable("mentorshipId") String mentorshipId,
-                                              @PathVariable("phaseId") String phaseId,
-                                              @RequestBody PhaseReview requestPhaseReview,
-                                              Authentication authentication) {
+    public ResponseEntity<String> savePhaseReview(@PathVariable("mentorshipId") String mentorshipId,
+                                                  @PathVariable("phaseId") String phaseId,
+                                                  @RequestBody PhaseReview requestPhaseReview,
+                                                  Authentication authentication) {
 
         User currentUser = userRepository.findByUsernameOrGoogleId(authentication.getName(), authentication.getName());
 

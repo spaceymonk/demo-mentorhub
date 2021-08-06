@@ -49,21 +49,22 @@
                 <h4 class="my-4">Phase planning</h4>
                 <div class="container">
                     <p th:if="${mentorship.phases.isEmpty()}">No phase added.</p>
-                    <ul class="list-group">
+                    <ol class="list-group list-group-numbered" id="phaseList">
 
-                        <li class="list-group-item" th:each="phase, iter : ${mentorship.phases}">
+                        <li class="list-group-item" th:each="phase, iter : ${mentorship.phases}" th:id="${phase.id}"
+                            th:data-sort="${#dates.format(phase.endDate, 'yyyy-MM-dd')}">
                             <div class="row">
                                 <div class="col">
-                                    <strong th:text="${iter.count+'.'}"></strong>
-                                    <span th:text="${phase.name}"></span>
+                                    <th:block th:text="${phase.name}"></th:block>
                                     <br>
                                     <small class="text-muted">
                                         End date: <span
-                                            th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd')}"></span>
+                                            th:text="${#dates.format(phase.endDate, 'yyyy-MM-dd')}"></span>
                                     </small>
                                 </div>
-                                <div class="col-auto btn-group">
-                                    <button class="btn btn-primary" th:onclick="editPhase([[${phase.name}]], [[${phase.endDate}]], [[${phase.id}]])"
+                                <div class="col-auto btn-group mt-3">
+                                    <button class="btn btn-primary"
+                                            th:onclick="editPhase([[${phase.name}]], [[${#dates.format(phase.endDate, 'yyyy-MM-dd')}]], [[${phase.id}]])"
                                             type="button">
                                         Edit
                                     </button>
@@ -75,7 +76,7 @@
                             </div>
                         </li>
 
-                    </ul>
+                    </ol>
                 </div>
             </div>
             <div class="card-footer">
@@ -89,8 +90,8 @@
 
 
 <script th:inline="javascript">
-    let myModal = new bootstrap.Modal($("#exampleModal"))
-    let mentorshipId = /*[[${mentorship.id}]]*/ "";
+    const myModal = new bootstrap.Modal($("#exampleModal"))
+    const mentorshipId = /*[[${mentorship.id}]]*/ "";
     let selectedPhaseId = null;
 
     let editPhase = function (phaseName, phaseDate, phaseId) {
@@ -111,11 +112,9 @@
         $.ajax({
             type: 'DELETE',
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases/${phaseId}`,
-            success: function (data, status, xhr) {
+            success: function (deletedId, status, xhr) {
+                $(`#${deletedId}`).remove();
                 showToast("bg-success", "Sucessfully removed!");
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
@@ -139,12 +138,35 @@
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases`,
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function (data, status, xhr) {
-                showToast("bg-success", "Changes saved!");
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
+            success: function (createdId, status, xhr) {
+                let DOMelement = `
+                <li class="list-group-item" id="${createdId}" data-sort="${data.endDate}">
+                    <div class="row">
+                        <div class="col">
+                            ${data.name}
+                            <br>
+                            <small class="text-muted">
+                                End date: <span>${data.endDate}</span>
+                            </small>
+                        </div>
+                        <div class="col-auto btn-group mt-3">
+                            <button class="btn btn-primary" onclick="editPhase('${data.name}', '${data.endDate}', '${createdId}')" type="button">
+                                Edit
+                            </button>
+                            <button class="btn btn-danger" onclick="removePhase('${createdId}')" type="button">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                </li>`;
+                $(`#${createdId}`).remove();
+                $("#phaseList").append(DOMelement);
+                sortedList = $("#phaseList").children().sort(function (a, b) {
+                    return new Date($(a).data("sort")) - new Date($(b).data("sort"));
+                });
+                $("#phaseList").html(sortedList);
                 myModal.hide();
+                showToast("bg-success", "Changes saved!");
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)

@@ -211,7 +211,7 @@
     let nextPhase = function () {
         $.ajax({
             type: 'POST',
-            url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases`,
+            url: `http://localhost:8080/api/mentorships/${mentorshipId}/nextPhase`,
             success: function (data, status, xhr) {
                 location.reload();
             },
