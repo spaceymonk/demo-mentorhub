@@ -141,6 +141,9 @@ public class ApiMentorship {
 
         mentorshipRepository.save(mentorship);
 
+        if (mentorship.isCompleted())
+            return ResponseEntity.ok().build();
+
         return ResponseEntity.ok(mentorship.getPhases().get(mentorship.getCurrentPhaseIndex()).getId());
     }
 

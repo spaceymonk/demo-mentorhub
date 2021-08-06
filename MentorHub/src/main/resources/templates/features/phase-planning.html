@@ -23,8 +23,12 @@
                     <input class="form-control mt-1" id="phasename" placeholder="Enter a name" type="text">
                 </label>
                 <br>
-                <label class="w-100" for="phasedate">End date: <br>
+                <label class="w-100 mb-3" for="phasedate">End date: <br>
                     <input class="form-control mt-1" id="phasedate" placeholder="Enter a date" type="date">
+                </label>
+                <br>
+                <label class="w-100 mb-3" for="phasetime">End time: <br>
+                    <input class="form-control mt-1" id="phasetime" placeholder="Enter a time" type="time">
                 </label>
 
             </div>
@@ -51,20 +55,20 @@
                     <p th:if="${mentorship.phases.isEmpty()}">No phase added.</p>
                     <ol class="list-group list-group-numbered" id="phaseList">
 
-                        <li class="list-group-item" th:each="phase, iter : ${mentorship.phases}" th:id="${phase.id}"
-                            th:data-sort="${#dates.format(phase.endDate, 'yyyy-MM-dd')}">
+                        <li class="list-group-item" th:each="phase, iter : ${mentorship.phases}"
+                            th:id="${phase.id}"
+                            th:data-sort="${dateParam}">
                             <div class="row">
                                 <div class="col">
                                     <th:block th:text="${phase.name}"></th:block>
-                                    <br>
                                     <small class="text-muted">
                                         End date: <span
-                                            th:text="${#dates.format(phase.endDate, 'yyyy-MM-dd')}"></span>
+                                            th:text="${#dates.format(phase.endDate, 'yyyy-MM-dd HH:mm')}"></span>
                                     </small>
                                 </div>
                                 <div class="col-auto btn-group mt-3">
                                     <button class="btn btn-primary"
-                                            th:onclick="editPhase([[${phase.name}]], [[${#dates.format(phase.endDate, 'yyyy-MM-dd')}]], [[${phase.id}]])"
+                                            th:onclick="editPhase([[${phase.name}]], [[${#dates.format(phase.endDate, 'yyyy-MM-dd')}]], [[${#dates.format(phase.endDate, 'HH:mm')}]], [[${phase.id}]])"
                                             type="button">
                                         Edit
                                     </button>
@@ -94,10 +98,11 @@
     const mentorshipId = /*[[${mentorship.id}]]*/ "";
     let selectedPhaseId = null;
 
-    let editPhase = function (phaseName, phaseDate, phaseId) {
+    let editPhase = function (phaseName, phaseDate, phaseTime, phaseId) {
         selectedPhaseId = phaseId;
         $("#phasename").val(phaseName);
         $("#phasedate").val(phaseDate);
+        $("#phasetime").val(phaseTime);
         myModal.show();
     }
 
@@ -105,6 +110,7 @@
         selectedPhaseId = null;
         $("#phasename").val("");
         $("#phasedate").val("");
+        $("#phasetime").val("");
         myModal.show();
     }
 
@@ -127,12 +133,18 @@
     }
 
     let saveChanges = function () {
+        let selectedDate = $('#phasedate').val();
+        let selectedTime = $('#phasetime').val();
+        let selectedName = $('#phasename').val();
+        let selectedDateTime = selectedDate + 'T' + selectedTime;
+
         data = {
-            "id": selectedPhaseId,
-            "name": $('#phasename').val(),
-            "endDate": $('#phasedate').val(),
-            "status": "unbegun"
+            id: selectedPhaseId,
+            name: selectedName,
+            endDate: selectedDateTime,
+            status: "unbegun"
         };
+
         $.ajax({
             type: 'PUT',
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases`,
@@ -140,17 +152,17 @@
             data: JSON.stringify(data),
             success: function (createdId, status, xhr) {
                 let DOMelement = `
-                <li class="list-group-item" id="${createdId}" data-sort="${data.endDate}">
+                <li class="list-group-item" id="${createdId}" data-sort="${selectedDateTime}">
                     <div class="row">
                         <div class="col">
-                            ${data.name}
+                            ${selectedName}
                             <br>
                             <small class="text-muted">
-                                End date: <span>${data.endDate}</span>
+                                End date: <span>${selectedDate + ' ' + selectedTime}</span>
                             </small>
                         </div>
                         <div class="col-auto btn-group mt-3">
-                            <button class="btn btn-primary" onclick="editPhase('${data.name}', '${data.endDate}', '${createdId}')" type="button">
+                            <button class="btn btn-primary" onclick="editPhase('${selectedName}', '${selectedDate}', '${selectedTime}', '${createdId}')" type="button">
                                 Edit
                             </button>
                             <button class="btn btn-danger" onclick="removePhase('${createdId}')" type="button">
