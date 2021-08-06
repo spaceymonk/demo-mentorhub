@@ -32,6 +32,9 @@ public class Mentorship {
     public boolean isNotStarted() {
         return currentPhaseIndex < 0;
     }
+    public boolean isStarted() {
+        return currentPhaseIndex >= 0;
+    }
 
     public String getStatus() {
         if (isCompleted()) return "completed";

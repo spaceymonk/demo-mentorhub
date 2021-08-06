@@ -86,12 +86,19 @@ public class ApiMentorship {
         if (requestPhase.getEndDate() == null) {
             return ResponseEntity.badRequest().body("You should set an end date!");
         }
+        if (requestPhase.getEndDate().before(new Date())) {
+            return ResponseEntity.badRequest().body("End date must be in future!");
+        }
 
         Optional<Mentorship> mentorshipOptional = mentorshipRepository.findById(mentorshipId);
         if (mentorshipOptional.isEmpty()) {
             return ResponseEntity.badRequest().body("No mentorship found");
         }
         Mentorship mentorship = mentorshipOptional.get();
+
+        if (mentorship.isStarted()) {
+            return ResponseEntity.badRequest().body("Mentorship already started!");
+        }
 
         int repoIndex = mentorship.getPhases().indexOf(requestPhase);
         if (repoIndex != -1) {
