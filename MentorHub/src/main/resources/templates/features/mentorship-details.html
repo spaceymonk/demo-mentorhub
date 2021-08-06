@@ -80,10 +80,12 @@
                                         th:if="${mentorship.beginDate != null}"
                                         th:text="${#dates.format(mentorship.beginDate, 'yyyy/MM/dd')}"></td>
                                 </tr>
+
                                 <tr>
                                     <td class="fw-bold">Status:</td>
                                     <td class="ps-1" th:text="${mentorship.status}"></td>
                                 </tr>
+
                             </table>
                             <button class="btn btn-secondary mt-3"
                                     onclick="nextPhase()" th:if="${mentorship.isNotStarted()}" type="button">
@@ -99,6 +101,9 @@
 
 
                         <ul class="list-group">
+
+
+
                             <li class="list-group-item"
                                 th:each="phase,iter : ${mentorship.phases}"
                                 th:style="${iter.index < mentorship.currentPhaseIndex} ? 'background-color: #eef' : (${iter.index == mentorship.currentPhaseIndex} ? 'background-color : #efe'  : 'background-color : #fff')">
@@ -152,6 +157,9 @@
                                     </div>
                                 </div>
                             </li>
+
+
+
                         </ul>
 
                         <a class="btn btn-primary mt-4"
