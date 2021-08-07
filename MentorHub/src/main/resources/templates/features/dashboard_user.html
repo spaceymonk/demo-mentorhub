@@ -30,10 +30,10 @@
                 <a class="ms-2 text-decoration-none w-100" th:href="@{/details/{id}(id=${section.id})}">
                   <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
                   <div class="small ms-2">
-                    Mentee:
+                    <span class="text-decoration-underline">Mentee:</span>
                     <th:block th:text="${section.mentee.actualName}"></th:block>
                     <br>
-                    Phase:
+                    <span class="text-decoration-underline">Phase:</span>
                     <th:block th:text="${section.status}"></th:block>
                   </div>
                 </a>
@@ -53,10 +53,10 @@
                 <a class="ms-2 text-decoration-none w-100" th:href="@{/details/{id}(id=${section.id})}">
                   <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
                   <div class="small ms-2">
-                    Mentor:
+                    <span class="text-decoration-underline">Mentor:</span>
                     <th:block th:text="${section.mentee.actualName}"></th:block>
                     <br>
-                    Phase:
+                    <span class="text-decoration-underline">Phase:</span>
                     <th:block th:text="${section.status}"></th:block>
                   </div>
                 </a>
