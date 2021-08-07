@@ -12,28 +12,28 @@
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
+
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Edit Subject</h5>
         <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
       </div>
-      <div class="modal-body">
-        <p><input class="form-control border-0 fs-3" id="formMajorNameFld"
-                  placeholder="Enter Major Subject name"
-                  type="text" value=""></p>
-        <ul class="list-group list-group-flush" id="formSubjectList"></ul>
-        <div class="text-center">
-          <a class="btn rounded-circle" onclick="addSubjectToForm()"><i class="fas fa-plus"></i></a>
-        </div>
 
+      <div class="modal-body">
+        <p><input class="form-control border-0 fs-3" id="formMajorNameFld" placeholder="Enter Major Subject name" type="text" value=""></p>
+        <ul class="list-group list-group-flush" id="formSubjectList"></ul>
+        <div class="text-center"><a class="btn rounded-circle" onclick="addSubjectToForm()"><i class="fas fa-plus"></i></a></div>
       </div>
+
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
         <button class="btn btn-primary" onclick="saveChanges()" type="button">Save changes</button>
       </div>
+
     </div>
   </div>
 </div>
 
+<!-- Content -->
 <div style="min-height: 100vh;">
   <div class="container my-5">
     <div class="card">
@@ -64,12 +64,8 @@
                   </ul>
                 </div>
                 <div class="col-auto mt-3 d-flex align-items-center">
-                  <button class="btn btn-primary me-2" th:onclick="editMajor([[${subjectItem.id}]]);"
-                          type="button">Edit
-                  </button>
-                  <button class="btn btn-danger" th:onclick="removeMajor([[${subjectItem.id}]]);"
-                          type="button">Remove
-                  </button>
+                  <button class="btn btn-primary me-2" th:onclick="editMajor([[${subjectItem.id}]]);" type="button">Edit</button>
+                  <button class="btn btn-danger" th:onclick="removeMajor([[${subjectItem.id}]]);" type="button">Remove</button>
                 </div>
               </div>
             </li>
@@ -90,107 +86,109 @@
 <th:block th:replace="fragments/footer"></th:block>
 
 <script>
+    const myModal = new bootstrap.Modal($("#exampleModal"))
     let currentId = null;
     let index = 0;
 
-    let myModal = new bootstrap.Modal($("#exampleModal"))
+    $('#subjectList').bind('DOMSubtreeModified', function () {
+        if ($("#subjectList").children().length == 0) {
+            $("#noEntryTxt").show();
+        } else {
+            $("#noEntryTxt").hide();
+        }
+    });
+
+
+    let generateSubjectFieldElement = function (input_text_value) {
+        index += 1;
+
+        return
+        `<li class="list-group-item d-flex" id="${'item' + index}">
+          <input class="flex-fill form-control-sm border-0" type="text" value="${input_text_value}" placeholder="Enter subject name" />
+          <button type="button" class="btn rounded-circle" onclick="removeSubjectFromForm('${'item' + index}')"> <i class="fas fa-minus"></i> </button>
+        </li>`;
+    };
+
+
+    let generateSubjectElement = function (subjectId, majorSubjectName, subjects) {
+        let DOM_li_subjects = "";
+        subjects.forEach(function (value) {
+            DOM_li_subjects += `<li>${value}</li>`;
+        });
+
+        return
+        `<li class="list-group-item" id="${subjectId}">
+          <div class="row">
+            <div class="col">
+              <p class="lead mb-1">${majorSubjectName}</p>
+              <ul class="text-muted"> ${DOM_li_subjects} </ul>
+            </div>
+            <div class="col-auto mt-3 d-flex align-items-center">
+              <button class="btn btn-primary me-2" onclick="editMajor('${subjectId}');" type="button">Edit</button>
+              <button class="btn btn-danger" onclick="removeMajor('${subjectId}');" type="button">Remove</button>
+            </div>
+          </div>
+       </li>`;
+    }
+
 
     let removeSubjectFromForm = function (id) {
         $('#' + id).remove();
-    }
+    };
+
 
     let addSubjectToForm = function (subjectName = "") {
-        index += 1;
-        element = `
-            <li class="list-group-item d-flex" id="${'item' + index}">
-                <input class="flex-fill form-control-sm border-0" type="text"
-                       value="${subjectName}" placeholder="Enter subject name" />
-                <button type="button" class="btn rounded-circle" onclick="removeSubjectFromForm('${'item' + index}')">
-                    <i class="fas fa-minus"></i>
-                </button>
-            </li>`;
-        $("#formSubjectList").append(element);
-    }
+        let DOM_element = generateSubjectFieldElement(subjectName);
+        $("#formSubjectList").append(DOM_element);
+    };
+
 
     let editMajor = function (id = "") {
-        $.getJSON(`http://localhost:8080/api/subjects/${id}`)
-            .done(function (category) {
-                $("#formMajorNameFld").val(category.majorSubject);
-                $("#formSubjectList").empty();
-                for (let i = 0; i < category.subjects.length; ++i) {
-                    let subject = category.subjects[i];
-                    addSubjectToForm(subject);
-                }
-                currentId = id;
-                myModal.show();
-            })
-            .fail(function (jqxhr, textStatus, error) {
-                if (!jqXhr.responseText)
-                    errorMessage = "Something went wrong!";
-                else
-                    errorMessage = jqXhr.responseText;
-                showToast("bg-danger", errorMessage);
-            })
-    }
+        currentId = id;
+        let DOM_subject = $(`#${id}`);
+        let majorSubjectName = $(DOM_subject).find('p').text();
+        let subjects = $(DOM_subject).find('li').map(function () {
+            return $(this).text();
+        }).get() || [];
+
+        $("#formMajorNameFld").val(majorSubjectName);
+        $("#formSubjectList").empty();
+        for (let i = 0; i < subjects; ++i)
+            addSubjectToForm(subjects[i]);
+
+        myModal.show();
+    };
+
 
     let createMajor = function () {
         $("#formMajorNameFld").val("");
         $("#formSubjectList").empty();
         currentId = null;
+
         myModal.show();
-    }
+    };
+
 
     let saveChanges = function () {
-
-        // get input
         let categoryName = $("#formMajorNameFld").val() || "";
         let subjects = $("#formSubjectList li input").map(function () {
             return $(this).val();
         }).get() || [];
-
-        // ajax
         data = {
             id: currentId,
             majorSubject: categoryName,
             subjects: subjects
         };
+
         $.ajax({
             type: 'PUT',
             url: 'http://localhost:8080/api/subjects/',
             contentType: 'application/json',
             data: JSON.stringify(data),
-            success: function (returnedData, status, xhr) {
-                data.id = returnedData;
-                $(`#${data.id}`).remove();
-                listElement = "";
-                data.subjects.forEach(function (value) {
-                    listElement += `<li>${value}</li>`;
-                });
-                element = `
-                    <li class="list-group-item" id="${data.id}">
-                        <div class="row">
-                            <div class="col">
-                                <p class="lead mb-1">${data.majorSubject}</p>
-                                <ul class="text-muted">
-                                    ${listElement}
-                                </ul>
-                            </div>
-                            <div class="col-auto mt-3 d-flex align-items-center">
-                                <button class="btn btn-primary me-2" onclick="editMajor('${data.id}');"
-                                        type="button">Edit
-                                </button>
-                                <button class="btn btn-danger" onclick="removeMajor('${data.id}');"
-                                        type="button">Remove
-                                </button>
-                            </div>
-                        </div>
-                    </li>`;
+            success: function (createdId, status, xhr) {
+                $(`#${createdId}`).remove();
+                let DOM_element = generateSubjectElement(createdId, data.majorSubject, data.subjects);
                 $('#subjectList').append(element);
-                if ($("#subjectList").children().length == 0) {
-                    $("#noEntryTxt").show();
-                } else {
-                    $("#noEntryTxt").hide();
-                }
                 myModal.hide();
                 showToast("bg-success", "Changes saved!");
             },
@@ -204,17 +202,13 @@
         });
     }
 
+
     let removeMajor = function (id = "") {
         $.ajax({
             type: 'DELETE',
             url: `http://localhost:8080/api/subjects/${id}`,
             success: function (data, status, xhr) {
                 $(`#${id}`).remove();
-                if ($("#subjectList").children().length == 0) {
-                    $("#noEntryTxt").show();
-                } else {
-                    $("#noEntryTxt").hide();
-                }
                 showToast("bg-success", "Sucessfully removed!");
             },
             error: function (jqXhr, textStatus, errorMessage) {

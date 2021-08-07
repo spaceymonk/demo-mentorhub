@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.Optional;
 
 @RequestMapping("/api/subjects")
 @RestController
@@ -15,17 +14,6 @@ import java.util.Optional;
 public class ApiSubjects {
 
     private final SubjectRepository subjectRepository;
-
-    @RequestMapping(value = "/{id}", produces = "application/json", method = RequestMethod.GET)
-    @RolesAllowed({"ROLE_ADMIN"})
-    public ResponseEntity<Subject> getSubjectDetails(@PathVariable("id") String id) {
-        Optional<Subject> subjectQuery = subjectRepository.findById(id);
-        if (subjectQuery.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(subjectQuery.get());
-        }
-    }
 
     @RequestMapping(value = "/", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_ADMIN"})
