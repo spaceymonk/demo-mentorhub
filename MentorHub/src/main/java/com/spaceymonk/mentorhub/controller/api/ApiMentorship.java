@@ -207,7 +207,7 @@ public class ApiMentorship {
 
         mentorshipRepository.save(mentorship);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(phaseId);
     }
 
 }

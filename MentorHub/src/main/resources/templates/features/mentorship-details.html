@@ -198,10 +198,12 @@
             contentType: "application/json",
             data: JSON.stringify(data),
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases/${selectedPhaseId}/reviews/`,
-            success: function (data, status, xhr) {
-                //todo
+            success: function (phaseId, status, xhr) {
+                $(`#${phaseId} .row .col`).append(generateReviewElement(userTitle, data.rating, data.text));
+                $(`#${phaseId} .row .col-auto`).empty();
+                $(`#${phaseId} .row .col-auto`).append(generateButtonElement['done']());
                 myModal.hide();
-                showToast("bg-success", "Done!");
+                showToast("bg-success", "Review sent!");
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
@@ -218,9 +220,8 @@
         $.ajax({
             type: 'POST',
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/nextPhase`,
-            success: function (data, status, xhr) {
-                //todo
-                showToast("bg-info", "Don't forget to write a review!");
+            success: function (phaseId, status, xhr) {
+                location.reload();
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
