@@ -57,7 +57,7 @@
           <p id="noEntryTxt" th:style="${mentorship.phases.isEmpty()}? 'display:block':'display:none'">No phase added.</p>
           <ol class="list-group list-group-numbered" id="phaseList">
 
-            <li class="list-group-item" th:each="phase, iter : ${mentorship.phases}" th:id="${phase.id}" th:data-sort="${dateParam}">
+            <li class="list-group-item" th:each="phase, iter : ${mentorship.phases}" th:id="${phase.id}" th:attr="data-sort=${#dates.format(phase.endDate, 'yyyy-MM-dd') + 'T' + #dates.format(phase.endDate, 'HH:mm')}">
               <div class="row">
                 <div class="col">
                   <th:block th:text="${phase.name}"></th:block>
@@ -185,6 +185,7 @@
                 sortedList = $("#phaseList").children().sort(function (a, b) {
                     return new Date($(a).data("sort")) - new Date($(b).data("sort"));
                 });
+                $("#phaseList").html(sortedList);
                 myModal.hide();
                 showToast("bg-success", "Changes saved!");
             },
