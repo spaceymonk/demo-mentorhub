@@ -21,7 +21,7 @@ public class ApiSubjects {
 
         // Data Control
         if (subject.getMajorSubject() == null || subject.getMajorSubject().isBlank()
-                || subject.getSubjects() == null || subject.getSubjects().removeIf(String::isBlank)) {
+                || subject.getSubjects() == null || subject.getSubjects().removeIf(String::isBlank) || subject.getSubjects().isEmpty()) {
             return ResponseEntity.badRequest().body("No subjects entered!");
         }
 

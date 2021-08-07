@@ -21,7 +21,7 @@
       <div class="modal-body">
         <p><input class="form-control border-0 fs-3" id="formMajorNameFld" placeholder="Enter Major Subject name" type="text" value=""></p>
         <ul class="list-group list-group-flush" id="formSubjectList"></ul>
-        <div class="text-center"><a class="btn rounded-circle" onclick="addSubjectToForm()"><i class="fas fa-plus"></i></a></div>
+        <div class="text-center"><a class="btn rounded-circle" onclick="addSubjectFieldToForm()"><i class="fas fa-plus"></i></a></div>
       </div>
 
       <div class="modal-footer">
@@ -102,11 +102,11 @@
     let generateSubjectFieldElement = function (input_text_value) {
         index += 1;
 
-        return
-        `<li class="list-group-item d-flex" id="${'item' + index}">
+        return (`
+        <li class="list-group-item d-flex" id="item${index}">
           <input class="flex-fill form-control-sm border-0" type="text" value="${input_text_value}" placeholder="Enter subject name" />
-          <button type="button" class="btn rounded-circle" onclick="removeSubjectFromForm('${'item' + index}')"> <i class="fas fa-minus"></i> </button>
-        </li>`;
+          <button type="button" class="btn rounded-circle" onclick="removeSubjectFieldFromForm('item${index}')"> <i class="fas fa-minus"></i> </button>
+        </li>`);
     };
 
 
@@ -116,8 +116,8 @@
             DOM_li_subjects += `<li>${value}</li>`;
         });
 
-        return
-        `<li class="list-group-item" id="${subjectId}">
+        return (`
+        <li class="list-group-item" id="${subjectId}">
           <div class="row">
             <div class="col">
               <p class="lead mb-1">${majorSubjectName}</p>
@@ -128,16 +128,16 @@
               <button class="btn btn-danger" onclick="removeMajor('${subjectId}');" type="button">Remove</button>
             </div>
           </div>
-       </li>`;
+       </li>`);
     }
 
 
-    let removeSubjectFromForm = function (id) {
+    let removeSubjectFieldFromForm = function (id) {
         $('#' + id).remove();
     };
 
 
-    let addSubjectToForm = function (subjectName = "") {
+    let addSubjectFieldToForm = function (subjectName = "") {
         let DOM_element = generateSubjectFieldElement(subjectName);
         $("#formSubjectList").append(DOM_element);
     };
@@ -153,8 +153,8 @@
 
         $("#formMajorNameFld").val(majorSubjectName);
         $("#formSubjectList").empty();
-        for (let i = 0; i < subjects; ++i)
-            addSubjectToForm(subjects[i]);
+        for (let i = 0; i < subjects.length; ++i)
+            addSubjectFieldToForm(subjects[i]);
 
         myModal.show();
     };
@@ -188,7 +188,7 @@
             success: function (createdId, status, xhr) {
                 $(`#${createdId}`).remove();
                 let DOM_element = generateSubjectElement(createdId, data.majorSubject, data.subjects);
-                $('#subjectList').append(element);
+                $('#subjectList').append(DOM_element);
                 myModal.hide();
                 showToast("bg-success", "Changes saved!");
             },
