@@ -162,7 +162,7 @@
 
 <script th:inline="javascript">
     const mentorshipId = /*[[${mentorship.id}]]*/ "";
-    const userIsMentor = /*[[${mentorship.mentor == currentUser}]]*/ false;
+    const userTitle = /*[[${(mentorship.mentor == currentUser)? 'Mentor' : 'Mentee'}]]*/ 'Mentee';
     const myModal = new bootstrap.Modal($("#exampleModal"));
     let selectedPhaseId = null;
 
@@ -174,7 +174,7 @@
     };
 
 
-    let generateReviewElement = (type, rating, text) => (`<div class="card mt-2 p-2 bg-light"><span class="fst-italic">Mentor's Review: </span><small class="text-muted fst-italic">${rating}/5 stars</small>${text}</div>`);
+    let generateReviewElement = (title, rating, text) => (`<div class="card mt-2 p-2 bg-light"><span class="fst-italic">${title}'s Review: </span><small class="text-muted fst-italic">${rating}/5 stars</small>${text}</div>`);
 
 
     let reviewPhase = function (phaseId) {
