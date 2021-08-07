@@ -208,7 +208,7 @@
             type: 'PUT',
             contentType: "application/json",
             data: JSON.stringify(data),
-            url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases/${selectedPhaseId}/reviews`,
+            url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases/${selectedPhaseId}/reviews/`,
             success: function (data, status, xhr) {
                 myModal.hide();
                 showToast("bg-success", "Done!");

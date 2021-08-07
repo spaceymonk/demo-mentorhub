@@ -1,89 +1,78 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/head"></th:block>
-    <title>MentorHub :: Mentorship Request</title>
+  <th:block th:replace="fragments/head"></th:block>
+  <title>MentorHub :: Mentorship Request</title>
 </head>
 
 <body>
 <th:block th:replace="fragments/header"></th:block>
 
 <div style="min-height: 100vh;">
-    <div class="container my-5">
-        <div class="card">
+  <div class="container my-5">
+    <div class="card">
 
-            <div class="card-header">
-                <a class="btn btn-secondary rounded-circle" th:href="@{/dashboard}"><i
-                        class="fas fa-arrow-left"></i></a>
-            </div>
+      <div class="card-header">
+        <a class="btn btn-secondary rounded-circle" th:href="@{/dashboard}"><i class="fas fa-arrow-left"></i></a>
+      </div>
 
-            <div class="card-body">
+      <div class="card-body">
 
-                <div class="card-title text-center">
-                    <h5 class="display-5">Mentorship Application Form</h5>
-                </div>
-
-                <div>
-
-                    <div class="row mt-3">
-                        <div class="col">
-                            <label for="categoryselector">Select a major:</label>
-                            <select class="form-select" id="categoryselector" required th:name="selectedCategory">
-                                <option class="fst-italic" selected value="">Choose...</option>
-                                <option th:each="category : ${categories}" th:text="${category.majorSubject}"
-                                        th:value="${category.id}"></option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col">
-                            <p class="mb-1">Please select at least 1 subject:</p>
-                            <small class="text-danger" id="errSelectMajorFirst">Please select a major first.</small>
-                            <div class="form-check categories" style="display: none" th:each="category : ${categories}"
-                                 th:id="${category.id}">
-                                <div th:each="subject : ${category.subjects}"
-                                     th:with="randomId=${#strings.randomAlphanumeric(10)}">
-                                    <input class="form-check-input" th:id="${randomId}"
-                                           th:name="selectedSubject"
-                                           th:value="${subject}" type="checkbox">
-                                    <label class="form-check-label" th:for="${randomId}"
-                                           th:text="${subject}"> </label><br>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col">
-                            <div class="form-floating">
-                                    <textarea class="form-control" disabled
-                                              id="txtArea"
-                                              placeholder="Explain yourself..." required
-                                              style="height: 20vh; resize: none;"
-                                              th:name="explainMsg"></textarea>
-                                <label for="txtArea">Explain yourself...</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col text-center">
-                            <button class="btn btn-primary" onclick="submitForm()" type="button">Submit</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+        <div class="card-title text-center">
+          <h5 class="display-5">Mentorship Application Form</h5>
         </div>
+
+        <div>
+
+          <div class="row mt-3">
+            <div class="col">
+              <label for="categoryselector">Select a major:</label>
+              <select class="form-select" id="categoryselector" required th:name="selectedCategory">
+                <option class="fst-italic" selected value="">Choose...</option>
+                <option th:each="category : ${categories}" th:text="${category.majorSubject}" th:value="${category.id}"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col">
+              <p class="mb-1">Please select at least 1 subject:</p>
+              <small class="text-danger" id="errSelectMajorFirst">Please select a major first.</small>
+              <div class="form-check categories" style="display: none" th:each="category : ${categories}" th:id="${category.id}">
+                <div th:each="subject : ${category.subjects}" th:with="randomId=${#strings.randomAlphanumeric(10)}">
+                  <input class="form-check-input" th:id="${randomId}" th:name="selectedSubject"
+                         th:value="${subject}" type="checkbox">
+                  <label class="form-check-label" th:for="${randomId}" th:text="${subject}"> </label><br>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col">
+              <div class="form-floating">
+                <textarea class="form-control" disabled id="txtArea" placeholder="Explain yourself..." required style="height: 20vh; resize: none;" th:name="explainMsg"></textarea>
+                <label for="txtArea">Explain yourself...</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col text-center">
+              <button class="btn btn-primary" onclick="submitForm()" type="button">Submit</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <th:block th:replace="fragments/footer"></th:block>
 
 <script>
-
-    let resetFunction = function () {
+    let resetForm = function () {
         let selectedCategory = $("#categoryselector option:selected").val();
         $(".categories").each(function (index) {
             $(this).hide();
@@ -100,7 +89,6 @@
         }
     };
 
-    $("#categoryselector").change(resetFunction);
 
     let submitForm = function () {
         let selectedCategory = $("#categoryselector option:selected").text() || "";
@@ -122,9 +110,9 @@
             contentType: "application/json",
             data: JSON.stringify(data),
             success: function (data, status, xhr) {
-                showToast("bg-success", "Done!");
                 $("#categoryselector option[value='']").prop("selected", true);
-                resetFunction();
+                resetForm();
+                showToast("bg-success", "Done!");
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
@@ -135,6 +123,9 @@
             }
         });
     }
+
+
+    $("#categoryselector").change(resetForm);
 </script>
 
 </body>
