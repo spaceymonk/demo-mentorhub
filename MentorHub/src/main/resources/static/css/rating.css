@@ -1,0 +1,15 @@
+.rating {
+    direction: rtl;
+    unicode-bidi: bidi-override;
+    /*color: black;*/
+}
+.rating input {
+    display: none;
+}
+.rating label:hover,
+.rating label:hover ~ label,
+.rating input:checked + label,
+.rating input:checked + label ~ label {
+    cursor: pointer;
+    color: gold;
+}

@@ -1,8 +1,9 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/head"></th:block>
-    <title>MentorHub :: Mentorship Details</title>
+  <th:block th:replace="fragments/head"></th:block>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/rating.css}">
+  <title>MentorHub :: Mentorship Details</title>
 </head>
 
 <body>
@@ -11,165 +12,175 @@
 
 <!-- Modal -->
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Phase</h5>
-                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-            </div>
-            <div class="modal-body">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
 
-                <div class="text-center">
-                    <span class="star-rating">
-                      <input name="rating" type="radio" value="1"><i></i>
-                      <input name="rating" type="radio" value="2"><i></i>
-                      <input name="rating" type="radio" value="3"><i></i>
-                      <input name="rating" type="radio" value="4"><i></i>
-                      <input name="rating" type="radio" value="5"><i></i>
-                    </span>
-                </div>
-                <br>
-                <div class="form-floating">
-                    <textarea class="form-control" id="txtArea" placeholder="Write an opinion..." required
-                              style="height: 20vh; resize: none;"></textarea>
-                    <label for="txtArea">Write an opinion...</label>
-                </div>
 
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-                <button class="btn btn-primary" th:onclick="sendReview()" type="button">Submit</button>
-            </div>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Phase</h5>
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+      </div>
+
+
+      <div class="modal-body">
+
+        <div class="rating text-center mb-3">
+          <input id="rating-5" type="radio" name="rating" value="5"/><label for="rating-5"><i class="fas fa-2x fa-star"></i></label>
+          <input id="rating-4" type="radio" name="rating" value="4"/><label for="rating-4"><i class="fas fa-2x fa-star"></i></label>
+          <input id="rating-3" type="radio" name="rating" value="3"/><label for="rating-3"><i class="fas fa-2x fa-star"></i></label>
+          <input id="rating-2" type="radio" name="rating" value="2"/><label for="rating-2"><i class="fas fa-2x fa-star"></i></label>
+          <input id="rating-1" type="radio" name="rating" value="1"/><label for="rating-1"><i class="fas fa-2x fa-star"></i></label>
         </div>
+
+        <div class="form-floating">
+          <textarea class="form-control" id="txtArea" placeholder="Write an opinion..." required style="height: 20vh; resize: none;"></textarea>
+          <label for="txtArea">Write an opinion...</label>
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+        <button class="btn btn-primary" th:onclick="sendReview()" type="button">Submit</button>
+      </div>
+
+
     </div>
+  </div>
 </div>
 
+<!--Content-->
 <div style="min-height: 100vh;">
-    <div class="container pt-5">
-        <div class="card ">
-            <div class="card-header">
-                <a class="btn btn-secondary rounded-circle" th:href="@{/dashboard}"><i
-                        class="fas fa-arrow-left"></i></a>
+  <div class="container pt-5">
+    <div class="card ">
+
+
+      <div class="card-header">
+        <a class="btn btn-secondary rounded-circle" th:href="@{/dashboard}"><i class="fas fa-arrow-left"></i></a>
+      </div>
+
+
+      <div class="card-body">
+
+        <h4 class="my-4">Section Details</h4>
+        <div class="row">
+
+          <div class="col-md-4">
+            <div class="card bg-light p-3 mb-4">
+              <table>
+                <tr>
+                  <td class="fw-bold">Mentor:</td>
+                  <td class="ps-1" th:text="${mentorship.mentor.actualName}"></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Mentee:</td>
+                  <td class="ps-1" th:text="${mentorship.mentee.actualName}"></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Subject:</td>
+                  <td class="ps-1" th:text="${mentorship.majorSubject}"></td>
+                </tr>
+                <tr>
+                  <td class="fw-bold">Begin Date:</td>
+                  <td class="ps-1"
+                      th:if="${mentorship.beginDate == null}">
+                    &mdash;
+                  </td>
+                  <td class="ps-1"
+                      th:if="${mentorship.beginDate != null}"
+                      th:text="${#dates.format(mentorship.beginDate, 'yyyy/MM/dd')}"></td>
+                </tr>
+
+                <tr>
+                  <td class="fw-bold">Status:</td>
+                  <td class="ps-1" th:text="${mentorship.status}"></td>
+                </tr>
+
+              </table>
+
+              <button class="btn btn-secondary mt-3"
+                      onclick="nextPhase()" th:if="${mentorship.isNotStarted()}" type="button"> Start
+              </button>
+
             </div>
-            <div class="card-body">
-                <h4 class="my-4">Section Details</h4>
+          </div>
+
+          <div class="col-md-8">
+
+            <h5 class="mb-3">Phases:</h5>
+            <p th:if="${mentorship.phases.isEmpty()}">No phases created, yet. </p>
+
+
+            <ul class="list-group">
+
+
+              <li class="list-group-item"
+                  th:each="phase,iter : ${mentorship.phases}"
+                  th:style="${iter.index < mentorship.currentPhaseIndex} ? 'background-color: #eef' : (${iter.index == mentorship.currentPhaseIndex} ? 'background-color : #efe'  : 'background-color : #fff')">
                 <div class="row">
+                  <div class="col">
 
-                    <div class="col-auto">
-                        <div class="card bg-light p-3 mb-4">
-                            <table>
-                                <tr>
-                                    <td class="fw-bold">Mentor:</td>
-                                    <td class="ps-1" th:text="${mentorship.mentor.actualName}"></td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Mentee:</td>
-                                    <td class="ps-1" th:text="${mentorship.mentee.actualName}"></td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Subject:</td>
-                                    <td class="ps-1" th:text="${mentorship.majorSubject}"></td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Begin Date:</td>
-                                    <td class="ps-1"
-                                        th:if="${mentorship.beginDate == null}">
-                                        &mdash;
-                                    </td>
-                                    <td class="ps-1"
-                                        th:if="${mentorship.beginDate != null}"
-                                        th:text="${#dates.format(mentorship.beginDate, 'yyyy/MM/dd')}"></td>
-                                </tr>
-
-                                <tr>
-                                    <td class="fw-bold">Status:</td>
-                                    <td class="ps-1" th:text="${mentorship.status}"></td>
-                                </tr>
-
-                            </table>
-                            <button class="btn btn-secondary mt-3"
-                                    onclick="nextPhase()" th:if="${mentorship.isNotStarted()}" type="button">
-                                Start
-                            </button>
-
-                        </div>
+                    <div>
+                      <strong th:text="${iter.count+'.'}"></strong>
+                      <span th:text="${phase.name}"></span>
+                      <br>
+                      <small class="text-muted"> End date: <span th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd HH:mm')}"></span> </small>
                     </div>
 
-                    <div class="col">
-                        <h5 class="mb-3">Phases:</h5>
-                        <p th:if="${mentorship.phases.isEmpty()}">No phases created, yet. </p>
-
-
-                        <ul class="list-group">
-
-
-
-                            <li class="list-group-item"
-                                th:each="phase,iter : ${mentorship.phases}"
-                                th:style="${iter.index < mentorship.currentPhaseIndex} ? 'background-color: #eef' : (${iter.index == mentorship.currentPhaseIndex} ? 'background-color : #efe'  : 'background-color : #fff')">
-                                <div class="row">
-                                    <div class="col">
-                                        <strong th:text="${iter.count+'.'}"></strong>
-                                        <span th:text="${phase.name}"></span>
-                                        <br>
-                                        <small class="text-muted">
-                                            End date: <span
-                                                th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd')}"></span>
-                                        </small>
-                                        <br>
-                                        <div class="card mt-2 p-2 bg-light" th:if="${phase.mentorReview != null}"
-                                             th:inline="text">
-                                            <span class="fst-italic">Mentor's Review: </span>
-                                            [[${phase.mentorReview.text}]]
-                                            <br>
-                                            <small class="text-muted fst-italic"
-                                                   th:text="${phase.mentorReview.rating + '/5 stars'}"></small>
-                                        </div>
-                                        <div class="card p-2 bg-light" th:if="${phase.menteeReview != null}"
-                                             th:inline="text">
-                                            <span class="fst-italic">Mentee's Review: </span>
-                                            [[${phase.menteeReview.text}]]
-                                            <br>
-                                            <small class="text-muted fst-italic"
-                                                   th:text="${phase.menteeReview.rating + '/5 stars'}"></small>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto mt-3"
-                                         th:with="review=${currentUser.equals(mentorship.mentor)} ?  ${phase.mentorReview} : ${phase.menteeReview}">
-
-                                        <p class="lead"
-                                           th:if="${iter.index < mentorship.currentPhaseIndex && review != null}">
-                                            Done
-                                        </p>
-
-                                        <button class="btn btn-warning rounded-pills" th:if="${iter.index < mentorship.currentPhaseIndex && review == null}"
-                                                th:onclick="reviewPhase([[${phase.id}]])"
-                                                type="button">
-                                            Review
-                                        </button>
-
-                                        <button class="btn btn-primary rounded-pills" onclick="nextPhase()"
-                                                th:if="${iter.index == mentorship.currentPhaseIndex}"
-                                                type="button">
-                                            Complete
-                                        </button>
-
-                                    </div>
-                                </div>
-                            </li>
-
-
-
-                        </ul>
-
-                        <a class="btn btn-primary mt-4"
-                           th:href="@{/plan/{id}(id=${mentorship.id})}" th:if="${mentorship.isNotStarted()}">Plan</a>
-
+                    <div class="card mt-2 p-2 bg-light" th:if="${phase.mentorReview != null}">
+                      <span class="fst-italic">Mentor's Review: </span>
+                      <small class="text-muted fst-italic" th:text="${phase.mentorReview.rating + '/5 stars'}"></small>
+                      <th:block th:text="${phase.mentorReview.text}"></th:block>
                     </div>
+
+                    <div class="card mt-2 p-2 bg-light" th:if="${phase.menteeReview != null}">
+                      <span class="fst-italic">Mentee's Review: </span>
+                      <small class="text-muted fst-italic" th:text="${phase.menteeReview.rating + '/5 stars'}"></small>
+                      <th:block th:text="${phase.menteeReview.text}"></th:block>
+                    </div>
+
+                  </div>
+
+                  <div class="col-auto mt-3"
+                       th:with="review=${currentUser.equals(mentorship.mentor)} ?  ${phase.mentorReview} : ${phase.menteeReview}">
+
+                    <p class="lead"
+                       th:if="${iter.index < mentorship.currentPhaseIndex && review != null}">
+                      Done
+                    </p>
+
+                    <button class="btn btn-warning rounded-pills"
+                            th:if="${iter.index < mentorship.currentPhaseIndex && review == null}"
+                            th:onclick="reviewPhase([[${phase.id}]])"
+                            type="button">
+                      Review
+                    </button>
+
+                    <button class="btn btn-primary rounded-pills" onclick="nextPhase()"
+                            th:if="${iter.index == mentorship.currentPhaseIndex}"
+                            type="button">
+                      Complete
+                    </button>
+
+                  </div>
+
+
                 </div>
-            </div>
+              </li>
+
+
+            </ul>
+
+            <a class="btn btn-primary mt-4"
+               th:href="@{/plan/{id}(id=${mentorship.id})}" th:if="${mentorship.isNotStarted()}">Plan</a>
+
+          </div>
         </div>
+      </div>
+
     </div>
+  </div>
 </div>
 
 <th:block th:replace="fragments/footer"></th:block>
@@ -183,7 +194,7 @@
     let reviewPhase = function (phaseId) {
         selectedPhaseId = phaseId;
         $("#txtArea").val("");
-        $(".star-rating input:radio").each(function () {
+        $(".rating input:radio").each(function () {
             $(this).prop('checked', false);
         });
         myModal.show();
