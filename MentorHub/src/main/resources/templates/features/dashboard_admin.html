@@ -1,105 +1,99 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/head"></th:block>
-    <title>MentorHub :: Dashboard</title>
+  <th:block th:replace="fragments/head"></th:block>
+  <title>MentorHub :: Dashboard</title>
 </head>
 
 <body>
 <th:block th:replace="fragments/header"></th:block>
 
 <div style="min-height: 100vh;">
-    <div class="container my-5">
-        <div class="card">
+  <div class="container my-5">
+    <div class="card">
 
-            <div class="card-header row">
-                <div class="col">
-                    <h1 class="card-title">Admin Panel</h1>
-                    <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
-                </div>
-                <div class="col-auto nav nav-tabs flex-row">
-                    <a class="nav-link active" th:href="@{/dashboard}">Requests</a>
-                    <a class="nav-link" th:href="@{/subjects}">Subjects</a>
-                </div>
-            </div>
-            <div class="card-body">
-                <h4 class="my-4">Waiting Mentorship Requests</h4>
-                <div class="container">
-                    <p th:if="${waitingRequests.isEmpty()}">There are no waiting requests.</p>
-                    <div class="accordion" th:if="${!waitingRequests.isEmpty()}">
-                        <div class="accordion-item" th:each="request : ${waitingRequests}" th:id="${request.id}">
-                            <h2 class="accordion-header" th:id="${'heading'+request.id}">
-                                <button aria-expanded="false" class="accordion-button collapsed"
-                                        data-bs-toggle="collapse"
-                                        th:aria-controls="${'collapse'+request.id}"
-                                        th:data-bs-target="${'#collapse'+request.id}"
-                                        type="button">
-                                    Request Id <span class="fst-italic ms-1 text-truncate"
-                                                     th:text="${request.id}">$id$</span>
-                                </button>
-                            </h2>
-                            <div class="accordion-collapse collapse" th:aria-labelledby="${'heading'+request.id}"
-                                 th:id="${'collapse'+request.id}">
-                                <div class="accordion-body">
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="row container-sm mb-3 text-muted">
-                                                <div class="col small">Requested&nbsp;from:&nbsp;
-                                                    <span class="fst-italic text-nowrap"
-                                                          th:text="${request.mentor.actualName}">$username$</span></div>
-                                                <div class="col small text-sm-end">Requested&nbsp;date:&nbsp;
-                                                    <span class="fst-italic text-nowrap"
-                                                          th:text="${#dates.format(request.date, 'yyyy/MM/dd HH:mm')}">$date$</span>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <p style="text-align: justify;" th:text="${request.text}">$text$</p>
-                                                    <strong>Selected subjects under
-                                                        <span class="fst-italic"
-                                                              th:text="${request.selectedSubject.majorSubject}">$major$</span>:
-                                                    </strong>
-                                                    <ul>
-                                                        <li th:each="subject : ${request.selectedSubject.subjects}"
-                                                            th:text="${subject}"></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-auto text-end mt-3 ps-5">
-                                            <button class="btn btn-outline-success btn-sm"
-                                                    th:onclick="doRequest([[${request.id}]], true)">Accept
-                                            </button>
-                                            <button class="btn btn-danger btn-sm"
-                                                    th:onclick="doRequest([[${request.id}]], false)">Reject
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="card-header row">
+        <div class="col">
+          <h1 class="card-title">Admin Panel</h1>
+          <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
         </div>
+        <div class="col-auto nav nav-tabs flex-row">
+          <a class="nav-link active" th:href="@{/dashboard}">Requests</a>
+          <a class="nav-link" th:href="@{/subjects}">Subjects</a>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <h4 class="my-4">Waiting Mentorship Requests</h4>
+        <div class="container">
+          <p id="noEntryTxt" th:style="${waitingRequests.isEmpty()}? 'display:block':'display:none'">There are no waiting requests.</p>
+          <div class="accordion">
+            <div class="accordion-item" th:each="request : ${waitingRequests}" th:id="${request.id}">
+
+              <h2 class="accordion-header" th:id="${'heading'+request.id}">
+                <button aria-expanded="false" class="accordion-button collapsed" data-bs-toggle="collapse" th:aria-controls="${'collapse'+request.id}" th:data-bs-target="${'#collapse'+request.id}" type="button">
+                  Request Id <span class="fst-italic ms-1 text-truncate" th:text="${request.id}">$id$</span>
+                </button>
+              </h2>
+
+              <div class="accordion-collapse collapse" th:aria-labelledby="${'heading'+request.id}" th:id="${'collapse'+request.id}">
+                <div class="accordion-body">
+                  <div class="row">
+
+                    <div class="col">
+                      <div class="row container-sm mb-3 text-muted">
+                        <div class="col small">Requested&nbsp;from:&nbsp;
+                          <span class="fst-italic text-nowrap" th:text="${request.mentor.actualName}">$username$</span></div>
+                        <div class="col small text-sm-end">Requested&nbsp;date:&nbsp;
+                          <span class="fst-italic text-nowrap" th:text="${#dates.format(request.date, 'yyyy/MM/dd HH:mm')}">$date$</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col">
+                          <p style="text-align: justify;" th:text="${request.text}">$text$</p>
+                          <strong>Selected subjects under <span class="fst-italic" th:text="${request.selectedSubject.majorSubject}">$major$</span>: </strong>
+                          <ul>
+                            <li th:each="subject : ${request.selectedSubject.subjects}" th:text="${subject}"></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-auto text-end mt-3 ps-5">
+                      <button class="btn btn-outline-success btn-sm" th:onclick="doRequest([[${request.id}]], true)">Accept</button>
+                      <button class="btn btn-danger btn-sm" th:onclick="doRequest([[${request.id}]], false)">Reject</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <th:block th:replace="fragments/footer"></th:block>
 
 <script>
+    $('.accordion').bind('DOMSubtreeModified', function () {
+        if ($(".accordion").children().length == 0) {
+            $("#noEntryTxt").show();
+        } else {
+            $("#noEntryTxt").hide();
+        }
+    });
+
     let doRequest = function (id, answer) {
         $.ajax({
             type: 'POST',
             url: `http://localhost:8080/api/requests/${id}/${answer}`,
             success: function (data, status, xhr) {
-                showToast("bg-success", "Done!");
                 $(`#${id}`).remove();
-                if ($('.accordion-item').length == 0) {
-                    $('.card-body .container').append(
-                        `<p>There are no waiting requests.</p>`
-                    );
-                }
+                showToast("bg-success", `Request ${answer ? 'accepted' : 'rejected'}.`);
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
@@ -111,7 +105,6 @@
         });
     }
 </script>
-
 
 </body>
 </html>
