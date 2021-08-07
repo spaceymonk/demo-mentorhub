@@ -15,12 +15,10 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
 
-
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Edit Phase</h5>
         <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
       </div>
-
 
       <div class="modal-body">
 
@@ -39,12 +37,10 @@
 
       </div>
 
-
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
         <button class="btn btn-primary" th:onclick="sendReview()" type="button">Submit</button>
       </div>
-
 
     </div>
   </div>
@@ -83,47 +79,36 @@
                 </tr>
                 <tr>
                   <td class="fw-bold">Begin Date:</td>
-                  <td class="ps-1"
-                      th:if="${mentorship.beginDate == null}">
-                    &mdash;
+                  <td id="mentorshipBeginDate" class="ps-1">
+                    <th:block th:text="${#dates.format(mentorship.beginDate, 'yyyy/MM/dd HH:mm')}"></th:block>
+                    <th:block th:if="${mentorship.beginDate == null}"> &mdash;</th:block>
                   </td>
-                  <td class="ps-1"
-                      th:if="${mentorship.beginDate != null}"
-                      th:text="${#dates.format(mentorship.beginDate, 'yyyy/MM/dd')}"></td>
                 </tr>
 
                 <tr>
                   <td class="fw-bold">Status:</td>
-                  <td class="ps-1" th:text="${mentorship.status}"></td>
+                  <td id="mentorshipStatus" class="ps-1" th:text="${mentorship.status}"></td>
                 </tr>
 
               </table>
-
-              <button class="btn btn-secondary mt-3"
-                      onclick="nextPhase()" th:if="${mentorship.isNotStarted()}" type="button"> Start
-              </button>
-
+              <button class="btn btn-secondary mt-3" onclick="nextPhase()" th:if="${mentorship.isNotStarted()}" type="button"> Start</button>
             </div>
           </div>
 
           <div class="col-md-8">
-
             <h5 class="mb-3">Phases:</h5>
             <p th:if="${mentorship.phases.isEmpty()}">No phases created, yet. </p>
 
-
-            <ul class="list-group">
-
+            <ul id="phaseList" class="list-group">
 
               <li class="list-group-item"
-                  th:each="phase,iter : ${mentorship.phases}"
-                  th:style="${iter.index < mentorship.currentPhaseIndex} ? 'background-color: #eef' : (${iter.index == mentorship.currentPhaseIndex} ? 'background-color : #efe'  : 'background-color : #fff')">
+                  th:each="phase,iter : ${mentorship.phases}" th:id="${phase.id}"
+                  th:classappend="${iter.index < mentorship.currentPhaseIndex} ? 'phase-bg-completed' : (${iter.index == mentorship.currentPhaseIndex} ? 'phase-bg-active'  : 'phase-bg')">
                 <div class="row">
                   <div class="col">
 
                     <div>
-                      <strong th:text="${iter.count+'.'}"></strong> <span th:text="${phase.name}"></span>
-                      <br>
+                      <span th:text="${phase.name}"></span> <br>
                       <small class="text-muted text-nowrap"> End date: <span th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd HH:mm')}"></span> </small>
                     </div>
 
@@ -141,24 +126,15 @@
 
                   </div>
 
-                  <div class="col-auto mt-3"
-                       th:with="review=${currentUser.equals(mentorship.mentor)} ?  ${phase.mentorReview} : ${phase.menteeReview}">
+                  <div class="col-auto mt-3" th:with="review=${currentUser.equals(mentorship.mentor)} ?  ${phase.mentorReview} : ${phase.menteeReview}">
 
-                    <p class="lead"
-                       th:if="${iter.index < mentorship.currentPhaseIndex && review != null}">
-                      Done
-                    </p>
+                    <p class="lead" th:if="${iter.index < mentorship.currentPhaseIndex && review != null}"> Done </p>
 
-                    <button class="btn btn-warning rounded-pills"
-                            th:if="${iter.index < mentorship.currentPhaseIndex && review == null}"
-                            th:onclick="reviewPhase([[${phase.id}]])"
-                            type="button">
+                    <button class="btn btn-warning rounded-pills" th:if="${iter.index < mentorship.currentPhaseIndex && review == null}" th:onclick="reviewPhase([[${phase.id}]])" type="button">
                       Review
                     </button>
 
-                    <button class="btn btn-primary rounded-pills" onclick="nextPhase()"
-                            th:if="${iter.index == mentorship.currentPhaseIndex}"
-                            type="button">
+                    <button class="btn btn-primary rounded-pills" onclick="nextPhase()" th:if="${iter.index == mentorship.currentPhaseIndex}" type="button">
                       Complete
                     </button>
 
@@ -171,8 +147,7 @@
 
             </ul>
 
-            <a class="btn btn-primary mt-4"
-               th:href="@{/plan/{id}(id=${mentorship.id})}" th:if="${mentorship.isNotStarted()}">Plan</a>
+            <a class="btn btn-primary mt-4" th:href="@{/plan/{id}(id=${mentorship.id})}" th:if="${mentorship.isNotStarted()}">Plan</a>
 
           </div>
         </div>
@@ -186,9 +161,11 @@
 
 
 <script th:inline="javascript">
-    let mentorshipId = /*[[${mentorship.id}]]*/ "";
-    let myModal = new bootstrap.Modal($("#exampleModal"))
+    const mentorshipId = /*[[${mentorship.id}]]*/ "";
+    const userIsMentor = /*[[${mentorship.mentor == currentUser}]]*/ false;
+    const myModal = new bootstrap.Modal($("#exampleModal"));
     let selectedPhaseId = null;
+
 
     let reviewPhase = function (phaseId) {
         selectedPhaseId = phaseId;
@@ -199,11 +176,13 @@
         myModal.show();
     }
 
+
     let sendReview = function () {
         data = {
             "text": $("#txtArea").val(),
             "rating": $('input[name="rating"]:checked').val()
         };
+
         $.ajax({
             type: 'PUT',
             contentType: "application/json",
@@ -225,6 +204,7 @@
             }
         });
     }
+
 
     let nextPhase = function () {
         $.ajax({
