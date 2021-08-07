@@ -70,7 +70,7 @@ public class ApiMentorship {
         return ResponseEntity.ok(mentorship.getId());
     }
 
-    @RequestMapping(value = "/{mentorshipId}/phases", consumes = "application/json", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{mentorshipId}/phases/", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> savePhase(@PathVariable("mentorshipId") String mentorshipId,
                                             @RequestBody Phase requestPhase) {
@@ -165,7 +165,7 @@ public class ApiMentorship {
         return ResponseEntity.ok(phaseId);
     }
 
-    @RequestMapping(value = "/{mentorshipId}/phases/{phaseId}/reviews", consumes = "application/json", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{mentorshipId}/phases/{phaseId}/reviews/", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> savePhaseReview(@PathVariable("mentorshipId") String mentorshipId,
                                                   @PathVariable("phaseId") String phaseId,

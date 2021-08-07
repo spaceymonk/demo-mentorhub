@@ -13,12 +13,13 @@
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
+
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Edit Phase</h5>
         <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
       </div>
-      <div class="modal-body">
 
+      <div class="modal-body">
         <label class="w-100 mb-3" for="phasename">Phase name: <br>
           <input class="form-control mt-1" id="phasename" placeholder="Enter a name" type="text">
         </label>
@@ -30,12 +31,13 @@
         <label class="w-100 mb-3" for="phasetime">End time: <br>
           <input class="form-control mt-1" id="phasetime" placeholder="Enter a time" type="time">
         </label>
-
       </div>
+
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
         <button class="btn btn-primary" th:onclick="saveChanges()" type="button">Save changes</button>
       </div>
+
     </div>
   </div>
 </div>
@@ -43,36 +45,30 @@
 <div style="min-height: 100vh;">
   <div class="container pt-5">
     <div class="card">
+
       <div class="card-header">
         <a class="btn btn-secondary rounded-circle" th:href="@{/details/{id}(id=${mentorship.id})}"><i
             class="fas fa-arrow-left"></i></a>
       </div>
+
       <div class="card-body">
         <h4 class="my-4">Phase planning</h4>
         <div class="container">
           <p id="noEntryTxt" th:style="${mentorship.phases.isEmpty()}? 'display:block':'display:none'">No phase added.</p>
           <ol class="list-group list-group-numbered" id="phaseList">
 
-            <li class="list-group-item" th:each="phase, iter : ${mentorship.phases}"
-                th:id="${phase.id}"
-                th:data-sort="${dateParam}">
+            <li class="list-group-item" th:each="phase, iter : ${mentorship.phases}" th:id="${phase.id}" th:data-sort="${dateParam}">
               <div class="row">
                 <div class="col">
                   <th:block th:text="${phase.name}"></th:block>
                   <br>
-                  <small class="text-muted">
-                    End date: <span
-                      th:text="${#dates.format(phase.endDate, 'yyyy-MM-dd HH:mm')}"></span>
-                  </small>
+                  <small class="text-muted"> End date: <span th:text="${#dates.format(phase.endDate, 'yyyy-MM-dd HH:mm')}"></span> </small>
                 </div>
                 <div class="col-auto btn-group mt-3">
-                  <button class="btn btn-primary"
-                          th:onclick="editPhase([[${phase.name}]], [[${#dates.format(phase.endDate, 'yyyy-MM-dd')}]], [[${#dates.format(phase.endDate, 'HH:mm')}]], [[${phase.id}]])"
-                          type="button">
+                  <button class="btn btn-primary" th:onclick="editPhase([[${phase.name}]], [[${#dates.format(phase.endDate, 'yyyy-MM-dd')}]], [[${#dates.format(phase.endDate, 'HH:mm')}]], [[${phase.id}]])" type="button">
                     Edit
                   </button>
-                  <button class="btn btn-danger" th:onclick="removePhase([[${phase.id}]])"
-                          type="button">
+                  <button class="btn btn-danger" th:onclick="removePhase([[${phase.id}]])" type="button">
                     Remove
                   </button>
                 </div>
@@ -82,9 +78,11 @@
           </ol>
         </div>
       </div>
+
       <div class="card-footer">
         <button class="btn btn-secondary" onclick="addPhase()" type="button">Add</button>
       </div>
+
     </div>
   </div>
 </div>
@@ -97,6 +95,34 @@
     const mentorshipId = /*[[${mentorship.id}]]*/ "";
     let selectedPhaseId = null;
 
+    $('#phaseList').bind('DOMSubtreeModified', function () {
+        if ($("#phaseList").children().length == 0) {
+            $("#noEntryTxt").show();
+        } else {
+            $("#noEntryTxt").hide();
+        }
+    });
+
+
+    let generatePhaseElement = function (createdId, selectedDateTime, selectedName, selectedDate, selectedTime) {
+        return (`
+          <li class="list-group-item" id="${createdId}" data-sort="${selectedDateTime}">
+            <div class="row">
+              <div class="col">
+                ${selectedName}
+                <br>
+                <small class="text-muted">End date: <span>${selectedDate + ' ' + selectedTime}</span>
+                </small>
+              </div>
+              <div class="col-auto btn-group mt-3">
+                <button class="btn btn-primary" onclick="editPhase('${selectedName}', '${selectedDate}', '${selectedTime}', '${createdId}')" type="button">Edit</button>
+                <button class="btn btn-danger" onclick="removePhase('${createdId}')" type="button">Remove</button>
+              </div>
+            </div>
+          </li>`);
+    }
+
+
     let editPhase = function (phaseName, phaseDate, phaseTime, phaseId) {
         selectedPhaseId = phaseId;
         $("#phasename").val(phaseName);
@@ -104,6 +130,7 @@
         $("#phasetime").val(phaseTime);
         myModal.show();
     }
+
 
     let addPhase = function () {
         selectedPhaseId = null;
@@ -113,17 +140,13 @@
         myModal.show();
     }
 
+
     let removePhase = function (phaseId) {
         $.ajax({
             type: 'DELETE',
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases/${phaseId}`,
             success: function (deletedId, status, xhr) {
                 $(`#${deletedId}`).remove();
-                if ($("#phaseList").children().length == 0) {
-                    $("#noEntryTxt").show();
-                } else {
-                    $("#noEntryTxt").hide();
-                }
                 showToast("bg-success", "Sucessfully removed!");
             },
             error: function (jqXhr, textStatus, errorMessage) {
@@ -135,6 +158,7 @@
             }
         });
     }
+
 
     let saveChanges = function () {
         let selectedDate = $('#phasedate').val();
@@ -151,41 +175,16 @@
 
         $.ajax({
             type: 'PUT',
-            url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases`,
+            url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases/`,
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (createdId, status, xhr) {
-                let DOMelement = `
-                <li class="list-group-item" id="${createdId}" data-sort="${selectedDateTime}">
-                    <div class="row">
-                        <div class="col">
-                            ${selectedName}
-                            <br>
-                            <small class="text-muted">
-                                End date: <span>${selectedDate + ' ' + selectedTime}</span>
-                            </small>
-                        </div>
-                        <div class="col-auto btn-group mt-3">
-                            <button class="btn btn-primary" onclick="editPhase('${selectedName}', '${selectedDate}', '${selectedTime}', '${createdId}')" type="button">
-                                Edit
-                            </button>
-                            <button class="btn btn-danger" onclick="removePhase('${createdId}')" type="button">
-                                Remove
-                            </button>
-                        </div>
-                    </div>
-                </li>`;
                 $(`#${createdId}`).remove();
-                $("#phaseList").append(DOMelement);
+                let DOM_element = generatePhaseElement(createdId, selectedDateTime, selectedName, selectedDate, selectedTime);
+                $("#phaseList").append(DOM_element);
                 sortedList = $("#phaseList").children().sort(function (a, b) {
                     return new Date($(a).data("sort")) - new Date($(b).data("sort"));
                 });
-                $("#phaseList").html(sortedList);
-                if ($("#phaseList").children().length == 0) {
-                    $("#noEntryTxt").show();
-                } else {
-                    $("#noEntryTxt").hide();
-                }
                 myModal.hide();
                 showToast("bg-success", "Changes saved!");
             },
@@ -198,7 +197,6 @@
             }
         });
     }
-
 </script>
 
 </body>

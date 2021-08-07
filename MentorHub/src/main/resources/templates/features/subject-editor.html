@@ -87,7 +87,7 @@
 
 <script>
     const myModal = new bootstrap.Modal($("#exampleModal"))
-    let currentId = null;
+    let selectedSubjectId = null;
     let index = 0;
 
     $('#subjectList').bind('DOMSubtreeModified', function () {
@@ -144,7 +144,7 @@
 
 
     let editMajor = function (id = "") {
-        currentId = id;
+        selectedSubjectId = id;
         let DOM_subject = $(`#${id}`);
         let majorSubjectName = $(DOM_subject).find('p').text();
         let subjects = $(DOM_subject).find('li').map(function () {
@@ -163,7 +163,7 @@
     let createMajor = function () {
         $("#formMajorNameFld").val("");
         $("#formSubjectList").empty();
-        currentId = null;
+        selectedSubjectId = null;
 
         myModal.show();
     };
@@ -175,7 +175,7 @@
             return $(this).val();
         }).get() || [];
         data = {
-            id: currentId,
+            id: selectedSubjectId,
             majorSubject: categoryName,
             subjects: subjects
         };
