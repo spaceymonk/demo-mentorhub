@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/head"></th:block>
-    <title>MentorHub :: Dashboard</title>
+  <th:block th:replace="fragments/head"></th:block>
+  <title>MentorHub :: Dashboard</title>
 </head>
 
 <body>
@@ -10,80 +10,80 @@
 
 <!-- Modal -->
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Subject</h5>
-                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-            </div>
-            <div class="modal-body">
-                <p><input class="form-control border-0 fs-3" id="formMajorNameFld"
-                          placeholder="Enter Major Subject name"
-                          type="text" value=""></p>
-                <ul class="list-group list-group-flush" id="formSubjectList"></ul>
-                <div class="text-center">
-                    <a class="btn rounded-circle" onclick="addSubjectToForm()"><i class="fas fa-plus"></i></a>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-                <button class="btn btn-primary" onclick="saveChanges()" type="button">Save changes</button>
-            </div>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Subject</h5>
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+      </div>
+      <div class="modal-body">
+        <p><input class="form-control border-0 fs-3" id="formMajorNameFld"
+                  placeholder="Enter Major Subject name"
+                  type="text" value=""></p>
+        <ul class="list-group list-group-flush" id="formSubjectList"></ul>
+        <div class="text-center">
+          <a class="btn rounded-circle" onclick="addSubjectToForm()"><i class="fas fa-plus"></i></a>
         </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+        <button class="btn btn-primary" onclick="saveChanges()" type="button">Save changes</button>
+      </div>
     </div>
+  </div>
 </div>
 
 <div style="min-height: 100vh;">
-    <div class="container my-5">
-        <div class="card">
+  <div class="container my-5">
+    <div class="card">
 
-            <div class="card-header row">
-                <div class="col">
-                    <h1 class="card-title">Admin Panel</h1>
-                    <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
-                </div>
-                <div class="col-auto nav nav-tabs flex-row">
-                    <a class="nav-link" th:href="@{/dashboard}">Requests</a>
-                    <a class="nav-link active" th:href="@{/subjects}">Subjects</a>
-                </div>
-            </div>
-
-            <div class="card-body">
-                <h4 class="my-4">Subjects</h4>
-                <div class="container">
-                    <p th:if="${subjectList.isEmpty()}">There is no subject, yet.</p>
-                    <ul class="list-group" id="subjectList">
-
-                        <li class="list-group-item" th:each="subjectItem : ${subjectList}" th:id="${subjectItem.id}">
-                            <div class="row">
-                                <div class="col">
-                                    <p class="lead mb-1" th:text="${subjectItem.majorSubject}">$MAJORNAME$</p>
-                                    <ul class="text-muted">
-                                        <li th:each="subject : ${subjectItem.subjects}" th:text="${subject}"></li>
-                                    </ul>
-                                </div>
-                                <div class="col-auto mt-3 d-flex align-items-center">
-                                    <button class="btn btn-primary me-2" th:onclick="editMajor([[${subjectItem.id}]]);"
-                                            type="button">Edit
-                                    </button>
-                                    <button class="btn btn-danger" th:onclick="removeMajor([[${subjectItem.id}]]);"
-                                            type="button">Remove
-                                    </button>
-                                </div>
-                            </div>
-                        </li>
-
-                    </ul>
-                </div>
-            </div>
-
-            <div class="card-footer">
-                <button class="btn btn-secondary" onclick="createMajor()" type="button">Add Subject</button>
-            </div>
-
+      <div class="card-header row">
+        <div class="col">
+          <h1 class="card-title">Admin Panel</h1>
+          <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
         </div>
+        <div class="col-auto nav nav-tabs flex-row">
+          <a class="nav-link" th:href="@{/dashboard}">Requests</a>
+          <a class="nav-link active" th:href="@{/subjects}">Subjects</a>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <h4 class="my-4">Subjects</h4>
+        <div class="container">
+          <p id="noEntryTxt" th:style="${subjectList.isEmpty()}? 'display:block':'display:none'">No subject added.</p>
+          <ul class="list-group" id="subjectList">
+
+            <li class="list-group-item" th:each="subjectItem : ${subjectList}" th:id="${subjectItem.id}">
+              <div class="row">
+                <div class="col">
+                  <p class="lead mb-1" th:text="${subjectItem.majorSubject}">$MAJORNAME$</p>
+                  <ul class="text-muted">
+                    <li th:each="subject : ${subjectItem.subjects}" th:text="${subject}"></li>
+                  </ul>
+                </div>
+                <div class="col-auto mt-3 d-flex align-items-center">
+                  <button class="btn btn-primary me-2" th:onclick="editMajor([[${subjectItem.id}]]);"
+                          type="button">Edit
+                  </button>
+                  <button class="btn btn-danger" th:onclick="removeMajor([[${subjectItem.id}]]);"
+                          type="button">Remove
+                  </button>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button class="btn btn-secondary" onclick="createMajor()" type="button">Add Subject</button>
+      </div>
+
     </div>
+  </div>
 </div>
 
 
@@ -186,6 +186,11 @@
                         </div>
                     </li>`;
                 $('#subjectList').append(element);
+                if ($("#subjectList").children().length == 0) {
+                    $("#noEntryTxt").show();
+                } else {
+                    $("#noEntryTxt").hide();
+                }
                 myModal.hide();
                 showToast("bg-success", "Changes saved!");
             },
@@ -205,6 +210,11 @@
             url: `http://localhost:8080/api/subjects/${id}`,
             success: function (data, status, xhr) {
                 $(`#${id}`).remove();
+                if ($("#subjectList").children().length == 0) {
+                    $("#noEntryTxt").show();
+                } else {
+                    $("#noEntryTxt").hide();
+                }
                 showToast("bg-success", "Sucessfully removed!");
             },
             error: function (jqXhr, textStatus, errorMessage) {
