@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/head"></th:block>
-    <title>MentorHub :: Dashboard</title>
+  <th:block th:replace="fragments/head"></th:block>
+  <title>MentorHub :: Dashboard</title>
 </head>
 
 <body>
@@ -10,69 +10,71 @@
 
 
 <div style="min-height: 100vh;">
-    <div class="container pt-5">
-        <div class="card ">
+  <div class="container pt-5">
+    <div class="card ">
 
-            <div class="card-header">
-                <h1 class="card-title">Dashboard</h1>
-                <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
-            </div>
+      <div class="card-header">
+        <h1 class="card-title">Dashboard</h1>
+        <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
+      </div>
 
-            <div class="card-body">
+      <div class="card-body">
 
-                <div>
-                    <h4 class="my-4">Mentor Sections</h4>
-                    <div class="container">
-                        <p th:if="${currentUser.getMentorSections().isEmpty()}">You are not a mentor in any section.</p>
-                        <ol class="list-group list-group-numbered ">
-                            <li class="list-group-item d-flex justify-content-between align-items-start"
-                                th:each="section : ${currentUser.getMentorSections()}">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
-                                    Mentee:
-                                    <th:block th:text="${section.mentee.actualName}"></th:block>
-                                    <br>
-                                    Phase:
-                                    <th:block th:text="${section.status}"></th:block>
-                                </div>
-                                <a class="btn btn-info btn-sm rounded-pill"
-                                   th:href="@{/details/{id}(id=${section.id})}">Details</a>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
+        <div>
+          <h4 class="my-4">Mentor Sections</h4>
+          <div class="container">
+            <p th:if="${currentUser.getMentorSections().isEmpty()}">You are not a mentor in any section.</p>
+            <ol class="list-group list-group-numbered">
 
-                <div>
-                    <h4 class="my-4">Mentee Sections</h4>
-                    <div class="container">
-                        <p th:if="${currentUser.getMenteeSections().isEmpty()}">You are not a mentee in any section.</p>
-                        <ol class="list-group list-group-numbered">
-                            <li class="list-group-item d-flex justify-content-between align-items-start"
-                                th:each="section : ${currentUser.getMenteeSections()}">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
-                                    Mentor:
-                                    <th:block th:text="${section.mentor.actualName}"></th:block>
-                                    <br>
-                                    Phase:
-                                    <th:block th:text="${section.status}"></th:block>
-                                </div>
-                                <a class="btn btn-info btn-sm rounded-pill"
-                                   th:href="@{/details/{id}(id=${section.id})}">Details</a>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
+              <li class="list-group-item d-flex" th:each="section : ${currentUser.getMentorSections()}">
+                <a class="ms-2 text-decoration-none w-100" th:href="@{/details/{id}(id=${section.id})}">
+                  <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
+                  <div class="small ms-2">
+                    Mentee:
+                    <th:block th:text="${section.mentee.actualName}"></th:block>
+                    <br>
+                    Phase:
+                    <th:block th:text="${section.status}"></th:block>
+                  </div>
+                </a>
+              </li>
 
-            </div>
-
-            <div class="card-footer">
-                <a class="btn btn-secondary" th:href="@{/search}">Search</a>
-                <a class="btn btn-secondary" th:href="@{/apply}">Apply</a>
-            </div>
-
+            </ol>
+          </div>
         </div>
+
+        <div>
+          <h4 class="my-4">Mentee Sections</h4>
+          <div class="container">
+            <p th:if="${currentUser.getMenteeSections().isEmpty()}">You are not a mentee in any section.</p>
+            <ol class="list-group list-group-numbered">
+
+              <li class="list-group-item d-flex" th:each="section : ${currentUser.getMenteeSections()}">
+                <a class="ms-2 text-decoration-none w-100" th:href="@{/details/{id}(id=${section.id})}">
+                  <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
+                  <div class="small ms-2">
+                    Mentor:
+                    <th:block th:text="${section.mentee.actualName}"></th:block>
+                    <br>
+                    Phase:
+                    <th:block th:text="${section.status}"></th:block>
+                  </div>
+                </a>
+              </li>
+
+            </ol>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <a class="btn btn-secondary" th:href="@{/search}">Search</a>
+        <a class="btn btn-secondary" th:href="@{/apply}">Apply</a>
+      </div>
+
     </div>
+  </div>
 </div>
 
 

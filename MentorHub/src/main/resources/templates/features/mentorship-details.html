@@ -122,10 +122,9 @@
                   <div class="col">
 
                     <div>
-                      <strong th:text="${iter.count+'.'}"></strong>
-                      <span th:text="${phase.name}"></span>
+                      <strong th:text="${iter.count+'.'}"></strong> <span th:text="${phase.name}"></span>
                       <br>
-                      <small class="text-muted"> End date: <span th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd HH:mm')}"></span> </small>
+                      <small class="text-muted text-nowrap"> End date: <span th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd HH:mm')}"></span> </small>
                     </div>
 
                     <div class="card mt-2 p-2 bg-light" th:if="${phase.mentorReview != null}">
