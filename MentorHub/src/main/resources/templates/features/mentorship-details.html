@@ -167,6 +167,16 @@
     let selectedPhaseId = null;
 
 
+    let generateButtonElement = {
+        done: () => (`<p class="lead"> Done </p>`),
+        complete: () => (`<button class="btn btn-primary rounded-pills" onclick="nextPhase()" type="button">Complete</button>`),
+        review: (phaseId) => (`<button class="btn btn-warning rounded-pills" onclick="reviewPhase('${phaseId}')" type="button">Review</button>`)
+    };
+
+
+    let generateReviewElement = (type, rating, text) => (`<div class="card mt-2 p-2 bg-light"><span class="fst-italic">Mentor's Review: </span><small class="text-muted fst-italic">${rating}/5 stars</small>${text}</div>`);
+
+
     let reviewPhase = function (phaseId) {
         selectedPhaseId = phaseId;
         $("#txtArea").val("");
@@ -189,11 +199,9 @@
             data: JSON.stringify(data),
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/phases/${selectedPhaseId}/reviews/`,
             success: function (data, status, xhr) {
+                //todo
                 myModal.hide();
                 showToast("bg-success", "Done!");
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
@@ -211,7 +219,8 @@
             type: 'POST',
             url: `http://localhost:8080/api/mentorships/${mentorshipId}/nextPhase`,
             success: function (data, status, xhr) {
-                location.reload();
+                //todo
+                showToast("bg-info", "Don't forget to write a review!");
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
