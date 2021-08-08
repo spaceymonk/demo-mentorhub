@@ -14,10 +14,11 @@ public class Bootstrap implements CommandLineRunner {
     private final MentorshipRequestRepository mentorshipRequestRepository;
     private final SubjectRepository subjectRepository;
     private final RoleRepository roleRepository;
+    private final SearchRepository searchRepository;
 
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Started in bootstrap...");
-
+        System.out.println(searchRepository.findAll());
     }
 }
