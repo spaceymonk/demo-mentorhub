@@ -11,3 +11,8 @@ spring:
       ldif: classpath:ldap-data.ldif
       base-dn: dc=springframework,dc=org
       port: 8389
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: mentorhub

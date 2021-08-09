@@ -1,0 +1,62 @@
+version: '3'
+
+
+services: 
+
+  mongo:
+    image: mongo:5.0.2
+    restart: always
+    volumes:
+      - "mentorhub_volume:/data/db"
+    ports: 
+     - "27017:27017"
+    expose:
+     - "27017"
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rs0", "--bind_ip_all"]
+    networks: 
+      - "mentorhub_network"
+
+  elasticsearch:
+    image: elasticsearch:7.14.0
+    restart: always
+    volumes: 
+      - "mentorhub_volume:/data/es"
+    ports: 
+      - "9200:9200"
+      - "9300:9300"
+    expose:
+      - "9200"
+      - "9300"
+    networks:
+      - "mentorhub_network"
+    environment: 
+      - "discovery.type=single-node"
+
+  monstache:
+    image: rwynn/monstache:latest
+    entrypoint: monstache --mongo-url='mongodb://mongo:27017' --elasticsearch-url='http://elasticsearch:9200/'
+    restart: always
+    depends_on: 
+      - "mongo"
+      - "elasticsearch"
+    networks: 
+      - "mentorhub_network"
+    volumes:
+      - "mentorhub_volume:/data/monstache"
+
+  mongosetup:
+    image: "mongo-setup"
+    build: "./mongo-setup"
+    container_name: "mongosetup"
+    depends_on:
+      - "mongo"
+    networks:
+      - "mentorhub_network"
+
+
+networks: 
+  mentorhub_network:
+
+
+volumes: 
+  mentorhub_volume:

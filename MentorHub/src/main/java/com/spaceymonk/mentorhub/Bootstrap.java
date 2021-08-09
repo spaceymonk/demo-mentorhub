@@ -20,5 +20,12 @@ public class Bootstrap implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Started in bootstrap...");
         System.out.println(searchRepository.findAll());
+
+        // setup roles if they don't exist
+        String[] roles = {"ROLE_USER", "ROLE_ADMIN"};
+        for (String role : roles)
+            if (roleRepository.findByName(role) == null)
+                roleRepository.save(new Role(role));
+
     }
 }
