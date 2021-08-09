@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
 
 
 @RequestMapping("/api/search")
@@ -42,7 +43,7 @@ public class ApiSearch {
         System.out.println("incoming search text: " + searchTxt);
 
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(matchQuery("text", searchTxt)
+                .withQuery(multiMatchQuery(searchTxt, "text", "selectedSubject.majorSubject", "selectedSubject.subjects")
                         .fuzziness(Fuzziness.ONE))
                 .build();
 
