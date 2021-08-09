@@ -31,6 +31,7 @@ services:
       - "mentorhub_network"
     environment: 
       - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
 
   monstache:
     image: rwynn/monstache:latest
