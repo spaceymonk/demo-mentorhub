@@ -143,13 +143,34 @@
 
 
     let searchByFilter = function () {
-        //todo
+        let majorSubjectName = $("#categoryselector option:selected").text() || "";
+        let subjectList = $(".categories input:checkbox:checked").map(function () {
+            return $(this).val();
+        }).get() || [];
+
+        $.ajax({
+            type: 'GET',
+            url: `http://localhost:8080/api/search/method/filter?majorSubjectName=${majorSubjectName}&subjectList=${subjectList}`,
+            success: function (data, status, xhr) {
+                $("#resultList").empty();
+                data.forEach(function (element) {
+                    let DOM_element = generateResultElement(element.majorSubjectName,
+                        element.selectedSubjectNames,
+                        element.mentorName,
+                        element.mentorshipRequestId,
+                        element.text);
+                    $("#resultList").append(DOM_element);
+                });
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
+            }
+        });
     }
-
-
-    $("#searchBar").on("input", function () {
-        searchByText($(this).val());
-    });
 
 
     let selectMentor = function (id) {
@@ -184,6 +205,10 @@
         }
     };
 
+
+    $("#searchBar").on("input", function () {
+        searchByText($(this).val());
+    });
 
     $("#categoryselector").change(resetForm);
 
