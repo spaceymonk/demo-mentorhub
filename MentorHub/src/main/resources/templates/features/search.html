@@ -131,9 +131,11 @@
     };
 
 
-    let searchByText = function (searchTxt) {
+    let searchByText = function (searchTxt = "") {
         $("#categoryselector option[value='']").prop("selected", true);
         resetForm();
+
+        searchTxt = searchTxt || "";
 
         $.ajax({
             type: 'GET',

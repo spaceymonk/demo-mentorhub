@@ -57,6 +57,9 @@ public class ApiSearch {
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<List<Map<String, Object>>> findMentorshipByText(@RequestParam("searchTxt") String searchTxt) {
 
+        if (searchTxt.isBlank())
+            return ResponseEntity.ok().build();
+
         QueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .should(QueryBuilders.matchQuery("selectedSubject.majorSubject", searchTxt).fuzziness(Fuzziness.ONE))
                 .should(QueryBuilders.matchQuery("selectedSubject.subjects", searchTxt).fuzziness(Fuzziness.ONE))
