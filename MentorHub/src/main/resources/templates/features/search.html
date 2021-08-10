@@ -1,60 +1,125 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="fragments/head"></th:block>
-    <title>MentorHub :: Search</title>
+  <th:block th:replace="fragments/head"></th:block>
+  <title>MentorHub :: Search</title>
 </head>
 
 <body>
 <th:block th:replace="fragments/header"></th:block>
 
 <div style="min-height: 100vh;">
-    <div class="container pt-5">
-        <div class="card ">
-            <div class="card-header">
-                <a class="btn btn-secondary rounded-circle" th:href="@{/dashboard}"><i
-                        class="fas fa-arrow-left"></i></a>
-            </div>
-            <div class="card-body">
-                <div class="col">
-                    <h4 class="my-4">Search</h4>
-                    <div class="container">
-                        <h6>Found <span th:text="${mentorshipRequestList.size()}"></span> item(s)</h6>
-                        <ul class="list-group">
-                            <li class="list-group-item"
-                                th:each="mentorshipRequest : ${mentorshipRequestList}">
-                                <div class="row">
-                                    <div class="col">
-                                        <div>
-                                        <span class="lead"
-                                              th:text="${mentorshipRequest.selectedSubject.majorSubject}"></span>
-                                            <small class="fst-italic text-muted"
-                                                   th:text="${mentorshipRequest.mentor.actualName}"></small>
-                                        </div>
-                                        <ul>
-                                            <li th:each="subject : ${mentorshipRequest.selectedSubject.subjects}"
-                                                th:text="${subject}"></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-auto mt-3">
-                                        <button class="btn btn-primary btn-sm rounded-pill"
-                                                th:onclick="selectMentor([[${mentorshipRequest.id}]]);">
-                                            Select
-                                        </button>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+  <div class="container pt-5">
+    <div class="card ">
+      <div class="card-header">
+        <a class="btn btn-secondary rounded-circle" th:href="@{/dashboard}"><i
+            class="fas fa-arrow-left"></i></a>
+      </div>
+      <div class="card-body">
+        <h4 class="my-4">Search</h4>
+        <div class="row">
+
+          <div class="col-md-4">
+            <div class="card bg-light p-3 mb-4">
+
+              <div class="mb-3">
+                <h5>Search by Text</h5>
+                <div class="input-group">
+                  <input class="form-control" type="text" name="searchBar" id="searchBar" placeholder="Type something...">
+                  <button class="btn btn-outline-secondary" type="button" onclick="searchByText()">
+                    <i class="fa fa-search"></i>
+                  </button>
                 </div>
+              </div>
+
+              <hr>
+
+              <div>
+                <h5 class="mb-2">Search by Category </h5>
+
+                <div class="mb-2">
+                  <h6>Major subject name</h6>
+                  <select class="form-select" id="categoryselector" required th:name="selectedCategory">
+                    <option class="fst-italic" selected value="">Choose...</option>
+                    <option th:each="category : ${categories}" th:text="${category.majorSubject}" th:value="${category.id}"></option>
+                  </select>
+                </div>
+
+                <div class="row">
+                  <h6 class="mb-2">Subjects</h6>
+                  <div class="col">
+                    <small class="text-danger" id="errSelectMajorFirst">Please select a major first.</small>
+                    <div class="form-check categories" style="display: none" th:each="category : ${categories}" th:id="${category.id}">
+                      <div th:each="subject : ${category.subjects}" th:with="randomId=${#strings.randomAlphanumeric(10)}">
+                        <input class="form-check-input" th:id="${randomId}" th:name="selectedSubject"
+                               th:value="${subject}" type="checkbox">
+                        <label class="form-check-label" th:for="${randomId}" th:text="${subject}"> </label><br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-center">
+                  <button class="btn btn-secondary mt-3" onclick="searchByFilter()" type="button">Filter</button>
+                </div>
+              </div>
+
             </div>
+          </div>
+
+          <div class="col-md-8">
+            <h5 class="mb-3">Results:</h5>
+
+            <p id="noEntryTxt">No result.</p>
+
+            <ul id="resultList" class="list-group">
+              <!--              <li class="list-group-item" th:each="mentorshipRequest : ${mentorshipRequestList}">-->
+              <!--                <div class="row">-->
+              <!--                  <div class="col">-->
+              <!--                    <div>-->
+              <!--                      <span class="lead" th:text="${mentorshipRequest.selectedSubject.majorSubject}">majorSubject</span>-->
+              <!--                      <small class="fst-italic text-muted" th:text="${mentorshipRequest.mentor.actualName}">actualName</small>-->
+              <!--                    </div>-->
+              <!--                    <ul>-->
+              <!--                      <li th:each="subject : ${mentorshipRequest.selectedSubject.subjects}" th:text="${subject}">subjects</li>-->
+              <!--                    </ul>-->
+              <!--                  </div>-->
+              <!--                  <div class="col-auto mt-3">-->
+              <!--                    <button class="btn btn-primary btn-sm rounded-pill" th:onclick="selectMentor(${mentorshipRequest.id});">-->
+              <!--                      Select-->
+              <!--                    </button>-->
+              <!--                  </div>-->
+              <!--                </div>-->
+              <!--              </li>-->
+            </ul>
+
+          </div>
+
         </div>
+      </div>
     </div>
+  </div>
+</div>
 </div>
 
 <th:block th:replace="fragments/footer"></th:block>
 
 <script>
+    let searchByText = function () {
+        //todo
+    }
+
+
+    let searchByFilter = function () {
+        //todo
+    }
+
+
+    $("#searchBar").on("input", function () {
+        searchByText($(this).val());
+    });
+
+
     let selectMentor = function (id) {
         $.ajax({
             type: 'PUT',
@@ -71,6 +136,32 @@
             }
         });
     }
+
+
+    let resetForm = function () {
+        let selectedCategory = $("#categoryselector option:selected").val();
+        $(".categories").each(function (index) {
+            $(this).hide();
+            $(this).find('input:checkbox').prop('checked', false);
+        });
+        if (!selectedCategory) {
+            $("#errSelectMajorFirst").show();
+        } else {
+            $("#errSelectMajorFirst").hide();
+            $(`#${selectedCategory}`).show();
+        }
+    };
+
+
+    $("#categoryselector").change(resetForm);
+
+    $('#resultList').bind('DOMSubtreeModified', function () {
+        if ($("#resultList").children().length == 0) {
+            $("#noEntryTxt").show();
+        } else {
+            $("#noEntryTxt").hide();
+        }
+    });
 </script>
 
 </body>
