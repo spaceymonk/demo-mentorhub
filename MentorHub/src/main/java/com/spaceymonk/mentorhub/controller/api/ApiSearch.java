@@ -27,21 +27,23 @@ public class ApiSearch {
     private final ElasticsearchRestTemplate elasticsearchRestTemplate;
     private final MentorshipRequestRepository mentorshipRequestRepository;
 
-    private List<Map<String, Object>> generateResponse(Query searchQuery) {
+    private List<Map<String, Object>> generateResponse(Query query) {
         SearchHits<SearchHitResponse> searchHits = elasticsearchRestTemplate
-                .search(searchQuery, SearchHitResponse.class, IndexCoordinates.of("mentorhub.mentorshiprequest"));
+                .search(query, SearchHitResponse.class, IndexCoordinates.of("mentorhub.mentorshiprequest"));
 
         List<Map<String, Object>> result = new ArrayList<>();
         searchHits.getSearchHits().forEach(hit -> {
             MentorshipRequest mentorshipRequest = mentorshipRequestRepository.findById(Objects.requireNonNull(hit.getId())).orElse(null);
             assert mentorshipRequest != null;
-            Map<String, Object> map = new HashMap<>();
-            map.put("majorSubjectName", mentorshipRequest.getSelectedSubject().getMajorSubject());
-            map.put("selectedSubjectNames", mentorshipRequest.getSelectedSubject().getSubjects());
-            map.put("mentorName", mentorshipRequest.getMentor().getActualName());
-            map.put("mentorshipRequestId", mentorshipRequest.getId());
-            map.put("text", mentorshipRequest.getText());
-            result.add(map);
+            if (mentorshipRequest.getStatus().equals("accepted")) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("majorSubjectName", mentorshipRequest.getSelectedSubject().getMajorSubject());
+                map.put("selectedSubjectNames", mentorshipRequest.getSelectedSubject().getSubjects());
+                map.put("mentorName", mentorshipRequest.getMentor().getActualName());
+                map.put("mentorshipRequestId", mentorshipRequest.getId());
+                map.put("text", mentorshipRequest.getText());
+                result.add(map);
+            }
         });
 
         return result;

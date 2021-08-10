@@ -132,7 +132,9 @@
 
 
     let searchByText = function (searchTxt) {
+        $("#categoryselector option[value='']").prop("selected", true);
         resetForm();
+
         $.ajax({
             type: 'GET',
             url: `http://localhost:8080/api/search/method/text?searchTxt=${searchTxt}`,
