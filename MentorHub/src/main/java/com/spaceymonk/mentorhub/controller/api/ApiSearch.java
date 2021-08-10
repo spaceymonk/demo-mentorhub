@@ -3,6 +3,7 @@ package com.spaceymonk.mentorhub.controller.api;
 import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import lombok.AllArgsConstructor;
+import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHits;
@@ -52,7 +53,8 @@ public class ApiSearch {
 
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(QueryBuilders.multiMatchQuery(searchTxt,
-                        "text", "selectedSubject.majorSubject", "selectedSubject.subjects"))
+                        "text", "selectedSubject.majorSubject", "selectedSubject.subjects")
+                        .fuzziness(Fuzziness.ONE))
                 .build();
 
         return ResponseEntity.ok(generateResponse(searchQuery));
