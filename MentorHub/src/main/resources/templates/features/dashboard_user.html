@@ -10,8 +10,8 @@
 
 
 <div style="min-height: 100vh;">
-  <div class="container pt-5">
-    <div class="card ">
+  <div class="container my-5">
+    <div class="card card-shadow">
 
       <div class="card-header">
         <h1 class="card-title">Dashboard</h1>
@@ -54,7 +54,7 @@
                   <div class="fw-bold" th:text="${section.majorSubject}">$major$</div>
                   <div class="small ms-2">
                     <span class="text-decoration-underline">Mentor:</span>
-                    <th:block th:text="${section.mentee.actualName}"></th:block>
+                    <th:block th:text="${section.mentor.actualName}"></th:block>
                     <br>
                     <span class="text-decoration-underline">Phase:</span>
                     <th:block th:text="${section.status}"></th:block>
@@ -69,8 +69,8 @@
       </div>
 
       <div class="card-footer">
-        <a class="btn btn-secondary" th:href="@{/search}">Search</a>
-        <a class="btn btn-secondary" th:href="@{/apply}">Apply</a>
+        <a class="btn btn-dark" th:href="@{/search}">Search</a>
+        <a class="btn btn-dark" th:href="@{/apply}">Apply</a>
       </div>
 
     </div>

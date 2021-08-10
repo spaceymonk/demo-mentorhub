@@ -9,10 +9,10 @@
 <th:block th:replace="fragments/header"></th:block>
 
 <div style="min-height: 100vh;">
-  <div class="container pt-5">
-    <div class="card ">
+  <div class="container my-5">
+    <div class="card card-shadow">
       <div class="card-header">
-        <a class="btn btn-secondary rounded-circle" th:href="@{/dashboard}"><i
+        <a class="btn btn-dark rounded-circle" th:href="@{/dashboard}"><i
             class="fas fa-arrow-left"></i></a>
       </div>
       <div class="card-body">
@@ -26,7 +26,7 @@
                 <h5>Search by Text</h5>
                 <div class="input-group">
                   <input class="form-control" id="searchBar" name="searchBar" placeholder="Type something..." type="text">
-                  <button class="btn btn-outline-secondary" onclick="searchByText()" type="button">
+                  <button class="btn btn-outline-dark" onclick="searchByText()" type="button">
                     <i class="fa fa-search"></i>
                   </button>
                 </div>
@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="text-center">
-                  <button class="btn btn-secondary mt-3" onclick="searchByFilter()" type="button">Filter</button>
+                  <button class="btn btn-dark mt-3" onclick="searchByFilter()" type="button">Filter</button>
                 </div>
               </div>
 
@@ -116,7 +116,23 @@
     }
 
 
+    let resetForm = function () {
+        let selectedCategory = $("#categoryselector option:selected").val();
+        $(".categories").each(function (index) {
+            $(this).hide();
+            $(this).find('input:checkbox').prop('checked', false);
+        });
+        if (!selectedCategory) {
+            $("#errSelectMajorFirst").show();
+        } else {
+            $("#errSelectMajorFirst").hide();
+            $(`#${selectedCategory}`).show();
+        }
+    };
+
+
     let searchByText = function (searchTxt) {
+        resetForm();
         $.ajax({
             type: 'GET',
             url: `http://localhost:8080/api/search/method/text?searchTxt=${searchTxt}`,
@@ -189,21 +205,6 @@
             }
         });
     }
-
-
-    let resetForm = function () {
-        let selectedCategory = $("#categoryselector option:selected").val();
-        $(".categories").each(function (index) {
-            $(this).hide();
-            $(this).find('input:checkbox').prop('checked', false);
-        });
-        if (!selectedCategory) {
-            $("#errSelectMajorFirst").show();
-        } else {
-            $("#errSelectMajorFirst").hide();
-            $(`#${selectedCategory}`).show();
-        }
-    };
 
 
     $("#searchBar").on("input", function () {

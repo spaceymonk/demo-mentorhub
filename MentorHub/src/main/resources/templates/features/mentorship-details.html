@@ -48,12 +48,12 @@
 
 <!--Content-->
 <div style="min-height: 100vh;">
-  <div class="container pt-5">
-    <div class="card ">
+  <div class="container my-5">
+    <div class="card card-shadow">
 
 
       <div class="card-header">
-        <a class="btn btn-secondary rounded-circle" th:href="@{/dashboard}"><i class="fas fa-arrow-left"></i></a>
+        <a class="btn btn-dark rounded-circle" th:href="@{/dashboard}"><i class="fas fa-arrow-left"></i></a>
       </div>
 
 
@@ -91,7 +91,9 @@
                 </tr>
 
               </table>
-              <button class="btn btn-secondary mt-3" onclick="nextPhase()" th:if="${mentorship.isNotStarted()}" type="button"> Start</button>
+              <div class="text-center">
+                <button class="btn btn-dark mt-3" onclick="nextPhase()" th:if="${mentorship.isNotStarted()}" type="button"> Start</button>
+              </div>
             </div>
           </div>
 
@@ -108,7 +110,7 @@
                   <div class="col">
 
                     <div>
-                      <span th:text="${phase.name}"></span> <br>
+                      <span class="fw-bold" th:text="${phase.name}"></span> <br>
                       <small class="text-muted text-nowrap"> End date: <span th:text="${#dates.format(phase.endDate, 'yyyy/MM/dd HH:mm')}"></span> </small>
                     </div>
 
@@ -147,7 +149,7 @@
 
             </ul>
 
-            <a class="btn btn-primary mt-4" th:href="@{/plan/{id}(id=${mentorship.id})}" th:if="${mentorship.isNotStarted()}">Plan</a>
+            <a class="btn btn-dark mt-4" th:href="@{/plan/{id}(id=${mentorship.id})}" th:if="${mentorship.isNotStarted()}">Plan</a>
 
           </div>
         </div>

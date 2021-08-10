@@ -43,25 +43,23 @@
 </div>
 
 <div style="min-height: 100vh;">
-  <div class="container pt-5">
-    <div class="card">
+  <div class="container my-5">
+    <div class="card card-shadow">
 
       <div class="card-header">
-        <a class="btn btn-secondary rounded-circle" th:href="@{/details/{id}(id=${mentorship.id})}"><i
-            class="fas fa-arrow-left"></i></a>
+        <a class="btn btn-dark rounded-circle" th:href="@{/details/{id}(id=${mentorship.id})}"><i class="fas fa-arrow-left"></i></a>
       </div>
 
       <div class="card-body">
         <h4 class="my-4">Phase planning</h4>
         <div class="container">
           <p id="noEntryTxt" th:style="${mentorship.phases.isEmpty()}? 'display:block':'display:none'">No phase added.</p>
-          <ol class="list-group list-group-numbered" id="phaseList">
+          <ol class="list-group" id="phaseList">
 
             <li class="list-group-item" th:attr="data-sort=${#dates.format(phase.endDate, 'yyyy-MM-dd') + 'T' + #dates.format(phase.endDate, 'HH:mm')}" th:each="phase, iter : ${mentorship.phases}" th:id="${phase.id}">
               <div class="row">
                 <div class="col">
-                  <th:block th:text="${phase.name}"></th:block>
-                  <br>
+                  <div class="fw-bold" th:text="${phase.name}"></div>
                   <small class="text-muted"> End date: <span th:text="${#dates.format(phase.endDate, 'yyyy-MM-dd HH:mm')}"></span> </small>
                 </div>
                 <div class="col-auto btn-group mt-3">
@@ -80,7 +78,7 @@
       </div>
 
       <div class="card-footer">
-        <button class="btn btn-secondary" onclick="addPhase()" type="button">Add</button>
+        <button class="btn btn-dark" onclick="addPhase()" type="button">Add Phase</button>
       </div>
 
     </div>
