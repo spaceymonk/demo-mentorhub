@@ -35,7 +35,7 @@ services:
 
   monstache:
     image: rwynn/monstache:latest
-    entrypoint: monstache --mongo-url='mongodb://mongo:27017' --elasticsearch-url='http://elasticsearch:9200/'
+    entrypoint: monstache -mongo-url='mongodb://mongo:27017' -elasticsearch-url='http://elasticsearch:9200/' -change-stream-namespace='mentorhub.mentorshipRequest'
     restart: always
     depends_on: 
       - "mongo"
