@@ -3,12 +3,15 @@ package com.spaceymonk.mentorhub.controller.api;
 import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import lombok.AllArgsConstructor;
-import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
-import org.springframework.data.elasticsearch.core.query.*;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,13 +56,21 @@ public class ApiSearch {
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<List<Map<String, Object>>> findMentorshipByText(@RequestParam("searchTxt") String searchTxt) {
 
-        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.multiMatchQuery(searchTxt,
-                        "text", "selectedSubject.majorSubject", "selectedSubject.subjects")
-                        .fuzziness(Fuzziness.ONE))
-                .build();
+        QueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+                .should(QueryBuilders.matchQuery("selectedSubject.majorSubject", searchTxt))
+                .should(QueryBuilders.matchQuery("selectedSubject.subjects", searchTxt))
+                .should(QueryBuilders.matchQuery("text", searchTxt))
+                .minimumShouldMatch(1)
+                .filter(QueryBuilders.termQuery("status", "accepted"));
+        Query query = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).build();
 
-        return ResponseEntity.ok(generateResponse(searchQuery));
+//        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+//                .withQuery(QueryBuilders.multiMatchQuery(searchTxt,
+//                        "text", "selectedSubject.majorSubject", "selectedSubject.subjects")
+//                        .fuzziness(Fuzziness.ONE))
+//                .build();
+
+        return ResponseEntity.ok(generateResponse(query));
     }
 
     @RequestMapping(value = "/method/filter", method = RequestMethod.GET, produces = "application/json")
@@ -67,11 +78,15 @@ public class ApiSearch {
     public ResponseEntity<List<Map<String, Object>>> findMentorshipByFilter(@RequestParam("majorSubjectName") String majorSubjectName,
                                                                             @RequestParam("subjectList") List<String> subjectList) {
 
-        Criteria criteria = new Criteria("selectedSubject.majorSubject").is(majorSubjectName)
-                .and("selectedSubject.subjects").is(subjectList);
-        Query searchQuery = new CriteriaQuery(criteria);
 
-        return ResponseEntity.ok(generateResponse(searchQuery));
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+                .must(QueryBuilders.matchQuery("selectedSubject.majorSubject.keyword", majorSubjectName))
+                .must(QueryBuilders.termsQuery("selectedSubject.subjects.keyword", subjectList))
+                .filter(QueryBuilders.termQuery("status", "accepted"));
+
+        Query query = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).build();
+
+        return ResponseEntity.ok(generateResponse(query));
     }
 
     static class SearchHitResponse {
