@@ -1,6 +1,7 @@
 package com.spaceymonk.mentorhub.controller.api;
 
 import com.spaceymonk.mentorhub.domain.MentorshipRequest;
+import com.spaceymonk.mentorhub.domain.Subject;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import lombok.AllArgsConstructor;
 import org.elasticsearch.common.unit.Fuzziness;
@@ -16,11 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
 
 
@@ -36,28 +34,47 @@ public class ApiSearch {
         private String id;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-    @RolesAllowed({"ROLE_USER"})
-    public ResponseEntity<List<MentorshipRequest>> findMentorship(@RequestParam("searchTxt") String searchTxt) {
+    private Map<String, Object> generateResponse(MentorshipRequest mentorshipRequest) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("majorSubjectName", mentorshipRequest.getSelectedSubject().getMajorSubject());
+        map.put("selectedSubjectNames", mentorshipRequest.getSelectedSubject().getSubjects());
+        map.put("mentorName", mentorshipRequest.getMentor().getActualName());
+        map.put("mentorshipRequestId", mentorshipRequest.getId());
+        map.put("text", mentorshipRequest.getText());
+        return map;
+    }
 
-        System.out.println("incoming search text: " + searchTxt);
+    @RequestMapping(value = "/method/text", method = RequestMethod.GET, produces = "application/json")
+    @RolesAllowed({"ROLE_USER"})
+    public ResponseEntity<List<Map<String, Object>>> findMentorshipByText(@RequestParam("searchTxt") String searchTxt) {
 
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(multiMatchQuery(searchTxt, "text", "selectedSubject.majorSubject", "selectedSubject.subjects")
                         .fuzziness(Fuzziness.ONE))
                 .build();
 
-        System.out.println("query created: " + searchQuery);
 
         SearchHits<SearchHitResponse> searchHits = elasticsearchRestTemplate
                 .search(searchQuery, SearchHitResponse.class, IndexCoordinates.of("mentorhub.mentorshiprequest"));
 
-        System.out.println("search hits acquired: " + searchHits);
-
-        List<MentorshipRequest> result = new ArrayList<>();
+        List<Map<String, Object>> result = new ArrayList<>();
         searchHits.getSearchHits().forEach(hit -> {
-            result.add(mentorshipRequestRepository.findById(Objects.requireNonNull(hit.getId())).orElse(null));
+            MentorshipRequest mentorshipRequest = mentorshipRequestRepository.findById(Objects.requireNonNull(hit.getId())).orElse(null);
+            assert mentorshipRequest != null;
+            result.add(generateResponse(mentorshipRequest));
         });
+
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/method/filter", method = RequestMethod.GET, produces = "application/json")
+    @RolesAllowed({"ROLE_USER"})
+    public ResponseEntity<List<Map<String, Object>>> findMentorshipByFilter(@RequestParam("majorSubjectName") String majorSubjectName,
+                                                                            @RequestParam("subjectList") List<String> subjectList) {
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        //todo
 
         return ResponseEntity.ok(result);
     }
