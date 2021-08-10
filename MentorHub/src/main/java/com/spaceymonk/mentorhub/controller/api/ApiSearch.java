@@ -26,10 +26,6 @@ public class ApiSearch {
     private final ElasticsearchRestTemplate elasticsearchRestTemplate;
     private final MentorshipRequestRepository mentorshipRequestRepository;
 
-    static class SearchHitResponse {
-        private String id;
-    }
-
     private List<Map<String, Object>> generateResponse(Query searchQuery) {
         SearchHits<SearchHitResponse> searchHits = elasticsearchRestTemplate
                 .search(searchQuery, SearchHitResponse.class, IndexCoordinates.of("mentorhub.mentorshiprequest"));
@@ -72,6 +68,10 @@ public class ApiSearch {
         Query searchQuery = new CriteriaQuery(criteria);
 
         return ResponseEntity.ok(generateResponse(searchQuery));
+    }
+
+    static class SearchHitResponse {
+        private String id;
     }
 
 }

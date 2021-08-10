@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <th:block th:replace="fragments/head"></th:block>
-  <link rel="stylesheet" type="text/css" th:href="@{/css/rating.css}">
+  <link rel="stylesheet" th:href="@{/css/rating.css}" type="text/css">
   <title>MentorHub :: Mentorship Details</title>
 </head>
 
@@ -23,11 +23,11 @@
       <div class="modal-body">
 
         <div class="rating text-center mb-3">
-          <input id="rating-5" type="radio" name="rating" value="5"/><label for="rating-5"><i class="fas fa-2x fa-star"></i></label>
-          <input id="rating-4" type="radio" name="rating" value="4"/><label for="rating-4"><i class="fas fa-2x fa-star"></i></label>
-          <input id="rating-3" type="radio" name="rating" value="3"/><label for="rating-3"><i class="fas fa-2x fa-star"></i></label>
-          <input id="rating-2" type="radio" name="rating" value="2"/><label for="rating-2"><i class="fas fa-2x fa-star"></i></label>
-          <input id="rating-1" type="radio" name="rating" value="1"/><label for="rating-1"><i class="fas fa-2x fa-star"></i></label>
+          <input id="rating-5" name="rating" type="radio" value="5"/><label for="rating-5"><i class="fas fa-2x fa-star"></i></label>
+          <input id="rating-4" name="rating" type="radio" value="4"/><label for="rating-4"><i class="fas fa-2x fa-star"></i></label>
+          <input id="rating-3" name="rating" type="radio" value="3"/><label for="rating-3"><i class="fas fa-2x fa-star"></i></label>
+          <input id="rating-2" name="rating" type="radio" value="2"/><label for="rating-2"><i class="fas fa-2x fa-star"></i></label>
+          <input id="rating-1" name="rating" type="radio" value="1"/><label for="rating-1"><i class="fas fa-2x fa-star"></i></label>
         </div>
 
         <div class="form-floating">
@@ -79,7 +79,7 @@
                 </tr>
                 <tr>
                   <td class="fw-bold">Begin Date:</td>
-                  <td id="mentorshipBeginDate" class="ps-1">
+                  <td class="ps-1" id="mentorshipBeginDate">
                     <th:block th:text="${#dates.format(mentorship.beginDate, 'yyyy/MM/dd HH:mm')}"></th:block>
                     <th:block th:if="${mentorship.beginDate == null}"> &mdash;</th:block>
                   </td>
@@ -87,7 +87,7 @@
 
                 <tr>
                   <td class="fw-bold">Status:</td>
-                  <td id="mentorshipStatus" class="ps-1" th:text="${mentorship.status}"></td>
+                  <td class="ps-1" id="mentorshipStatus" th:text="${mentorship.status}"></td>
                 </tr>
 
               </table>
@@ -99,11 +99,11 @@
             <h5 class="mb-3">Phases:</h5>
             <p th:if="${mentorship.phases.isEmpty()}">No phases created, yet. </p>
 
-            <ul id="phaseList" class="list-group">
+            <ul class="list-group" id="phaseList">
 
               <li class="list-group-item"
-                  th:each="phase,iter : ${mentorship.phases}" th:id="${phase.id}"
-                  th:classappend="${iter.index < mentorship.currentPhaseIndex} ? 'phase-bg-completed' : (${iter.index == mentorship.currentPhaseIndex} ? 'phase-bg-active'  : 'phase-bg')">
+                  th:classappend="${iter.index < mentorship.currentPhaseIndex} ? 'phase-bg-completed' : (${iter.index == mentorship.currentPhaseIndex} ? 'phase-bg-active'  : 'phase-bg')" th:each="phase,iter : ${mentorship.phases}"
+                  th:id="${phase.id}">
                 <div class="row">
                   <div class="col">
 

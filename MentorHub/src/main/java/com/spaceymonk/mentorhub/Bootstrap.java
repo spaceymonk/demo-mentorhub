@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class Bootstrap implements CommandLineRunner {
 
-//    private final UserRepository userRepository;
+    //    private final UserRepository userRepository;
 //    private final MentorshipRepository mentorshipRepository;
 //    private final MentorshipRequestRepository mentorshipRequestRepository;
 //    private final SubjectRepository subjectRepository;

@@ -1,25 +1,25 @@
 <th:block th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/" style="font-size: 2rem">MentorHub</a>
-            <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
-                    class="navbar-toggler"
-                    data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse" type="button">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent"
-                 style="justify-content: flex-end; text-align: center">
-                <button class="btn btn-primary" onclick="logout()">Logout</button>
-            </div>
-        </div>
-    </nav>
-    <div aria-atomic="true" aria-live="assertive" class="toast align-items-center text-white border-0" role="alert"
-         style="z-index: 9999; bottom: 3%; left: 3%; position: fixed;">
-        <div class="d-flex">
-            <div class="toast-body">
-            </div>
-            <button aria-label="Close" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                    type="button"></button>
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/" style="font-size: 2rem">MentorHub</a>
+      <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+              class="navbar-toggler"
+              data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse" type="button">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent"
+           style="justify-content: flex-end; text-align: center">
+        <button class="btn btn-primary" onclick="logout()">Logout</button>
+      </div>
     </div>
+  </nav>
+  <div aria-atomic="true" aria-live="assertive" class="toast align-items-center text-white border-0" role="alert"
+       style="z-index: 9999; bottom: 3%; left: 3%; position: fixed;">
+    <div class="d-flex">
+      <div class="toast-body">
+      </div>
+      <button aria-label="Close" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+              type="button"></button>
+    </div>
+  </div>
 </th:block>
