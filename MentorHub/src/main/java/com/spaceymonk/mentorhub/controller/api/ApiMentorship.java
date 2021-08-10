@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RequestMapping("/api/mentorships")
@@ -34,7 +35,7 @@ public class ApiMentorship {
         // check db
         Optional<MentorshipRequest> mentorshipRequestOptional = mentorshipRequestRepository.findById(mentorshipRequestId);
         if (mentorshipRequestOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body("There is no such mentorship!");
+            return ResponseEntity.badRequest().body("There is no such mentorship request!");
         }
         MentorshipRequest mentorshipRequest = mentorshipRequestOptional.get();
         User requestOwner = mentorshipRequest.getMentor();
@@ -43,8 +44,15 @@ public class ApiMentorship {
         if (requestOwner.equals(currentUser)) {
             return ResponseEntity.badRequest().body("You cannot be mentor of yourself!");
         }
+        int remainder = 2;
+        for(Mentorship mentorship : requestOwner.getMentorSections()) {
+            if (mentorship.isNotCompleted())
+                remainder -= 1;
+            if (remainder <= 0)
+                return ResponseEntity.badRequest().body("Mentor is full!!");
+        }
         for (Mentorship mentorship : currentUser.getMenteeSections()) {
-            if (!mentorship.isCompleted() &&
+            if (mentorship.isNotCompleted() &&
                     mentorship.getMajorSubject().equals(mentorshipRequest.getSelectedSubject().getMajorSubject())) {
                 return ResponseEntity.badRequest().body("You can only study with only ONE mentor under the same major!");
             }

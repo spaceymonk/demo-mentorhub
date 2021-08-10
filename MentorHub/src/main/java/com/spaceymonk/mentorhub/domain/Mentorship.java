@@ -29,6 +29,10 @@ public class Mentorship {
         return phases.size() == currentPhaseIndex;
     }
 
+    public boolean isNotCompleted() {
+        return phases.size() != currentPhaseIndex;
+    }
+
     public boolean isNotStarted() {
         return currentPhaseIndex < 0;
     }
