@@ -72,26 +72,7 @@
 
             <p id="noEntryTxt">No result.</p>
 
-            <ul id="resultList" class="list-group">
-              <!--              <li class="list-group-item" th:each="mentorshipRequest : ${mentorshipRequestList}">-->
-              <!--                <div class="row">-->
-              <!--                  <div class="col">-->
-              <!--                    <div>-->
-              <!--                      <span class="lead" th:text="${mentorshipRequest.selectedSubject.majorSubject}">majorSubject</span>-->
-              <!--                      <small class="fst-italic text-muted" th:text="${mentorshipRequest.mentor.actualName}">actualName</small>-->
-              <!--                    </div>-->
-              <!--                    <ul>-->
-              <!--                      <li th:each="subject : ${mentorshipRequest.selectedSubject.subjects}" th:text="${subject}">subjects</li>-->
-              <!--                    </ul>-->
-              <!--                  </div>-->
-              <!--                  <div class="col-auto mt-3">-->
-              <!--                    <button class="btn btn-primary btn-sm rounded-pill" th:onclick="selectMentor(${mentorshipRequest.id});">-->
-              <!--                      Select-->
-              <!--                    </button>-->
-              <!--                  </div>-->
-              <!--                </div>-->
-              <!--              </li>-->
-            </ul>
+            <ul id="resultList" class="list-group"></ul>
 
           </div>
 
@@ -105,8 +86,59 @@
 <th:block th:replace="fragments/footer"></th:block>
 
 <script>
-    let searchByText = function () {
-        //todo
+    let generateSelectedSubjectElement = function (selectedSubjects) {
+        let DOM_element = "";
+        selectedSubjects.forEach(function (subject) {
+            DOM_element += (`<li>${subject}</li>`);
+        });
+        return DOM_element;
+    }
+
+
+    let generateResultElement = function (majorSubjectName, selectedSubjectNames, mentorName, mentorshipRequestId, text) {
+        return (`
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col">
+              <div>
+                <p class="lead">${mentorName}</p>
+                <span class="fw-bold">${majorSubjectName}</span>
+              </div>
+              <ul>${generateSelectedSubjectElement(selectedSubjectNames)}</ul>
+              <p class="fst-italic mt-2"> ${text} </p>
+            </div>
+            <div class="col-auto mt-3">
+              <button class="btn btn-primary btn-sm rounded-pill" onclick="selectMentor('${mentorshipRequestId}');">Select</button>
+            </div>
+          </div>
+        </li>
+        `);
+    }
+
+
+    let searchByText = function (searchTxt) {
+        $.ajax({
+            type: 'GET',
+            url: `http://localhost:8080/api/search/method/text?searchTxt=${searchTxt}`,
+            success: function (data, status, xhr) {
+                $("#resultList").empty();
+                data.forEach(function (element) {
+                    let DOM_element = generateResultElement(element.majorSubjectName,
+                        element.selectedSubjectNames,
+                        element.mentorName,
+                        element.mentorshipRequestId,
+                        element.text);
+                    $("#resultList").append(DOM_element);
+                });
+            },
+            error: function (jqXhr, textStatus, errorMessage) {
+                if (!jqXhr.responseText)
+                    errorMessage = "Something went wrong!";
+                else
+                    errorMessage = jqXhr.responseText;
+                showToast("bg-danger", errorMessage);
+            }
+        });
     }
 
 
