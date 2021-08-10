@@ -3,6 +3,7 @@ package com.spaceymonk.mentorhub.controller.api;
 import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import lombok.AllArgsConstructor;
+import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -57,18 +58,11 @@ public class ApiSearch {
     public ResponseEntity<List<Map<String, Object>>> findMentorshipByText(@RequestParam("searchTxt") String searchTxt) {
 
         QueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
-                .should(QueryBuilders.matchQuery("selectedSubject.majorSubject", searchTxt))
-                .should(QueryBuilders.matchQuery("selectedSubject.subjects", searchTxt))
-                .should(QueryBuilders.matchQuery("text", searchTxt))
-                .minimumShouldMatch(1)
+                .should(QueryBuilders.matchQuery("selectedSubject.majorSubject", searchTxt).fuzziness(Fuzziness.ONE))
+                .should(QueryBuilders.matchQuery("selectedSubject.subjects", searchTxt).fuzziness(Fuzziness.ONE))
+                .should(QueryBuilders.matchQuery("text", searchTxt).fuzziness(Fuzziness.ONE))
                 .filter(QueryBuilders.termQuery("status", "accepted"));
         Query query = new NativeSearchQueryBuilder().withQuery(boolQueryBuilder).build();
-
-//        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
-//                .withQuery(QueryBuilders.multiMatchQuery(searchTxt,
-//                        "text", "selectedSubject.majorSubject", "selectedSubject.subjects")
-//                        .fuzziness(Fuzziness.ONE))
-//                .build();
 
         return ResponseEntity.ok(generateResponse(query));
     }
