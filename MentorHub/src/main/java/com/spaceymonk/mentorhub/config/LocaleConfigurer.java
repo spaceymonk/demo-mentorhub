@@ -17,10 +17,4 @@ public class LocaleConfigurer {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Istanbul"));
     }
 
-    @Bean
-    public Jackson2ObjectMapperBuilderCustomizer jacksonObjectMapperCustomization() {
-        return jacksonObjectMapperBuilder ->
-                jacksonObjectMapperBuilder.timeZone(TimeZone.getTimeZone("Europe/Istanbul"));
-    }
-
 }
