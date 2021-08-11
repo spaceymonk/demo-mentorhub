@@ -17,6 +17,7 @@ public class Phase {
     private PhaseReview menteeReview;
     private String name;
     private Date endDate;
+    private Boolean notified;
 
 
 }

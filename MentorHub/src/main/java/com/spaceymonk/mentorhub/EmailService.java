@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
+import java.util.Date;
 
 @Component
 @EnableScheduling
@@ -15,6 +16,7 @@ public class EmailService {
 
     private final JavaMailSenderImpl mailSender;
     private final MentorshipRepository mentorshipRepository;
+
 
     public EmailService(MentorshipRepository mentorshipRepository) {
         this.mentorshipRepository = mentorshipRepository;
@@ -41,15 +43,31 @@ public class EmailService {
         }
     }
 
+
     public void send(String to, String subject, String text) {
         send("system@mentorhub.com", to, subject, text);
     }
 
+
     //    @Scheduled(cron = "0 */15 * ? * *")  -- every 15 minutes
     @Scheduled(cron = "0 * * ? * *") // every minute
     public void run() {
-        // fetch all 1 hour remained mentorships
-        //todo
+        final long ONE_HOUR_IN_MS = 60 * 60 * 1000;
+        var now = new Date();
+        var oneHourLater = new Date(now.getTime() + ONE_HOUR_IN_MS);
+        System.out.println(now);
+        System.out.println(oneHourLater);
+        var list = mentorshipRepository.findByPhasesEndDateBetweenAndPhasesNotifiedFalse(now, oneHourLater);
+        list.forEach(mentorship -> {
+            mentorship.getPhases().forEach(phase -> {
+                if (phase.getEndDate().after(now) && phase.getEndDate().after(oneHourLater)) {
+                    send(mentorship.getMentor().getEmail(), "MentorHub Phase Reminder",
+                            "<p>Hey don't forget the phase of <strong>" + phase.getName() + "</strong> about <strong>" + mentorship.getMajorSubject() + "</strong>!<p>");
+                    phase.setNotified(true);
+                }
+            });
+            mentorshipRepository.save(mentorship);
+        });
     }
 
 }

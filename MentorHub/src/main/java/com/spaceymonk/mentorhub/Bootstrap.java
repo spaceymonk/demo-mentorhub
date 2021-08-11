@@ -10,11 +10,6 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class Bootstrap implements CommandLineRunner {
 
-    //    private final UserRepository userRepository;
-//    private final MentorshipRepository mentorshipRepository;
-//    private final MentorshipRequestRepository mentorshipRequestRepository;
-//    private final SubjectRepository subjectRepository;
-//    private final ElasticsearchRestTemplate elasticsearchTemplate;
     private final RoleRepository roleRepository;
 
     @Override
@@ -26,6 +21,5 @@ public class Bootstrap implements CommandLineRunner {
         for (String role : roles)
             if (roleRepository.findByName(role) == null)
                 roleRepository.save(new Role(role));
-
     }
 }
