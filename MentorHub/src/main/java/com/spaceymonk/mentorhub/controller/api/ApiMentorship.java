@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @RequestMapping("/api/mentorships")
@@ -45,7 +44,7 @@ public class ApiMentorship {
             return ResponseEntity.badRequest().body("You cannot be mentor of yourself!");
         }
         int remainder = 2;
-        for(Mentorship mentorship : requestOwner.getMentorSections()) {
+        for (Mentorship mentorship : requestOwner.getMentorSections()) {
             if (mentorship.isNotCompleted())
                 remainder -= 1;
             if (remainder <= 0)
