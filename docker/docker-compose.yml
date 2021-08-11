@@ -3,9 +3,24 @@ version: '3'
 
 services: 
 
+  application:
+    image: "mentorhub-app"
+    build: "./mentorhub-app"
+    container_name: "application"
+    ports: 
+      - "8080:8080"
+    depends_on:
+      - "mongo"
+      - "elasticsearch"
+      - "monstache"
+    networks:
+      - "mentorhub_network"
+
+
   mongo:
     image: mongo:5.0.2
     restart: always
+    container_name: "mongodb"
     volumes:
       - "mentorhub_volume:/data/db"
     ports: 
@@ -19,6 +34,7 @@ services:
   elasticsearch:
     image: elasticsearch:7.14.0
     restart: always
+    container_name: "elasticsearch"
     volumes: 
       - "mentorhub_volume:/data/es"
     ports: 
@@ -35,6 +51,7 @@ services:
 
   monstache:
     image: rwynn/monstache:latest
+    container_name: "monstache"
     entrypoint: monstache -mongo-url='mongodb://mongo:27017' -elasticsearch-url='http://elasticsearch:9200/' -change-stream-namespace='mentorhub.mentorshipRequest'
     restart: always
     depends_on: 
