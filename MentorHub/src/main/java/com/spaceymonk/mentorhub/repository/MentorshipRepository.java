@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface MentorshipRepository extends MongoRepository<Mentorship, String> {
     List<Mentorship> findByMentor(User mentor);
-    List<Mentorship> findByPhasesEndDateBetweenAndPhasesNotifiedFalse(Date start, Date end);
+
+    List<Mentorship> findByPhasesEndDateBetweenAndPhasesNotifiedAndCurrentPhaseIndexGreaterThan(Date start, Date end, Boolean notified, Integer index);
 }
