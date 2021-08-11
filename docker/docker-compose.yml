@@ -3,19 +3,28 @@ version: '3'
 
 services: 
 
-  application:
-    image: "mentorhub-app"
-    build: "./mentorhub-app"
-    container_name: "application"
-    ports: 
-      - "8080:8080"
-    depends_on:
-      - "mongo"
-      - "elasticsearch"
-      - "monstache"
-    networks:
-      - "mentorhub_network"
+  # application:
+  #   image: "mentorhub-app"
+  #   build: "./mentorhub-app"
+  #   container_name: "application"
+  #   ports: 
+  #     - "8080:8080"
+  #   depends_on:
+  #     - "mongo"
+  #     - "elasticsearch"
+  #     - "monstache"
+  #   networks:
+  #     - "mentorhub_network"
 
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: "monstache"
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    restart: always
+    networks: 
+      - "mentorhub_network"
 
   mongo:
     image: mongo:5.0.2
