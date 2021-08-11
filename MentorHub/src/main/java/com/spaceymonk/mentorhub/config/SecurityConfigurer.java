@@ -72,6 +72,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
                 user.setActualName(oidcUser.getFullName());
                 user.setGoogleId(oidcUser.getName());
                 user.setEnabled(true);
+                user.setEmail(oidcUser.getEmail());
                 Role role_user = roleRepository.findByName("ROLE_USER");
                 user.setRoles(Set.of(role_user));
                 userRepository.save(user);

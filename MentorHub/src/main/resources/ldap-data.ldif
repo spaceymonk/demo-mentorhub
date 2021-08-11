@@ -41,6 +41,7 @@ objectclass: organizationalPerson
 objectclass: inetOrgPerson
 cn: Ben Alex
 sn: Alex
+mail: alex@example.com
 uid: ben
 userPassword: $2a$10$c6bSeWPhg06xB1lvmaWNNe4NROmZiSpYhlocU/98HNr2MhIOiSt36
 
@@ -51,6 +52,7 @@ objectclass: organizationalPerson
 objectclass: inetOrgPerson
 cn: Jack Nick
 sn: Jack
+mail: jack@example.com
 uid: jack
 userPassword: $2y$10$mH5zUdws3R7usJZBOPP6leeTVej9h8ShDR.w7d0S.DYh0KmRNKcB6
 
@@ -61,6 +63,7 @@ objectclass: organizationalPerson
 objectclass: inetOrgPerson
 cn: Yospe Benthon
 sn: Yospe
+mail: yospe@example.com
 uid: yoyo
 userPassword: $2y$10$4wQY6zdvFvZ3ia9KgejJgOAAcGmuIik6SiKcioLlDLrDkEbMvai76
 
@@ -72,6 +75,7 @@ objectclass: inetOrgPerson
 cn: Bob Hamilton
 sn: Hamilton
 uid: bob
+mail: bob@example.com
 userPassword: bobspassword
 
 dn: uid=joe,ou=otherpeople,dc=springframework,dc=org

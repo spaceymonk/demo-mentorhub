@@ -32,6 +32,7 @@ public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
             user.setEnabled(true);
             user.setRoles(Set.of(role_user));
             user.setActualName(dirContextOperations.getStringAttribute("cn"));
+            user.setEmail(dirContextOperations.getStringAttribute("mail"));
             user.setUsername(username);
             user.setPassword(new String((byte[]) dirContextOperations.getObjectAttribute("userPassword")));
             userRepository.save(user);
