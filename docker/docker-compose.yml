@@ -3,35 +3,34 @@ version: '3'
 
 services: 
 
-  # application:
-  #   image: "mentorhub-app"
-  #   build: "./mentorhub-app"
-  #   container_name: "application"
-  #   ports: 
-  #     - "8080:8080"
-  #   depends_on:
-  #     - "mongo"
-  #     - "elasticsearch"
-  #     - "monstache"
-  #   networks:
-  #     - "mentorhub_network"
+  application:
+    image: "mentorhub-app"
+    build: "./mentorhub-app"
+    container_name: "application"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "mongo"
+      - "elasticsearch"
+      - "monstache"
+      - "mailhog"
+    networks:
+      - "mentorhub_network"
 
   mailhog:
     image: mailhog/mailhog:latest
-    container_name: "monstache"
+    container_name: "mailhog"
     ports:
       - "1025:1025"
       - "8025:8025"
-    restart: always
-    networks: 
+    expose:
+      - "1025"
+    networks:
       - "mentorhub_network"
 
   mongo:
     image: mongo:5.0.2
-    restart: always
     container_name: "mongodb"
-    volumes:
-      - "mentorhub_volume:/data/db"
     ports: 
      - "27017:27017"
     expose:
@@ -42,10 +41,7 @@ services:
 
   elasticsearch:
     image: elasticsearch:7.14.0
-    restart: always
-    container_name: "elasticsearch"
-    volumes: 
-      - "mentorhub_volume:/data/es"
+    container_name: "elasticsearchdb"
     ports: 
       - "9200:9200"
       - "9300:9300"
@@ -61,15 +57,13 @@ services:
   monstache:
     image: rwynn/monstache:latest
     container_name: "monstache"
+    restart: unless-stopped
     entrypoint: monstache -mongo-url='mongodb://mongo:27017' -elasticsearch-url='http://elasticsearch:9200/' -change-stream-namespace='mentorhub.mentorshipRequest'
-    restart: always
     depends_on: 
       - "mongo"
       - "elasticsearch"
     networks: 
       - "mentorhub_network"
-    volumes:
-      - "mentorhub_volume:/data/monstache"
 
   mongosetup:
     image: "mongo-setup"
@@ -83,7 +77,3 @@ services:
 
 networks: 
   mentorhub_network:
-
-
-volumes: 
-  mentorhub_volume:

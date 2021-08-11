@@ -13,6 +13,6 @@ spring:
       port: 8389
   data:
     mongodb:
-      host: localhost
+      host: mongo
       port: 27017
       database: mentorhub

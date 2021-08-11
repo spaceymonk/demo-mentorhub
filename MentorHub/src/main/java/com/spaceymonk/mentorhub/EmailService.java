@@ -21,7 +21,7 @@ public class EmailService {
     public EmailService(MentorshipRepository mentorshipRepository) {
         this.mentorshipRepository = mentorshipRepository;
         mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("localhost");
+        mailSender.setHost("mailhog");
         mailSender.setPort(1025);
         mailSender.setUsername("");
         mailSender.setPassword("");
