@@ -108,6 +108,8 @@ public class ApiMentorship {
             return ResponseEntity.badRequest().body("Mentorship already started!");
         }
 
+        requestPhase.setNotified(false);
+
         int repoIndex = mentorship.getPhases().indexOf(requestPhase);
         if (repoIndex != -1) {
             mentorship.getPhases().set(repoIndex, requestPhase);
