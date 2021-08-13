@@ -1,4 +1,4 @@
-package com.spaceymonk.mentorhub;
+package com.spaceymonk.mentorhub.features;
 
 import com.spaceymonk.mentorhub.repository.MentorshipRepository;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
