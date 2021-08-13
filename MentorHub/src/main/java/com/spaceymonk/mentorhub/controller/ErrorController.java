@@ -4,17 +4,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class ErrorController {
+
     @GetMapping("/error")
-    public String errorPage(Model model, HttpServletRequest request) {
-        String errMsg = (String) request.getSession().getAttribute("error.message");
-        request.getSession().removeAttribute("error.message");
-        model.addAttribute("msg", errMsg);
-        return "error";
+    @ResponseBody
+    public String errorPage() {
+        return "Something went wrong!";
     }
 
     @GetMapping("/403")
