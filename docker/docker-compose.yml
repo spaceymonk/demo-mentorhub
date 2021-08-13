@@ -58,8 +58,8 @@ services:
     image: rwynn/monstache:latest
     container_name: "monstache"
     restart: unless-stopped
-    entrypoint: monstache -mongo-url='mongodb://mongo:27017' -elasticsearch-url='http://elasticsearch:9200/' -change-stream-namespace='mentorhub.mentorshipRequest'
-    depends_on: 
+    entrypoint: monstache -mongo-url='mongodb://mongo:27017' -elasticsearch-url='http://elasticsearch:9200/' -direct-read-namespace='mentorhub.mentorshipRequest' -change-stream-namespace='mentorhub.mentorshipRequest'
+    depends_on:
       - "mongo"
       - "elasticsearch"
     networks: 
