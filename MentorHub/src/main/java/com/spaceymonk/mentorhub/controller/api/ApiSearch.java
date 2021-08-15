@@ -31,8 +31,14 @@ public class ApiSearch {
     private final MentorshipRequestRepository mentorshipRequestRepository;
 
     private List<Map<String, Object>> generateResponse(Query query) {
-        SearchHits<SearchHitResponse> searchHits = elasticsearchRestTemplate
-                .search(query, SearchHitResponse.class, IndexCoordinates.of("mentorhub.mentorshiprequest"));
+
+        SearchHits<SearchHitResponse> searchHits = null;
+        try {
+            searchHits = elasticsearchRestTemplate
+                    .search(query, SearchHitResponse.class, IndexCoordinates.of("mentorhub.mentorshiprequest"));
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
 
         List<Map<String, Object>> result = new ArrayList<>();
         searchHits.getSearchHits().forEach(hit -> {
