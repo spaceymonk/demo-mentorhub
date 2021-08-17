@@ -1,7 +1,6 @@
 package com.spaceymonk.mentorhub.repository;
 
 import com.spaceymonk.mentorhub.domain.Mentorship;
-import com.spaceymonk.mentorhub.domain.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
