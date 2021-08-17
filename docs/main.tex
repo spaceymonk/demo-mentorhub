@@ -122,7 +122,9 @@ other users about their expertise.
 
 Experts, mentoring on the subject of expertise will provide mentoring support to the
 person concerned, based on the mentoring request received after the application is
-approved.
+approved. The users can see their former applications with additional information 
+such as status and Admin's note if they got rejected. After Admin answered to request,
+an email will be sent to the user.
 
 When the mentoring process begins, the mentor and the user (mentee) will come together,
 either online or offline, to determine the phases of the relevant process together with
@@ -138,10 +140,10 @@ After the phase is over, the person who has not closed the phase will be able to
 evaluation made by the person who closed it and make an evaluation comment himself/herself
 and give a score.
 
-A user can become a mentor or a mentee at the same time.
-
 The system will be notify the mentor and the mentee of a phase, 1 hour before the end
-of the active phase.
+of the active phase, by sending email.
+
+A user can become a mentor or a mentee at the same time.
 
 
 \subsection{Tools Used} \label{tools_used}
@@ -192,16 +194,24 @@ will be obtained from Google Authentication and LDAP server.}
 Admins will be able to add new subjects, edit and remove existing subjects from the system.
 
 
-\item \textbf{Mentorship Requests}
+\item \textbf{Creating Mentorship Requests}
 
 Users can apply to become mentor by selecting the subjects which expertise in and writing
 about themselves.
+
+
+\item \textbf{Displaying Former Mentorship Requests}
+
+Users can see their former applications with additional information such as date, status and 
+Admin’s note if they got rejected.
 
 
 \item \textbf{Accepting and Declining the Mentorship Requests}
 
 The application requests will be presented to Admins after they logged in. They can either
 accept or decline waiting requests made by Users.
+
+If they rejected an request, they can write a comment about the refusal.
 
 
 \item \textbf{Mentor Searching}
@@ -242,7 +252,6 @@ mentor and mentee.
 \textit{Mailhog container used for testing email reminder feature.}
 
 \end{enumerate}
-\newpage
 
 
 \subsubsection{Non--Functional Requirements} \label{nonfunctional_requirements}
@@ -288,7 +297,8 @@ the user and administrative interface, see section \ref{process_flow}.
 \item \textbf{Error Handling}
 
 Should errors be encountered, an explanation will be displayed as to what went wrong.
-An error will be defined as anything that falls outside the normal and intended usage.
+
+\textit{An error will be defined as anything that falls outside the normal and intended usage.}
 
 
 \item \textbf{Maintainability}
@@ -302,7 +312,7 @@ user roles.
 
 This system should have the ability that, once it is together, the entire system should be
 able to be moved to any location, easily.  Since the system deployed as Docker containers
-it is very easy to do so.
+it is easy to do so.
 
 \end{enumerate}
 \newpage
@@ -329,7 +339,7 @@ The data model designed as shown in the below figure \ref{fig:domains}.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[height=0.8\textheight]{diagram-domains.png}
+    \includegraphics[width=\textwidth]{diagram-domains.png}
     \caption{Entity relationships diagram}
     \label{fig:domains}
 \end{figure}
@@ -346,6 +356,7 @@ inside the \texttt{Phase} entities.
 
 In practice the framework will solve this abstraction but know that they are stored
 differently in database.
+\newpage
 
 
 \subsubsection{Data Access Mechanism} \label{data_access_mechanism}
@@ -392,6 +403,7 @@ system.
 The separation of database and search engine is due to in future patches, which may
 result in a database migration, search feature of the design will not be affected 
 (i.e. only the "connector" configuration will be changed).
+\newpage
 
 
 \subsection{Deployment} \label{deployment}
