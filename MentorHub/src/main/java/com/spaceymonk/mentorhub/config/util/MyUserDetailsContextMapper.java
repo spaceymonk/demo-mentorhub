@@ -15,22 +15,50 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Set;
 
+
+/**
+ * Load user details from database and map into MyUserDetails class for users logged in with LDAP.
+ *
+ * @author spaceymonk
+ * @version 1.0, 08/17/21
+ */
 @Component
 public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
 
+    /**
+     * Sets user repository.
+     *
+     * @param userRepository the user repository
+     */
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Sets role repository.
+     *
+     * @param roleRepository the role repository
+     */
     @Autowired
     public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
+
+    /**
+     * Load existing user or create new user.
+     * Checks if user exists in database. If not creates a new entry in database.
+     * Otherwise, retrieves the roles of this user. Created user has <code>ROLE_USER</code> role.
+     *
+     * @param dirContextOperations Ldap directory operator
+     * @param username             username of the user
+     * @param collection           roles of this user in Ldap directory
+     * @return updated custom user details object
+     */
     @Override
     public UserDetails mapUserFromContext(DirContextOperations dirContextOperations, String username, Collection<? extends GrantedAuthority> collection) {
         User user = userRepository.findByUsername(username);
@@ -50,8 +78,17 @@ public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
         return new MyUserDetails(user);
     }
 
+    /**
+     * Maps user to Ldap directory entry.
+     *
+     * @param userDetails       details of the user
+     * @param dirContextAdapter Ldap directory operator
+     * @throws UnsupportedOperationException always
+     * @deprecated This method is not implemented since there is no sign-up operation
+     */
     @Override
     public void mapUserToContext(UserDetails userDetails, DirContextAdapter dirContextAdapter) {
         // not implemented, because no sign-up
+        throw new UnsupportedOperationException();
     }
 }

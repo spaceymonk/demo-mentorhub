@@ -18,22 +18,48 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.Set;
 
+
+/**
+ * Load user details from database and map into OidcUser class for users logged in with Google Auth.
+ * Sets roles as saved in the database.
+ *
+ * @author spaceymonk
+ * @version 1.0, 08/17/21
+ */
 @Component
 public class CustomOidcUserService extends OidcUserService {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
 
+    /**
+     * Sets user repository.
+     *
+     * @param userRepository the user repository
+     */
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Sets role repository.
+     *
+     * @param roleRepository the role repository
+     */
     @Autowired
     public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
+    /**
+     * Load existing user or create new user.
+     * Checks if user exists in database. If not creates a new entry in database.
+     * Otherwise, retrieves the roles of this user. Created user has <code>ROLE_USER</code> role.
+     *
+     * @param userRequest user request
+     * @return updated OidcUser
+     */
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
         // Delegate to the default implementation for loading a user

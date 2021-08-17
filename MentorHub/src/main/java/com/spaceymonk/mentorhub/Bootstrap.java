@@ -2,7 +2,7 @@ package com.spaceymonk.mentorhub;
 
 import com.spaceymonk.mentorhub.domain.Role;
 import com.spaceymonk.mentorhub.repository.RoleRepository;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +13,23 @@ import org.springframework.stereotype.Component;
  *
  * @author spaceymonk
  * @version 1.0, 08/17/21
+ *
+ * @see CommandLineRunner
  */
 @Component
-@AllArgsConstructor
 public class Bootstrap implements CommandLineRunner {
 
-    private final RoleRepository roleRepository;
+    private RoleRepository roleRepository;
+
+    /**
+     * Sets role repository.
+     *
+     * @param roleRepository the role repository
+     */
+    @Autowired
+    public void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     /**
      * Run commands after server startup.

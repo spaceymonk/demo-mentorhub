@@ -16,3 +16,11 @@ spring:
       host: localhost
       port: 27017
       database: mentorhub
+    elasticsearch:
+      repositories:
+        enabled: false
+logging:
+  pattern.dateformat: yyyy-MM-dd HH:mm:ss.SSS,Europe/Istanbul
+  level:
+    root: INFO
+    org.springframework.data.convert.CustomConversions: ERROR
