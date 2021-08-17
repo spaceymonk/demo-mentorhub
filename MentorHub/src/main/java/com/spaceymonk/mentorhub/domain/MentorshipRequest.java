@@ -19,6 +19,7 @@ public class MentorshipRequest {
     @DBRef
     private User mentor;
     private String status;
+    private String adminMsg;
     private Date date;
 
 }

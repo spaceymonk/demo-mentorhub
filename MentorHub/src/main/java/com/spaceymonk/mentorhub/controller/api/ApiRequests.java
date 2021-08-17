@@ -24,12 +24,11 @@ public class ApiRequests {
     private final MentorshipRequestRepository mentorshipRequestRepository;
     private final SubjectRepository subjectRepository;
 
-    @RequestMapping(value = "/{id}/{answer}", method = RequestMethod.POST)
+    @RequestMapping(value = "/", consumes = "application/json", method = RequestMethod.POST)
     @RolesAllowed({"ROLE_ADMIN"})
-    public ResponseEntity<String> saveMentorshipRequestAnswer(@PathVariable("id") String requestId,
-                                                              @PathVariable("answer") boolean answer) {
+    public ResponseEntity<String> saveMentorshipRequestAnswer(@RequestBody MentorshipRequest response) {
 
-        Optional<MentorshipRequest> mentorshipRequestOptional = mentorshipRequestRepository.findById(requestId);
+        Optional<MentorshipRequest> mentorshipRequestOptional = mentorshipRequestRepository.findById(response.getId());
         if (mentorshipRequestOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -40,7 +39,9 @@ public class ApiRequests {
             return ResponseEntity.badRequest().body("Already " + mentorshipRequest.getStatus() + "!");
         }
 
-        mentorshipRequest.setStatus((answer) ? "accepted" : "rejected");
+        mentorshipRequest.setStatus(response.getStatus());
+        mentorshipRequest.setAdminMsg(response.getAdminMsg());
+
         mentorshipRequestRepository.save(mentorshipRequest);
 
         return ResponseEntity.ok().build();

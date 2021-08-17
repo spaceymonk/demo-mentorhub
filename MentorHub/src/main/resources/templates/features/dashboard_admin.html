@@ -8,6 +8,32 @@
 <body>
 <th:block th:replace="fragments/header"></th:block>
 
+<!-- Modal -->
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Reject Request</h5>
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-floating">
+          <textarea class="form-control" id="txtArea" placeholder="Enter an explanation..." required style="height: 20vh; resize: none;"></textarea>
+          <label for="txtArea">Enter an explanation...</label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+        <button class="btn btn-primary" onclick="saveChanges()" type="button">Submit</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div style="min-height: 100vh;">
   <div class="container my-5">
     <div class="card card-shadow">
@@ -62,7 +88,7 @@
 
                     <div class="col-lg-auto text-end mt-3 ps-5">
                       <button class="btn btn-outline-success btn-sm" th:onclick="doRequest([[${request.id}]], true)">Accept</button>
-                      <button class="btn btn-danger btn-sm" th:onclick="doRequest([[${request.id}]], false)">Reject</button>
+                      <button class="btn btn-danger btn-sm" th:onclick="rejectRequest([[${request.id}]], false)">Reject</button>
                     </div>
 
                   </div>
@@ -79,6 +105,10 @@
 <th:block th:replace="fragments/footer"></th:block>
 
 <script>
+    const myModal = new bootstrap.Modal($("#exampleModal"));
+    let selectedId = null;
+    let selectedAction = null;
+
     $('.accordion').bind('DOMSubtreeModified', function () {
         if ($(".accordion").children().length == 0) {
             $("#noEntryTxt").show();
@@ -87,13 +117,36 @@
         }
     });
 
+
+    let rejectRequest = function (id, action) {
+        selectedId = id;
+        selectedAction = action;
+        $("#txtArea").val("");
+        myModal.show();
+    }
+
+
+    let saveChanges = function () {
+        doRequest(selectedId, selectedAction);
+    }
+
+
     let doRequest = function (id, answer) {
+        data = {
+            id: id,
+            status: answer ? 'accepted' : 'rejected',
+            adminMsg: $("#txtArea").val()
+        };
+
         $.ajax({
             type: 'POST',
-            url: `http://localhost:8080/api/requests/${id}/${answer}`,
-            success: function (data, status, xhr) {
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            url: `http://localhost:8080/api/requests/`,
+            success: function (returnedData, status, xhr) {
                 $(`#${id}`).remove();
                 showToast("bg-success", `Request ${answer ? 'accepted' : 'rejected'}.`);
+                myModal.hide();
             },
             error: function (jqXhr, textStatus, errorMessage) {
                 if (!jqXhr.responseText)
