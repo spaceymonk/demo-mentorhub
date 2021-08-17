@@ -1,4 +1,4 @@
-package com.spaceymonk.mentorhub.controller;
+package com.spaceymonk.mentorhub.controller.view;
 
 import com.spaceymonk.mentorhub.domain.Mentorship;
 import com.spaceymonk.mentorhub.repository.MentorshipRepository;

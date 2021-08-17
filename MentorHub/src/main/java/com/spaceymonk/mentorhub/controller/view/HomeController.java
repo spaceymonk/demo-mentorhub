@@ -1,4 +1,4 @@
-package com.spaceymonk.mentorhub.controller;
+package com.spaceymonk.mentorhub.controller.view;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

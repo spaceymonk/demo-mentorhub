@@ -1,10 +1,11 @@
-package com.spaceymonk.mentorhub.config;
+package com.spaceymonk.mentorhub.config.util;
 
 import com.spaceymonk.mentorhub.domain.Role;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.RoleRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,11 +17,20 @@ import java.util.Collection;
 import java.util.Set;
 
 @Component
-@AllArgsConstructor
 public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 
-    final private UserRepository userRepository;
-    final private RoleRepository roleRepository;
+    private UserRepository userRepository;
+    private RoleRepository roleRepository;
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public UserDetails mapUserFromContext(DirContextOperations dirContextOperations, String username, Collection<? extends GrantedAuthority> collection) {

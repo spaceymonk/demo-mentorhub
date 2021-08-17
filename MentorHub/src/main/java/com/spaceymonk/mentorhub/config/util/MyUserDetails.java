@@ -1,4 +1,4 @@
-package com.spaceymonk.mentorhub.config;
+package com.spaceymonk.mentorhub.config.util;
 
 import com.spaceymonk.mentorhub.domain.Role;
 import com.spaceymonk.mentorhub.domain.User;

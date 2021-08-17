@@ -1,7 +1,8 @@
-package com.spaceymonk.mentorhub.controller;
+package com.spaceymonk.mentorhub.controller.view;
 
 import com.spaceymonk.mentorhub.domain.Subject;
 import com.spaceymonk.mentorhub.domain.User;
+import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import com.spaceymonk.mentorhub.repository.SubjectRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -10,27 +11,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Controller
 @AllArgsConstructor
-public class SubjectController {
+public class SearchController {
 
-    private final SubjectRepository subjectRepository;
+    private final MentorshipRequestRepository mentorshipRequestRepository;
     private final UserRepository userRepository;
+    private final SubjectRepository subjectRepository;
 
-    @GetMapping("/subjects")
-    @RolesAllowed({"ROLE_ADMIN"})
-    public String subjectsPage(Model model, Authentication authentication) {
+
+    @GetMapping("/search")
+    public String searchPage(Model model, Authentication authentication) {
         User currentUser = userRepository.findByUsernameOrGoogleId(authentication.getName(), authentication.getName());
         model.addAttribute("currentUser", currentUser);
-
-        List<Subject> subjectList = subjectRepository.findAll();
-        model.addAttribute("subjectList", subjectList);
-
-        return "features/subject-editor";
+        List<Subject> categories = subjectRepository.findAll();
+        model.addAttribute("categories", categories);
+        return "features/search";
     }
-
-
 }
