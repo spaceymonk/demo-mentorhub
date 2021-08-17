@@ -15,17 +15,34 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Set;
 
+
+/**
+ * Load user details from database and map into MyUserDetails class for users logged in with LDAP.
+ *
+ * @author spaceymonk
+ * @version 1.0, 08/17/21
+ */
 @Component
 public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
 
+    /**
+     * Sets user repository.
+     *
+     * @param userRepository the user repository
+     */
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Sets role repository.
+     *
+     * @param roleRepository the role repository
+     */
     @Autowired
     public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;

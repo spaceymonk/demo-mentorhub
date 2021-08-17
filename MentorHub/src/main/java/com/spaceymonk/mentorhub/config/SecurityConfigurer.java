@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -37,16 +38,34 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
     private final MyUserDetailsContextMapper myUserDetailsContextMapper;
     private final LoginPageInterceptor loginPageInterceptor;
 
+    /**
+     * Password encoder for LDAP logins.
+     * Current LDAP server uses BCrypt algorithm to store passwords.
+     *
+     * @return BCryptPasswordEncoder
+     */
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Setup interceptor for not-logged in users, so redirect them to login page.
+     *
+     * @param registry Autowired by the Spring framework
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginPageInterceptor);
     }
 
+    /**
+     * Sets authorization details for this application.
+     * Configures both LDAP and Google OAuth login entry points, accessible pages
+     * and logout operations
+     *
+     * @param http Autowired by the Spring framework
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler("/");
@@ -86,6 +105,11 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
                         .loginPage("/"));
     }
 
+    /**
+     * Configures LDAP connection.
+     *
+     * @param auth Autowired by Spring framework.
+     */
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth

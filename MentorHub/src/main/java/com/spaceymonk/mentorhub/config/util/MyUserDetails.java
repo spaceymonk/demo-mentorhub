@@ -2,7 +2,6 @@ package com.spaceymonk.mentorhub.config.util;
 
 import com.spaceymonk.mentorhub.domain.Role;
 import com.spaceymonk.mentorhub.domain.User;
-import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,10 +11,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-@AllArgsConstructor
+
+/**
+ * Custom UserDetails class for implementation of LDAP based login.
+ *
+ * @author spaceymonk
+ * @version 1.0, 08/17/21
+ */
 public class MyUserDetails implements UserDetails {
 
     private final User user;
+
+    public MyUserDetails(User user) {
+        this.user = user;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
