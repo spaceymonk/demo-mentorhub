@@ -1,6 +1,5 @@
 package com.spaceymonk.mentorhub.config;
 
-
 import com.spaceymonk.mentorhub.config.util.CustomOidcUserService;
 import com.spaceymonk.mentorhub.config.util.LoginPageInterceptor;
 import com.spaceymonk.mentorhub.config.util.MyUserDetailsContextMapper;
@@ -18,12 +17,19 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
+/**
+ * Configurer class of application security context.
+ * It handles login operations done by LDAP and Google Authentication.
+ * Sets interceptor for not-logged in users, so that redirects them to login
+ * page.
+ *
+ * @author spaceymonk
+ * @version 1.0, 08/17/21
+ */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 @AllArgsConstructor
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 

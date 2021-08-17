@@ -6,14 +6,27 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+
+/**
+ * Run commands after server startup by initializing environment.
+ * This class is mainly used for demonstration purposes.
+ *
+ * @author spaceymonk
+ * @version 1.0, 08/17/21
+ */
 @Component
 @AllArgsConstructor
 public class Bootstrap implements CommandLineRunner {
 
     private final RoleRepository roleRepository;
 
+    /**
+     * Run commands after server startup.
+     *
+     * @param args Command line arguments
+     */
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         System.out.println("Started in bootstrap...");
 
         // setup roles if they don't exist
