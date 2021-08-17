@@ -13,10 +13,17 @@
   <div class="container my-5">
     <div class="card card-shadow">
 
-      <div class="card-header">
-        <h1 class="card-title">Dashboard</h1>
-        <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
+      <div class="card-header row">
+        <div class="col">
+          <h1 class="card-title">Dashboard</h1>
+          <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
+        </div>
+        <div class="col-auto nav nav-tabs flex-row">
+          <a class="nav-link active" th:href="@{/dashboard}">Mentorships</a>
+          <a class="nav-link" th:href="@{/apply}">Requests</a>
+        </div>
       </div>
+
 
       <div class="card-body">
 
@@ -70,7 +77,6 @@
 
       <div class="card-footer">
         <a class="btn btn-dark" th:href="@{/search}">Search</a>
-        <a class="btn btn-dark" th:href="@{/apply}">Apply</a>
       </div>
 
     </div>

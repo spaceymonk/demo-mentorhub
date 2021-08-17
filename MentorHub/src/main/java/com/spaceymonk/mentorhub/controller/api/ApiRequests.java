@@ -3,6 +3,7 @@ package com.spaceymonk.mentorhub.controller.api;
 import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.domain.Subject;
 import com.spaceymonk.mentorhub.domain.User;
+import com.spaceymonk.mentorhub.features.EmailService;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import com.spaceymonk.mentorhub.repository.SubjectRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
@@ -23,6 +24,7 @@ public class ApiRequests {
     private final UserRepository userRepository;
     private final MentorshipRequestRepository mentorshipRequestRepository;
     private final SubjectRepository subjectRepository;
+    private final EmailService emailService;
 
     @RequestMapping(value = "/", consumes = "application/json", method = RequestMethod.POST)
     @RolesAllowed({"ROLE_ADMIN"})
@@ -43,6 +45,9 @@ public class ApiRequests {
         mentorshipRequest.setAdminMsg(response.getAdminMsg());
 
         mentorshipRequestRepository.save(mentorshipRequest);
+
+        emailService.send(mentorshipRequest.getMentor().getEmail(), "Mentorship Request Answered!",
+                "<p>Hey, your mentorship request has been answered! Come and take a look!!</p>");
 
         return ResponseEntity.ok().build();
     }
@@ -80,6 +85,6 @@ public class ApiRequests {
         mentorshipRequest.setDate(new Date());
         mentorshipRequestRepository.save(mentorshipRequest);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(mentorshipRequest.getId());
     }
 }
