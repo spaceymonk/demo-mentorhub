@@ -27,7 +27,7 @@ public class EmailSender {
      */
     public EmailSender() {
         mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("localhost");
+        mailSender.setHost("mailhog");
         mailSender.setPort(1025);
         mailSender.setUsername("");
         mailSender.setPassword("");
