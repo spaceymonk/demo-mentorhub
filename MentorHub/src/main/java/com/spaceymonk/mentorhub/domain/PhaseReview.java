@@ -10,9 +10,9 @@ import lombok.Data;
  */
 @Data
 public class PhaseReview {
+
     private String text;
     private Integer rating;
-
 
     /**
      * Instantiates a new Phase review.
