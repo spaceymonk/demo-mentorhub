@@ -246,10 +246,14 @@ rating between 1 to 5 stars about finished phase.
 
 \item \textbf{Email Reminder}
 
-If there is less than one hour to end of an active phase, an email will be sent to both
-mentor and mentee.
+An email will be sent in following situations:
+\begin{itemize}
+    \item If there is less than one hour to end of an active phase, an email will be sent 
+    to both mentor and mentee.
+    \item After Admin answered to request, an email will be sent to the user.
+\end{itemize}
 
-\textit{Mailhog container used for testing email reminder feature.}
+\textit{MailHog container used for testing email reminder feature.}
 
 \end{enumerate}
 
