@@ -7,6 +7,7 @@
 <body>
 <h1>Error!</h1>
 <p style="font-style: italic">Even if nothing happened, something happened.</p>
+<p th:text="${exception.getMessage()}"></p>
 
 <a th:href="@{/}">Go back</a>
 </body>

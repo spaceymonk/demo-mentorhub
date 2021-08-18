@@ -4,8 +4,8 @@ import com.spaceymonk.mentorhub.domain.*;
 import com.spaceymonk.mentorhub.repository.MentorshipRepository;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +15,68 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 
+
+/**
+ * API class for Mentorship related operations.
+ * Handles <code>/api/mentorships/**</code> endpoint.
+ * <br/>
+ * This API class does below operations:
+ * <ul>
+ *     <li>Create new mentorship</li>
+ *     <li>Create new phaseReview</li>
+ *     <li>Create new phase</li>
+ *     <li>Activate next phase</li>
+ *     <li>Remove phase</li>
+ * </ul>
+ *
+ * @author spaceymonk
+ * @version 1.0 08/18/21
+ */
 @RequestMapping("/api/mentorships")
 @RestController
-@AllArgsConstructor
 public class ApiMentorship {
 
-    private final UserRepository userRepository;
-    private final MentorshipRepository mentorshipRepository;
-    private final MentorshipRequestRepository mentorshipRequestRepository;
+    private UserRepository userRepository;
+    private MentorshipRepository mentorshipRepository;
+    private MentorshipRequestRepository mentorshipRequestRepository;
 
+    /**
+     * Sets user repository.
+     *
+     * @param userRepository the user repository
+     */
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    /**
+     * Sets mentorship repository.
+     *
+     * @param mentorshipRepository the mentorship repository
+     */
+    @Autowired
+    public void setMentorshipRepository(MentorshipRepository mentorshipRepository) {
+        this.mentorshipRepository = mentorshipRepository;
+    }
+
+    /**
+     * Sets mentorship request repository.
+     *
+     * @param mentorshipRequestRepository the mentorship request repository
+     */
+    @Autowired
+    public void setMentorshipRequestRepository(MentorshipRequestRepository mentorshipRequestRepository) {
+        this.mentorshipRequestRepository = mentorshipRequestRepository;
+    }
+
+    /**
+     * Create a new mentorship.
+     *
+     * @param mentorshipRequestId the mentorship request id
+     * @param authentication      the authentication -- Autowired by Spring framework
+     * @return if successful generated mentorship id, error text otherwise.
+     */
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> saveMentorship(String mentorshipRequestId,
@@ -62,6 +115,7 @@ public class ApiMentorship {
             }
         }
 
+        // save mentorship
         Mentorship mentorship = new Mentorship();
         mentorship.setMentor(requestOwner);
         mentorship.setMentee(currentUser);
@@ -77,6 +131,16 @@ public class ApiMentorship {
         return ResponseEntity.ok(mentorship.getId());
     }
 
+    /**
+     * Create a new phase or overwrite the existing one.
+     * <br>
+     * If id field of phase parameter left <code>null</code> then create a new
+     * phase object in the system.
+     *
+     * @param mentorshipId the mentorship id
+     * @param requestPhase a Phase object
+     * @return if successful phase id, error text otherwise.
+     */
     @RequestMapping(value = "/{mentorshipId}/phases/", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> savePhase(@PathVariable("mentorshipId") String mentorshipId,
@@ -124,6 +188,14 @@ public class ApiMentorship {
         return ResponseEntity.ok(requestPhase.getId());
     }
 
+    /**
+     * Activate next phase for the system
+     *
+     * @param mentorshipId the mentorship id
+     * @return - empty body if all phases completed <br>
+     * - error text if an error occurred <br>
+     * - index of the next phase
+     */
     @RequestMapping(value = "/{mentorshipId}/nextPhase", method = RequestMethod.POST)
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> nextPhase(@PathVariable("mentorshipId") String mentorshipId) {
@@ -160,6 +232,13 @@ public class ApiMentorship {
         return ResponseEntity.ok(mentorship.getPhases().get(mentorship.getCurrentPhaseIndex()).getId());
     }
 
+    /**
+     * Remove phase from mentorship entity.
+     *
+     * @param mentorshipId the mentorship id
+     * @param phaseId      the phase id
+     * @return removed phase id
+     */
     @RequestMapping(value = "/{mentorshipId}/phases/{phaseId}", method = RequestMethod.DELETE)
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> deletePhase(@PathVariable("mentorshipId") String mentorshipId,
@@ -178,6 +257,15 @@ public class ApiMentorship {
         return ResponseEntity.ok(phaseId);
     }
 
+    /**
+     * Create a phase review for the given phase of this mentorship
+     *
+     * @param mentorshipId       the mentorship id
+     * @param phaseId            the phase id
+     * @param requestPhaseReview a PhaseReview object
+     * @param authentication     the authentication - Autowired by Spring framework
+     * @return phase id if successful, error text otherwise.
+     */
     @RequestMapping(value = "/{mentorshipId}/phases/{phaseId}/reviews/", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<String> savePhaseReview(@PathVariable("mentorshipId") String mentorshipId,
@@ -222,5 +310,4 @@ public class ApiMentorship {
 
         return ResponseEntity.ok(phaseId);
     }
-
 }

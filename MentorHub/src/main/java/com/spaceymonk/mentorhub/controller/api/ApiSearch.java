@@ -2,11 +2,13 @@ package com.spaceymonk.mentorhub.controller.api;
 
 import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
-import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
@@ -22,13 +24,45 @@ import javax.annotation.security.RolesAllowed;
 import java.util.*;
 
 
+/**
+ * API class for Search related operations.
+ * Handles <code>/api/search/**</code> endpoint.
+ * <br/>
+ * This API class does below operations:
+ * <ul>
+ *     <li>Search mentorship requests by text</li>
+ *     <li>Search mentorship requests by filter</li>
+ * </ul>
+ *
+ * @author spaceymonk
+ * @version 1.0 08/18/21
+ */
 @RequestMapping("/api/search")
 @RestController
-@AllArgsConstructor
 public class ApiSearch {
 
-    private final ElasticsearchRestTemplate elasticsearchRestTemplate;
-    private final MentorshipRequestRepository mentorshipRequestRepository;
+    private ElasticsearchRestTemplate elasticsearchRestTemplate;
+    private MentorshipRequestRepository mentorshipRequestRepository;
+
+    /**
+     * Sets elasticsearch rest template.
+     *
+     * @param elasticsearchRestTemplate the elasticsearch rest template
+     */
+    @Autowired
+    public void setElasticsearchRestTemplate(ElasticsearchRestTemplate elasticsearchRestTemplate) {
+        this.elasticsearchRestTemplate = elasticsearchRestTemplate;
+    }
+
+    /**
+     * Sets mentorship request repository.
+     *
+     * @param mentorshipRequestRepository the mentorship request repository
+     */
+    @Autowired
+    public void setMentorshipRequestRepository(MentorshipRequestRepository mentorshipRequestRepository) {
+        this.mentorshipRequestRepository = mentorshipRequestRepository;
+    }
 
     private List<Map<String, Object>> generateResponse(Query query) {
 
@@ -58,6 +92,14 @@ public class ApiSearch {
         return result;
     }
 
+    /**
+     * Find mentorships by text. <br>
+     * Search only done in accepted requests. Given text searched in major subject name, subject names
+     * and text field of the request.
+     *
+     * @param searchTxt the search txt
+     * @return list of mentorship requests
+     */
     @RequestMapping(value = "/method/text", method = RequestMethod.GET, produces = "application/json")
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<List<Map<String, Object>>> findMentorshipByText(@RequestParam("searchTxt") String searchTxt) {
@@ -75,6 +117,14 @@ public class ApiSearch {
         return ResponseEntity.ok(generateResponse(query));
     }
 
+    /**
+     * Find mentorship by filter. <br>
+     * Search only done in accepted requests.
+     *
+     * @param majorSubjectName the major subject name
+     * @param subjectList      the subject list
+     * @return list of mentorship requests
+     */
     @RequestMapping(value = "/method/filter", method = RequestMethod.GET, produces = "application/json")
     @RolesAllowed({"ROLE_USER"})
     public ResponseEntity<List<Map<String, Object>>> findMentorshipByFilter(@RequestParam("majorSubjectName") String majorSubjectName,
@@ -91,8 +141,14 @@ public class ApiSearch {
         return ResponseEntity.ok(generateResponse(query));
     }
 
-    static class SearchHitResponse {
+    /**
+     * Inner class which used as a layer for Elasticsearch results. <br>
+     * It consists of a single field, <code>id</code>. This id then used for data retrieval
+     * from the actual database.
+     */
+    @Data
+    @NoArgsConstructor
+    private static class SearchHitResponse {
         private String id;
     }
-
 }
