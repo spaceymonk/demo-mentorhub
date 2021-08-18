@@ -13,6 +13,7 @@ import java.util.List;
  *
  * @author spaceymonk
  * @version 1.0 08/18/21
+ * @see com.spaceymonk.mentorhub.repository.SubjectRepository
  */
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

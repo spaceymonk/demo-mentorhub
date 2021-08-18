@@ -7,9 +7,28 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
+/**
+ * The interface Mentorship request repository.
+ * Establishes connection between MongoDb and application.
+ * Connects to mentorshipRequest collection.
+ */
 @Repository
 public interface MentorshipRequestRepository extends MongoRepository<MentorshipRequest, String> {
+
+    /**
+     * Find requests by status.
+     *
+     * @param status the status
+     * @return the list
+     */
     List<MentorshipRequest> findByStatus(String status);
 
+    /**
+     * Find requests by mentor.
+     *
+     * @param user the user
+     * @return the list
+     */
     List<MentorshipRequest> findByMentor(User user);
 }

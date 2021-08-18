@@ -21,6 +21,9 @@ import java.util.Set;
  *
  * @author spaceymonk
  * @version 1.0, 08/17/21
+ * @see MyUserDetails
+ * @see User
+ * @see Role
  */
 @Component
 public class MyUserDetailsContextMapper implements UserDetailsContextMapper {

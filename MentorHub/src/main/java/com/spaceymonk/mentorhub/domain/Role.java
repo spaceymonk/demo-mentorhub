@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
  *
  * @author spaceymonk
  * @version 1.0 08/18/21
+ * @see com.spaceymonk.mentorhub.repository.RoleRepository
  */
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

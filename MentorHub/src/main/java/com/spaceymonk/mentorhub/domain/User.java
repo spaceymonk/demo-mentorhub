@@ -14,6 +14,7 @@ import java.util.Set;
  *
  * @author spaceymonk
  * @version 1.0 08/18/21
+ * @see com.spaceymonk.mentorhub.repository.UserRepository
  */
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

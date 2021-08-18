@@ -12,9 +12,11 @@ import java.util.List;
 
 /**
  * Model class for mentorship entities.
+ * This class stored to database as separate collection.
  *
  * @author spaceymonk
  * @version 1.0 08/18/21
+ * @see com.spaceymonk.mentorhub.repository.MentorshipRepository
  */
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
