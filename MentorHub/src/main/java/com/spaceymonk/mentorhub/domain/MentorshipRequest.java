@@ -7,6 +7,13 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.Date;
 
+
+/**
+ * Model class for mentorship request entities.
+ *
+ * @author spaceymonk
+ * @version 1.0 08/18/21
+ */
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class MentorshipRequest {
@@ -22,4 +29,9 @@ public class MentorshipRequest {
     private String adminMsg;
     private Date date;
 
+    /**
+     * Instantiates a new Mentorship request.
+     */
+    public MentorshipRequest() {
+    }
 }

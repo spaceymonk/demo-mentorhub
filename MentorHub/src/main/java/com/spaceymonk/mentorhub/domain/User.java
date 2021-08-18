@@ -8,6 +8,13 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import java.util.HashSet;
 import java.util.Set;
 
+
+/**
+ * Model class for User entities.
+ *
+ * @author spaceymonk
+ * @version 1.0 08/18/21
+ */
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
@@ -25,6 +32,17 @@ public class User {
     @DBRef
     private Set<Mentorship> mentorshipSet = new HashSet<>();
 
+    /**
+     * Instantiates a new User.
+     */
+    public User() {
+    }
+
+    /**
+     * Gets mentee sections.
+     *
+     * @return the mentee sections
+     */
     public Set<Mentorship> getMenteeSections() {
         Set<Mentorship> set = new HashSet<>();
         for (Mentorship ship : mentorshipSet)
@@ -33,6 +51,11 @@ public class User {
         return set;
     }
 
+    /**
+     * Gets mentor sections.
+     *
+     * @return the mentor sections
+     */
     public Set<Mentorship> getMentorSections() {
         Set<Mentorship> set = new HashSet<>();
         for (Mentorship ship : mentorshipSet)

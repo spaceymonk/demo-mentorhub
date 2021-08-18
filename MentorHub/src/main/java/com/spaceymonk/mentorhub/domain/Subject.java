@@ -7,6 +7,13 @@ import org.springframework.data.annotation.Id;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Model class for subject entities.
+ *
+ * @author spaceymonk
+ * @version 1.0 08/18/21
+ */
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Subject {
@@ -17,4 +24,9 @@ public class Subject {
     private String majorSubject;
     private List<String> subjects = new ArrayList<>();
 
+    /**
+     * Instantiates a new Subject.
+     */
+    public Subject() {
+    }
 }
