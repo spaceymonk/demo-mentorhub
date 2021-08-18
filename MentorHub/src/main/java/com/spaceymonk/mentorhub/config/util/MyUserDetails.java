@@ -17,7 +17,6 @@ import java.util.Set;
  *
  * @author spaceymonk
  * @version 1.0, 08/17/21
- *
  * @see User
  * @see MyUserDetailsContextMapper
  */

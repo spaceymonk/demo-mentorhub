@@ -68,7 +68,6 @@ public class MentorshipController {
     /**
      * Renders mentorship page for the given id.
      * It generates view for <code>ROLE_USER</code> role.
-
      *
      * @param mentorshipId   the mentorship id
      * @param model          the model
