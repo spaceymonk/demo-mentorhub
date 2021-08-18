@@ -8,19 +8,16 @@
 <body>
 <th:block th:replace="fragments/header"></th:block>
 
-<div style="min-height: 100vh;">
-  <div class="container my-5">
-    <div class="card card-shadow">
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
 
-      <div class="card-header">
-        <a class="btn btn-dark rounded-circle" th:href="@{/dashboard}"><i class="fas fa-arrow-left"></i></a>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Application Form</h5>
+        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
       </div>
 
-      <div class="card-body">
-
-        <div class="card-title text-center">
-          <h5 class="display-5">Mentorship Application Form</h5>
-        </div>
+      <div class="modal-body">
 
         <div>
 
@@ -57,14 +54,90 @@
             </div>
           </div>
 
-          <div class="row mt-3">
-            <div class="col text-center">
-              <button class="btn btn-dark" onclick="submitForm()" type="button">Submit</button>
-            </div>
-          </div>
-
         </div>
       </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+        <button class="btn btn-primary" onclick="submitForm()" type="button">Submit</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div style="min-height: 100vh;">
+  <div class="container my-5">
+    <div class="card card-shadow">
+
+      <div class="card-header row">
+        <div class="col">
+          <h1 class="card-title">Dashboard</h1>
+          <small class="card-subtitle text-muted fst-italic" th:text="${currentUser.actualName}"></small>
+        </div>
+        <div class="col-auto nav nav-tabs flex-row">
+          <a class="nav-link" th:href="@{/dashboard}">Mentorships</a>
+          <a class="nav-link active" th:href="@{/apply}">Requests</a>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <h4 class="my-4">Previous Applications</h4>
+        <div class="container">
+          <p id="noEntryTxt" th:style="${requests.isEmpty()}? 'display:block':'display:none'">There are no waiting requests.</p>
+          <div class="accordion">
+            <div class="accordion-item" th:each="request : ${requests}">
+
+              <h2 class="accordion-header" th:id="${'heading'+request.id}">
+                <button aria-expanded="false" class="accordion-button collapsed" data-bs-toggle="collapse" th:aria-controls="${'collapse'+request.id}" th:data-bs-target="${'#collapse'+request.id}" type="button">
+                  Request Id <span class="fst-italic ms-1 text-truncate" th:text="${request.id}">$id$</span>
+                </button>
+              </h2>
+
+              <div class="accordion-collapse collapse" th:aria-labelledby="${'heading'+request.id}" th:id="${'collapse'+request.id}">
+                <div class="accordion-body">
+
+                  <div>
+                    <div class="row container-sm mb-3 text-muted">
+                      <div class="col small">Status:&nbsp;
+                        <span class="fst-italic text-nowrap fw-bold" th:text="${request.status}">$status$</span></div>
+                      <div class="col small text-sm-end">Requested&nbsp;date:&nbsp;
+                        <span class="fst-italic text-nowrap" th:text="${#dates.format(request.date, 'yyyy/MM/dd HH:mm')}">$date$</span>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col">
+                        <p style="text-align: justify;" th:text="${request.text}">$text$</p>
+                        <strong>Selected subjects under <span class="fst-italic" th:text="${request.selectedSubject.majorSubject}">$major$</span>: </strong>
+                        <ul>
+                          <li th:each="subject : ${request.selectedSubject.subjects}" th:text="${subject}"></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3" th:if="${request.adminMsg != null && !request.adminMsg.isBlank()}">
+                    <div class="card p-2 bg-light">
+                      <div class="card-title h6">Admin's note:</div>
+                      <div class="card-body p-0" th:text="${request.adminMsg}"></div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <button class="btn btn-dark" onclick="resetForm()" type="button">Apply</button>
+      </div>
+
     </div>
   </div>
 </div>
@@ -72,6 +145,46 @@
 <th:block th:replace="fragments/footer"></th:block>
 
 <script>
+    const myModal = new bootstrap.Modal($("#exampleModal"));
+
+
+    let generateRequestElement = function (requestId, requestStatus, requestDate, requestText, majorSubjectName, subjectList) {
+        let DOM_li_subjects = "";
+        subjectList.forEach(function (value) {
+            DOM_li_subjects += `<li>${value}</li>`;
+        });
+
+        return (`
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="${'heading' + requestId}">
+            <button aria-expanded="false" class="accordion-button collapsed" data-bs-toggle="collapse" aria-controls="${'collapse' + requestId}" data-bs-target="${'#collapse' + requestId}" type="button">
+              Request Id <span class="fst-italic ms-1 text-truncate">${requestId}</span>
+            </button>
+          </h2>
+          <div class="accordion-collapse collapse" aria-labelledby="${'heading' + requestId}" id="${'collapse' + requestId}">
+            <div class="accordion-body">
+              <div>
+                <div class="row container-sm mb-3 text-muted">
+                  <div class="col small">Status:&nbsp;
+                    <span class="fst-italic text-nowrap fw-bold">${requestStatus}</span></div>
+                  <div class="col small text-sm-end">Requested&nbsp;date:&nbsp;
+                    <span class="fst-italic text-nowrap">${requestDate}</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <p style="text-align: justify;">${requestText}</p>
+                    <strong>Selected subjects under <span class="fst-italic">${majorSubjectName}</span>: </strong>
+                    <ul>${DOM_li_subjects}</ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`);
+    };
+
+
     let resetForm = function () {
         let selectedCategory = $("#categoryselector option:selected").val();
         $(".categories").each(function (index) {
@@ -87,6 +200,7 @@
             $("#txtArea").prop('disabled', false);
             $(`#${selectedCategory}`).show();
         }
+        myModal.show();
     };
 
 
@@ -109,9 +223,11 @@
             type: "PUT",
             contentType: "application/json",
             data: JSON.stringify(data),
-            success: function (data, status, xhr) {
+            success: function (createdId, status, xhr) {
                 $("#categoryselector option[value='']").prop("selected", true);
-                resetForm();
+                let DOM_element = generateRequestElement(createdId, "waiting", moment().format("YYYY/MM/DD HH:mm"), explainMsg, selectedCategory, selectedSubjects);
+                $(".accordion").prepend(DOM_element);
+                myModal.hide();
                 showToast("bg-success", "Done!");
             },
             error: function (jqXhr, textStatus, errorMessage) {
@@ -122,10 +238,18 @@
                 showToast("bg-danger", errorMessage);
             }
         });
-    }
+    };
 
 
     $("#categoryselector").change(resetForm);
+
+    $('.accordion').bind('DOMSubtreeModified', function () {
+        if ($(".accordion").children().length == 0) {
+            $("#noEntryTxt").show();
+        } else {
+            $("#noEntryTxt").hide();
+        }
+    });
 </script>
 
 </body>

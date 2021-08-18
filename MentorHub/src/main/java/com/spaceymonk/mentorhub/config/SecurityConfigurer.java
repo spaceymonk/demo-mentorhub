@@ -1,91 +1,124 @@
 package com.spaceymonk.mentorhub.config;
 
-
-import com.spaceymonk.mentorhub.domain.Role;
-import com.spaceymonk.mentorhub.domain.User;
-import com.spaceymonk.mentorhub.repository.RoleRepository;
-import com.spaceymonk.mentorhub.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import com.spaceymonk.mentorhub.config.util.CustomOidcUserService;
+import com.spaceymonk.mentorhub.config.util.LoginPageInterceptor;
+import com.spaceymonk.mentorhub.config.util.MyUserDetailsContextMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
-import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.HashSet;
-import java.util.Set;
 
+/**
+ * Configurer class of application security context.
+ * It handles login operations done by LDAP and Google Authentication.
+ * LDAP connection configurations done in this class.
+ * Sets interceptor for not-logged in users, so that redirects them to login
+ * page. It also configures accessible pages and logout operations.
+ *
+ * @author spaceymonk
+ * @version 1.0, 08/17/21
+ * @see WebSecurityConfigurerAdapter
+ * @see WebMvcConfigurer
+ * @see LoginPageInterceptor
+ */
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
-@EnableGlobalMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private CustomOidcUserService customOidcUserService;
+    private LoginPageInterceptor loginPageInterceptor;
+    private MyUserDetailsContextMapper myUserDetailsContextMapper;
 
+    /**
+     * Sets custom user details context mapper.
+     *
+     * @param myUserDetailsContextMapper custom user details context mapper
+     */
+    @Autowired
+    public void setMyUserDetailsContextMapper(MyUserDetailsContextMapper myUserDetailsContextMapper) {
+        this.myUserDetailsContextMapper = myUserDetailsContextMapper;
+    }
+
+    /**
+     * Sets custom oidc user service.
+     *
+     * @param customOidcUserService the custom oidc user service
+     */
+    @Autowired
+    public void setCustomOidcUserService(CustomOidcUserService customOidcUserService) {
+        this.customOidcUserService = customOidcUserService;
+    }
+
+    /**
+     * Password encoder for LDAP logins.
+     * Current LDAP server uses BCrypt algorithm to store passwords.
+     *
+     * @return BCryptPasswordEncoder password encoder
+     */
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public RoleHierarchy roleHierarchy() {
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        String hierarchy = "ROLE_ADMIN > ROLE_USER";
-        roleHierarchy.setHierarchy(hierarchy);
-        return roleHierarchy;
+    /**
+     * Sets login page interceptor for this application.
+     *
+     * @param loginPageInterceptor the login page interceptor
+     */
+    @Autowired
+    public void setLoginPageInterceptor(LoginPageInterceptor loginPageInterceptor) {
+        this.loginPageInterceptor = loginPageInterceptor;
     }
 
-    private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
-        final OidcUserService delegate = new OidcUserService();
-        return (userRequest) -> {
-            // Delegate to the default implementation for loading a user
-            OidcUser oidcUser = delegate.loadUser(userRequest);
-            OAuth2AccessToken accessToken = userRequest.getAccessToken();
-            Set<GrantedAuthority> mappedAuthorities = new HashSet<>();
-
-            User user = userRepository.findByGoogleId(oidcUser.getName());
-            if (user == null) {
-                // register user to db
-                user = new User();
-                user.setActualName(oidcUser.getFullName());
-                user.setGoogleId(oidcUser.getName());
-                user.setEnabled(true);
-                user.setEmail(oidcUser.getEmail());
-                Role role_user = roleRepository.findByName("ROLE_USER");
-                user.setRoles(Set.of(role_user));
-                userRepository.save(user);
-            }
-            user.getRoles().forEach(role -> {
-                mappedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-            });
-
-            oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
-            return oidcUser;
-        };
+    /**
+     * Setup interceptor for not-logged in users, so redirect them to login page.
+     *
+     * @param registry Autowired by the Spring framework
+     */
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loginPageInterceptor);
     }
 
+    /**
+     * Configures LDAP connection.
+     *
+     * @param auth Autowired by Spring framework.
+     */
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .ldapAuthentication()
+                .userDetailsContextMapper(myUserDetailsContextMapper)
+                .userDnPatterns("uid={0},ou=people")
+                .groupSearchBase("ou=groups")
+                .contextSource()
+                .url("ldap://localhost:8389/dc=springframework,dc=org")
+                .and()
+                .passwordCompare()
+                .passwordEncoder(passwordEncoder())
+                .passwordAttribute("userPassword");
+    }
+
+    /**
+     * Sets authorization details for this application.
+     * Configures both LDAP and Google OAuth login entry points, accessible pages
+     * and logout operations
+     *
+     * @param http Autowired by the Spring framework
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler("/");
@@ -93,10 +126,10 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
 
         http
                 .authorizeRequests(a -> a
-                        .antMatchers("/", "/error", "/assets/**", "/logout", "/oauth/**", "/css/**", "/js/**").permitAll()
+                        .antMatchers("/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling().accessDeniedPage("/403").and()
+                .exceptionHandling().accessDeniedPage("/error/403").and()
                 .csrf().disable()
                 .logout(l -> l
                         .logoutUrl("/logout")
@@ -107,7 +140,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
                 .oauth2Login(o -> o
                         .loginPage("/")
                         .userInfoEndpoint(i -> i
-                                .oidcUserService(this.oidcUserService()))
+                                .oidcUserService(customOidcUserService))
                         .successHandler(successHandler)
                         .failureHandler((request, response, exception) -> {
                             request.getSession().setAttribute("error.message", exception.getMessage());
@@ -123,25 +156,5 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .loginPage("/"));
-    }
-
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .ldapAuthentication()
-                .userDetailsContextMapper(new MyUserDetailsContextMapper(userRepository, roleRepository))
-                .userDnPatterns("uid={0},ou=people")
-                .groupSearchBase("ou=groups")
-                .contextSource()
-                .url("ldap://localhost:8389/dc=springframework,dc=org")
-                .and()
-                .passwordCompare()
-                .passwordEncoder(passwordEncoder())
-                .passwordAttribute("userPassword");
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginPageInterceptor());
     }
 }
