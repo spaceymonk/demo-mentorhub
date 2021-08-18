@@ -134,12 +134,16 @@ public class ApiMentorship {
         }
         Mentorship mentorship = mentorshipOptional.get();
 
+        if (mentorship.isCompleted()) {
+            return ResponseEntity.badRequest().body("Already completed!");
+        }
+
         if (mentorship.getPhases().isEmpty()) {
             return ResponseEntity.badRequest().body("You need to add phases first!");
         }
 
-        if (mentorship.isCompleted()) {
-            return ResponseEntity.badRequest().body("Already completed!");
+        if (mentorship.getPhases().get(0).getEndDate().before(new Date())) {
+            return ResponseEntity.badRequest().body("Phase's end date is in past! Update your end dates.");
         }
 
         if (mentorship.isNotStarted()) {
