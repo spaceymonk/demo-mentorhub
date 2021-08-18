@@ -53,7 +53,7 @@ public class MyUserDetails implements UserDetails {
      * Password will be encoded as defined in LDAP configuration.
      *
      * @return password of this user
-     * @see com.spaceymonk.mentorhub.config.LdapConfigurer
+     * @see com.spaceymonk.mentorhub.config.SecurityConfigurer
      */
     @Override
     public String getPassword() {

@@ -88,7 +88,6 @@ public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
      */
     @Override
     public void mapUserToContext(UserDetails userDetails, DirContextAdapter dirContextAdapter) {
-        // not implemented, because no sign-up
         throw new UnsupportedOperationException();
     }
 }
