@@ -33,6 +33,4 @@ build/
 .vscode/
 
 ### spaceymonk ###
-.mvn/
-mvnw*
 /docker/mentorhub-app/app.jar
