@@ -4,7 +4,7 @@ import com.spaceymonk.mentorhub.domain.Role;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.RoleRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -27,30 +27,11 @@ import java.util.Set;
  * @version 1.0, 08/17/21
  */
 @Component
+@AllArgsConstructor
 public class CustomOidcUserService extends OidcUserService {
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-
-    /**
-     * Sets user repository.
-     *
-     * @param userRepository the user repository
-     */
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    /**
-     * Sets role repository.
-     *
-     * @param roleRepository the role repository
-     */
-    @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     /**
      * Load existing user or create new user.
@@ -79,9 +60,7 @@ public class CustomOidcUserService extends OidcUserService {
             user.setRoles(Set.of(role_user));
             userRepository.save(user);
         }
-        user.getRoles().forEach(role -> {
-            mappedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-        });
+        user.getRoles().forEach(role -> mappedAuthorities.add(new SimpleGrantedAuthority(role.getName())));
 
         oidcUser = new DefaultOidcUser(mappedAuthorities, oidcUser.getIdToken(), oidcUser.getUserInfo());
         return oidcUser;

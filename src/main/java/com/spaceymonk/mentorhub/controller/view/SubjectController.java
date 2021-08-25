@@ -4,7 +4,7 @@ import com.spaceymonk.mentorhub.domain.Subject;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.SubjectRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,30 +22,11 @@ import java.util.List;
  * @version 1.0 08/18/21
  */
 @Controller
+@AllArgsConstructor
 public class SubjectController {
 
-    private SubjectRepository subjectRepository;
-    private UserRepository userRepository;
-
-    /**
-     * Sets subject repository.
-     *
-     * @param subjectRepository the subject repository
-     */
-    @Autowired
-    public void setSubjectRepository(SubjectRepository subjectRepository) {
-        this.subjectRepository = subjectRepository;
-    }
-
-    /**
-     * Sets user repository.
-     *
-     * @param userRepository the user repository
-     */
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final SubjectRepository subjectRepository;
+    private final UserRepository userRepository;
 
     /**
      * Renders subject editor page.

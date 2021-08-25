@@ -1,8 +1,8 @@
 package com.spaceymonk.mentorhub.controller.api;
 
 import com.spaceymonk.mentorhub.domain.Subject;
-import com.spaceymonk.mentorhub.repository.SubjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.spaceymonk.mentorhub.service.SubjectService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,19 +25,10 @@ import javax.annotation.security.RolesAllowed;
  */
 @RequestMapping("/api/subjects")
 @RestController
+@AllArgsConstructor
 public class ApiSubjects {
 
-    private SubjectRepository subjectRepository;
-
-    /**
-     * Sets subject repository.
-     *
-     * @param subjectRepository the subject repository
-     */
-    @Autowired
-    public void setSubjectRepository(SubjectRepository subjectRepository) {
-        this.subjectRepository = subjectRepository;
-    }
+    private final SubjectService subjectService;
 
     /**
      * Create a new subject or overwrite the existing one.
@@ -51,16 +42,12 @@ public class ApiSubjects {
     @RequestMapping(value = "/", consumes = "application/json", method = RequestMethod.PUT)
     @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<String> saveSubjectDetails(@RequestBody Subject subject) {
-
-        // Data Control
-        if (subject.getMajorSubject() == null || subject.getMajorSubject().isBlank()
-                || subject.getSubjects() == null || subject.getSubjects().removeIf(String::isBlank) || subject.getSubjects().isEmpty()) {
-            return ResponseEntity.badRequest().body("No subjects entered!");
+        try {
+            String id = subjectService.saveSubjectToDb(subject);
+            return ResponseEntity.ok(id);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        // Data creation
-        subjectRepository.save(subject);
-        return ResponseEntity.ok(subject.getId());
     }
 
     /**
@@ -72,7 +59,11 @@ public class ApiSubjects {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RolesAllowed({"ROLE_ADMIN"})
     public ResponseEntity<String> deleteSubject(@PathVariable("id") String id) {
-        subjectRepository.deleteById(id);
-        return ResponseEntity.ok(id);
+        try {
+            String id_ = subjectService.removeSubjectFromDb(id);
+            return ResponseEntity.ok(id_);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

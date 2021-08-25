@@ -4,7 +4,7 @@ import com.spaceymonk.mentorhub.domain.Role;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.RoleRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,31 +26,11 @@ import java.util.Set;
  * @see Role
  */
 @Component
+@AllArgsConstructor
 public class MyUserDetailsContextMapper implements UserDetailsContextMapper {
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-
-    /**
-     * Sets user repository.
-     *
-     * @param userRepository the user repository
-     */
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    /**
-     * Sets role repository.
-     *
-     * @param roleRepository the role repository
-     */
-    @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
-
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     /**
      * Load existing user or create new user.

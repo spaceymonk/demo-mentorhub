@@ -4,7 +4,7 @@ import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -24,30 +24,11 @@ import java.util.List;
  * @version 1.0 08/18/21
  */
 @Controller
+@AllArgsConstructor
 public class DashboardController {
 
-    private MentorshipRequestRepository mentorshipRequestRepository;
-    private UserRepository userRepository;
-
-    /**
-     * Sets mentorship request repository.
-     *
-     * @param mentorshipRequestRepository the mentorship request repository
-     */
-    @Autowired
-    public void setMentorshipRequestRepository(MentorshipRequestRepository mentorshipRequestRepository) {
-        this.mentorshipRequestRepository = mentorshipRequestRepository;
-    }
-
-    /**
-     * Sets user repository.
-     *
-     * @param userRepository the user repository
-     */
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final MentorshipRequestRepository mentorshipRequestRepository;
+    private final UserRepository userRepository;
 
     /**
      * Renders dashboard page.

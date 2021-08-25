@@ -3,7 +3,7 @@ package com.spaceymonk.mentorhub.config;
 import com.spaceymonk.mentorhub.config.util.CustomOidcUserService;
 import com.spaceymonk.mentorhub.config.util.LoginPageInterceptor;
 import com.spaceymonk.mentorhub.config.util.MyUserDetailsContextMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -35,31 +35,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
+@AllArgsConstructor
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
-    private CustomOidcUserService customOidcUserService;
-    private LoginPageInterceptor loginPageInterceptor;
-    private MyUserDetailsContextMapper myUserDetailsContextMapper;
-
-    /**
-     * Sets custom user details context mapper.
-     *
-     * @param myUserDetailsContextMapper custom user details context mapper
-     */
-    @Autowired
-    public void setMyUserDetailsContextMapper(MyUserDetailsContextMapper myUserDetailsContextMapper) {
-        this.myUserDetailsContextMapper = myUserDetailsContextMapper;
-    }
-
-    /**
-     * Sets custom oidc user service.
-     *
-     * @param customOidcUserService the custom oidc user service
-     */
-    @Autowired
-    public void setCustomOidcUserService(CustomOidcUserService customOidcUserService) {
-        this.customOidcUserService = customOidcUserService;
-    }
+    private final CustomOidcUserService customOidcUserService;
+    private final LoginPageInterceptor loginPageInterceptor;
+    private final MyUserDetailsContextMapper myUserDetailsContextMapper;
 
     /**
      * Password encoder for LDAP logins.
@@ -70,16 +51,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * Sets login page interceptor for this application.
-     *
-     * @param loginPageInterceptor the login page interceptor
-     */
-    @Autowired
-    public void setLoginPageInterceptor(LoginPageInterceptor loginPageInterceptor) {
-        this.loginPageInterceptor = loginPageInterceptor;
     }
 
     /**
