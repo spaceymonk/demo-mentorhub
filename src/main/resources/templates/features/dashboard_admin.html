@@ -118,6 +118,9 @@
     $('.accordion').bind('DOMSubtreeModified', function () {
         if ($(".accordion").children().length == 0) {
             $("#noEntryTxt").show();
+            setTimeout(function () {
+                location.reload();
+            }, 1000);
         } else {
             $("#noEntryTxt").hide();
         }

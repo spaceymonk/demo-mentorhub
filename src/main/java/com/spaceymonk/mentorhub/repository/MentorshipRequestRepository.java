@@ -7,8 +7,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 
 /**
  * The interface Mentorship request repository.
@@ -32,5 +30,5 @@ public interface MentorshipRequestRepository extends MongoRepository<MentorshipR
      * @param user the user
      * @return the list
      */
-    List<MentorshipRequest> findByMentor(User user);
+    Slice<MentorshipRequest> findByMentor(User user, Pageable pageable);
 }
