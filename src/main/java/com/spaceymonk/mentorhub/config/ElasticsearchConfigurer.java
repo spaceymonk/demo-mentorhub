@@ -1,6 +1,7 @@
 package com.spaceymonk.mentorhub.config;
 
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
@@ -17,6 +18,11 @@ import org.springframework.data.elasticsearch.client.RestClients;
 @Configuration
 public class ElasticsearchConfigurer {
 
+    @Value("${ELASTICSEARCH_HOST:localhost}")
+    private String HOST;
+    @Value("${ELASTICSEARCH_PORT:9200}")
+    private String PORT;
+
     /**
      * Configures connection host and port for the Elasticsearch instance.
      *
@@ -25,7 +31,7 @@ public class ElasticsearchConfigurer {
     @Bean
     RestHighLevelClient elasticsearchClient() {
         final ClientConfiguration clientConfiguration =
-                ClientConfiguration.builder().connectedTo("elasticsearch:9200").build();
+                ClientConfiguration.builder().connectedTo(HOST + ":" + PORT).build();
         return RestClients.create(clientConfiguration).rest();
     }
 }

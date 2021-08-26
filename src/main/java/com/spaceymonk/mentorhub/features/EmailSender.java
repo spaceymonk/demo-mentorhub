@@ -1,5 +1,6 @@
 package com.spaceymonk.mentorhub.features;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,10 @@ import javax.mail.MessagingException;
 @Component
 public class EmailSender {
 
+    @Value("${SMTP_HOST:localhost}")
+    private String HOST;
+    @Value("${SMTP_PORT:1025}")
+    private Integer PORT;
     public static final String SYSTEM_MAIL_ADDRESS = "system@mentorhub.com";
     private final JavaMailSenderImpl mailSender;
 
@@ -27,8 +32,8 @@ public class EmailSender {
      */
     public EmailSender() {
         mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("mailhog");
-        mailSender.setPort(1025);
+        mailSender.setHost(HOST);
+        mailSender.setPort(PORT);
         mailSender.setUsername("");
         mailSender.setPassword("");
     }
