@@ -2,6 +2,8 @@ package com.spaceymonk.mentorhub.repository;
 
 import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.domain.User;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +24,7 @@ public interface MentorshipRequestRepository extends MongoRepository<MentorshipR
      * @param status the status
      * @return the list
      */
-    List<MentorshipRequest> findByStatus(String status);
+    Slice<MentorshipRequest> findByStatus(String status, Pageable pageable);
 
     /**
      * Find requests by mentor.

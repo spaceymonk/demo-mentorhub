@@ -1,19 +1,20 @@
 package com.spaceymonk.mentorhub.controller.view;
 
-import com.spaceymonk.mentorhub.domain.MentorshipRequest;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.MentorshipRequestRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.Comparator;
-import java.util.List;
 
 
 /**
@@ -40,15 +41,18 @@ public class DashboardController {
      */
     @GetMapping("/dashboard")
     @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
-    public String renderDashboardPage(Model model, Authentication authentication) {
+    public String renderDashboardPage(@RequestParam(defaultValue = "0", required = false) Integer pageNum,
+                                      Model model, Authentication authentication) {
         User currentUser = userRepository.findByUsernameOrGoogleId(authentication.getName(), authentication.getName());
         model.addAttribute("currentUser", currentUser);
 
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
             return "features/dashboard_user";
         } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            List<MentorshipRequest> waitingRequests = mentorshipRequestRepository.findByStatus("waiting");
-            waitingRequests.sort(Comparator.comparing(MentorshipRequest::getDate).reversed());
+            pageNum = pageNum < 0 ? 0 : pageNum;
+            Pageable page = PageRequest.of(pageNum, 3, Sort.by("date").descending());
+            var waitingRequests = mentorshipRequestRepository.findByStatus("waiting", page);
+            model.addAttribute("pageNum", pageNum);
             model.addAttribute("waitingRequests", waitingRequests);
             return "features/dashboard_admin";
         }

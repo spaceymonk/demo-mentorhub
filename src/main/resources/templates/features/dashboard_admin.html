@@ -96,6 +96,12 @@
               </div>
             </div>
           </div>
+
+          <div class="btn-group mt-3">
+            <a class="btn btn-dark" th:classappend="${waitingRequests.hasPrevious()}? '':'disabled'" th:href="@{/dashboard?pageNum={pageNum}(pageNum=${pageNum-1})}"><i class="fas fa-angle-left"></i></a>
+            <a class="btn btn-dark" th:classappend="${waitingRequests.hasNext()}? '':'disabled'" th:href="@{/dashboard?pageNum={pageNum}(pageNum=${pageNum+1})}"><i class="fas fa-angle-right"></i></a>
+          </div>
+
         </div>
       </div>
     </div>
