@@ -18,15 +18,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class Bootstrap implements CommandLineRunner {
 
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    /**
-     * Sets role repository.
-     *
-     * @param roleRepository the role repository
-     */
     @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
+    public Bootstrap(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
