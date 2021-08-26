@@ -1,5 +1,6 @@
 package com.spaceymonk.mentorhub.features;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,10 +20,6 @@ import javax.mail.MessagingException;
 @Component
 public class EmailSender {
 
-    @Value("${SMTP_HOST:localhost}")
-    private String HOST;
-    @Value("${SMTP_PORT:1025}")
-    private Integer PORT;
     public static final String SYSTEM_MAIL_ADDRESS = "system@mentorhub.com";
     private final JavaMailSenderImpl mailSender;
 
@@ -30,10 +27,12 @@ public class EmailSender {
      * Instantiates a new Email service.
      * Do not instantiate this class by yourself, use Spring dependency injection to get an instance.
      */
-    public EmailSender() {
+    @Autowired
+    public EmailSender(@Value("${SMTP_HOST:localhost}") String HOST,
+                       @Value("${SMTP_PORT:1025}") String PORT) {
         mailSender = new JavaMailSenderImpl();
         mailSender.setHost(HOST);
-        mailSender.setPort(PORT);
+        mailSender.setPort(Integer.parseInt(PORT));
         mailSender.setUsername("");
         mailSender.setPassword("");
     }

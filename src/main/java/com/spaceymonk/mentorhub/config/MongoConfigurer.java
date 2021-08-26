@@ -12,10 +12,15 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 @Configuration
 public class MongoConfigurer {
 
-    @Value("${MONGO_HOST:localhost}")
-    private String HOST;
-    @Value("${MONGO_PORT:27017}")
-    private String PORT;
+
+    private final String HOST;
+    private final String PORT;
+
+    public MongoConfigurer(@Value("${MONGO_HOST:localhost}") String HOST,
+                           @Value("${MONGO_PORT:27017}") String PORT) {
+        this.HOST = HOST;
+        this.PORT = PORT;
+    }
 
     @Bean
     public MongoClient mongo() {
