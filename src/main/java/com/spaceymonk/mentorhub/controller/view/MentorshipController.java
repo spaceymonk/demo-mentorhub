@@ -3,6 +3,7 @@ package com.spaceymonk.mentorhub.controller.view;
 import com.spaceymonk.mentorhub.domain.Mentorship;
 import com.spaceymonk.mentorhub.repository.MentorshipRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -22,30 +23,11 @@ import java.util.Optional;
  * @version 1.0 08/18/21
  */
 @Controller
+@AllArgsConstructor
 public class MentorshipController {
 
-    private MentorshipRepository mentorshipRepository;
-    private UserRepository userRepository;
-
-    /**
-     * Sets mentorship repository.
-     *
-     * @param mentorshipRepository the mentorship repository
-     */
-    @Autowired
-    public void setMentorshipRepository(MentorshipRepository mentorshipRepository) {
-        this.mentorshipRepository = mentorshipRepository;
-    }
-
-    /**
-     * Sets user repository.
-     *
-     * @param userRepository the user repository
-     */
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final MentorshipRepository mentorshipRepository;
+    private final UserRepository userRepository;
 
     /**
      * Helper function that gets mentorship data from database.

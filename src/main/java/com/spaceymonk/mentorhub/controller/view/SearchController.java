@@ -4,6 +4,7 @@ import com.spaceymonk.mentorhub.domain.Subject;
 import com.spaceymonk.mentorhub.domain.User;
 import com.spaceymonk.mentorhub.repository.SubjectRepository;
 import com.spaceymonk.mentorhub.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -22,30 +23,11 @@ import java.util.List;
  * @version 1.0 08/18/21
  */
 @Controller
+@AllArgsConstructor
 public class SearchController {
 
-    private UserRepository userRepository;
-    private SubjectRepository subjectRepository;
-
-    /**
-     * Sets user repository.
-     *
-     * @param userRepository the user repository
-     */
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    /**
-     * Sets subject repository.
-     *
-     * @param subjectRepository the subject repository
-     */
-    @Autowired
-    public void setSubjectRepository(SubjectRepository subjectRepository) {
-        this.subjectRepository = subjectRepository;
-    }
+    private final UserRepository userRepository;
+    private final SubjectRepository subjectRepository;
 
     /**
      * Renders search page.
