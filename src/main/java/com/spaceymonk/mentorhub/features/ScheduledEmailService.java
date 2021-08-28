@@ -58,7 +58,7 @@ public class ScheduledEmailService {
      */
     @Scheduled(cron = "0 * * ? * *") // every minute
     public void runEmailReminder() {
-        final long ONE_HOUR_IN_MS = 60 * 60 * 1000;
+        final long ONE_HOUR_IN_MS = (long) 60 * 60 * 1000;
         var now = new Date();
         var oneHourLater = new Date(now.getTime() + ONE_HOUR_IN_MS);
         var list = mentorshipRepository.findByPhasesEndDateBetweenAndPhasesNotifiedAndCurrentPhaseIndexGreaterThan(now, oneHourLater, false, -1);

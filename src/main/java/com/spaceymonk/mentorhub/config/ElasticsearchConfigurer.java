@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 
+import java.io.IOException;
+
 
 /**
  * Configurer class for Elasticsearch integration.
@@ -35,10 +37,11 @@ public class ElasticsearchConfigurer {
      * @return Configuration details
      */
     @Bean
-    RestHighLevelClient elasticsearchClient() {
-        System.out.println(HOST+"SEX");
+    RestHighLevelClient elasticsearchClient() throws IOException {
         final ClientConfiguration clientConfiguration =
                 ClientConfiguration.builder().connectedTo(HOST + ":" + PORT).build();
-        return RestClients.create(clientConfiguration).rest();
+        try (var rest = RestClients.create(clientConfiguration).rest()) {
+            return rest;
+        }
     }
 }
